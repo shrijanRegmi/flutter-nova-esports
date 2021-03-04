@@ -1,0 +1,4 @@
+enum MessageType {
+  Text,
+  Image,
+}

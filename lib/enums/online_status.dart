@@ -1,0 +1,4 @@
+enum OnlineStatus {
+  away,
+  active,
+}
