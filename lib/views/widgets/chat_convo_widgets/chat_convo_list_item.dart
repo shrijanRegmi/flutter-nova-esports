@@ -6,7 +6,6 @@ import 'package:peaman/enums/message_types.dart';
 import 'package:peaman/models/app_models/message_model.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/viewmodels/temp_img_vm.dart';
-import 'package:peaman/views/screens/friend_profile_screen.dart';
 import 'package:peaman/views/screens/photo_viewer_screen.dart';
 import 'package:peaman/views/widgets/common_widgets/avatar_builder.dart';
 import 'package:provider/provider.dart';
@@ -134,12 +133,12 @@ class ChatConvoListItem extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => FriendProfileScreen(friend),
-                    ),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (_) => FriendProfileScreen(friend),
+                  //   ),
+                  // );
                 },
                 child: Container(
                   color: Colors.transparent,

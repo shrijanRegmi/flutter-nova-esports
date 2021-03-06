@@ -4,7 +4,6 @@ import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/services/database_services/user_provider.dart';
 import 'package:peaman/viewmodels/search_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
-import 'package:peaman/views/screens/view_all_result_screen.dart';
 import 'package:peaman/views/widgets/search_widgets/users_list_item.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -18,6 +17,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+  print(_searchedNames);
     return ViewmodelProvider<SearchVm>(
       vm: SearchVm(context: context),
       builder: (context, vm, appVm, appUser) {
@@ -134,13 +134,13 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget _viewAllResultBuilder() {
     return InkWell(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => ViewAllResultScreen(
-                _searchedNames, _controller.text.toUpperCase()),
-          ),
-        );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (_) => ViewAllResultScreen(
+        //         _searchedNames, _controller.text.toUpperCase()),
+        //   ),
+        // );
       },
       child: Container(
         color: Colors.black12,

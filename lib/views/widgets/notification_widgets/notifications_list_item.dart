@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:peaman/enums/notification_type.dart';
 import 'package:peaman/models/app_models/notification_model.dart';
@@ -102,23 +101,23 @@ class NotificationsListItem extends StatelessWidget {
         SizedBox(
           width: 10.0,
         ),
-        Container(
-          height: 50.0,
-          width: 50.0,
-          constraints: BoxConstraints(
-            maxWidth: 50.0,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5.0),
-            color: Colors.grey[350],
-            image: DecorationImage(
-              image: CachedNetworkImageProvider(
-                notification.feed.photos[0],
-              ),
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
+        // Container(
+        //   height: 50.0,
+        //   width: 50.0,
+        //   constraints: BoxConstraints(
+        //     maxWidth: 50.0,
+        //   ),
+        //   decoration: BoxDecoration(
+        //     borderRadius: BorderRadius.circular(5.0),
+        //     color: Colors.grey[350],
+        //     image: DecorationImage(
+        //       image: CachedNetworkImageProvider(
+        //         notification.feed.photos[0],
+        //       ),
+        //       fit: BoxFit.cover,
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }
@@ -181,23 +180,23 @@ class NotificationsListItem extends StatelessWidget {
         SizedBox(
           width: 10.0,
         ),
-        Container(
-          height: 50.0,
-          width: 50.0,
-          constraints: BoxConstraints(
-            maxWidth: 50.0,
-          ),
-          decoration: BoxDecoration(
-            color: Colors.grey[350],
-            borderRadius: BorderRadius.circular(5.0),
-            image: DecorationImage(
-              image: CachedNetworkImageProvider(
-                notification.feed.photos[0],
-              ),
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
+        // Container(
+        //   height: 50.0,
+        //   width: 50.0,
+        //   constraints: BoxConstraints(
+        //     maxWidth: 50.0,
+        //   ),
+        //   decoration: BoxDecoration(
+        //     color: Colors.grey[350],
+        //     borderRadius: BorderRadius.circular(5.0),
+        //     image: DecorationImage(
+        //       image: CachedNetworkImageProvider(
+        //         notification.feed.photos[0],
+        //       ),
+        //       fit: BoxFit.cover,
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }

@@ -31,7 +31,10 @@ class PeamanApp extends StatelessWidget {
               return MaterialApp(
                 debugShowCheckedModeBanner: false,
                 title: "Peaman",
-                theme: ThemeData(fontFamily: 'Nunito'),
+                theme: ThemeData(
+                  fontFamily: 'Nunito',
+                  canvasColor: Color(0xffF3F5F8),
+                ),
                 home: Material(
                     child: Wrapper(
                   appUser: appUser,

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:peaman/models/app_models/call_model.dart';
 import 'package:peaman/models/app_models/chat_model.dart';
-import 'package:peaman/models/app_models/follow_request_model.dart';
-import 'package:peaman/services/database_services/call_provider.dart';
 import 'package:peaman/services/database_services/message_provider.dart';
 import 'package:peaman/services/database_services/notif_provider.dart';
 import 'package:peaman/services/database_services/user_provider.dart';
@@ -32,12 +29,6 @@ class WrapperBuilder extends StatelessWidget {
           ),
           StreamProvider<List<Notifications>>.value(
             value: NotificationProvider(appUser: _user).notificationsList,
-          ),
-          StreamProvider<List<FollowRequest>>.value(
-            value: NotificationProvider(appUser: _user).followRequests,
-          ),
-          StreamProvider<Call>.value(
-            value: CallProvider(appUser: _user).receivingCall,
           ),
           ChangeNotifierProvider<TempImgVm>(
             create: (_) => TempImgVm(),

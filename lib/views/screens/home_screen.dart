@@ -5,13 +5,10 @@ import 'package:peaman/enums/online_status.dart';
 import 'package:peaman/models/app_models/chat_model.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/services/database_services/user_provider.dart';
-import 'package:peaman/viewmodels/app_vm.dart';
 import 'package:peaman/viewmodels/home_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
-import 'package:peaman/views/screens/call_overlay_screen.dart';
 import 'package:peaman/views/screens/chat_list_tab.dart';
 import 'package:peaman/views/screens/explore_tab.dart';
-import 'package:peaman/views/screens/friend_profile_screen.dart';
 import 'package:peaman/views/screens/notif_tab.dart';
 import 'package:provider/provider.dart';
 
@@ -30,7 +27,11 @@ class _HomeScreenState extends State<HomeScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(
+      length: 3,
+      vsync: this,
+      initialIndex: 1,
+    );
   }
 
   @override
@@ -64,7 +65,6 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   Widget build(BuildContext context) {
     final _appUser = Provider.of<AppUser>(context);
-    final _appVm = Provider.of<AppVm>(context);
     return _appUser == null
         ? Center(
             child: Lottie.asset(
@@ -80,22 +80,11 @@ class _HomeScreenState extends State<HomeScreen>
             onInit: (vm) {
               AppUserProvider(uid: _appUser.uid)
                   .setUserActiveStatus(onlineStatus: OnlineStatus.active);
-              _appVm.getTimeline(_appUser);
-              _appVm.getMoments(_appUser);
-              _appVm.getPostsById(_appUser);
-
               _tabController.addListener(() {
                 setState(() {});
               });
             },
             builder: (context, vm, appVm, appUser) {
-              if (vm.receivingCall != null) {
-                return CallOverlayScreen(
-                  vm.receivingCall.caller,
-                  isReceiving: true,
-                  call: vm.receivingCall,
-                );
-              }
               return Scaffold(
                 backgroundColor: Color(0xffF3F5F8),
                 body: SafeArea(
@@ -119,10 +108,10 @@ class _HomeScreenState extends State<HomeScreen>
         controller: _tabController,
         physics: NeverScrollableScrollPhysics(),
         children: <Widget>[
-          ExploreTab(_tabController),
           ChatListTab(),
+          ExploreTab(_tabController),
           NotificationTab(),
-          FriendProfileScreen(appUser),
+          // FriendProfileScreen(appUser),
         ],
       ),
     );
@@ -175,21 +164,21 @@ class _HomeScreenState extends State<HomeScreen>
 
     List<Tab> _tabsList = [
       Tab(
-        child: SvgPicture.asset(
-          'assets/images/svgs/home_tab.svg',
-          color: _tabController.index == 0 ? Colors.blue : null,
-        ),
-      ),
-      Tab(
         child: Stack(
           overflow: Overflow.visible,
           children: [
             SvgPicture.asset(
               'assets/images/svgs/chat_tab.svg',
-              color: _tabController.index == 1 ? Colors.blue : null,
+              color: _tabController.index == 0 ? Colors.blue : null,
             ),
             if (_chatCount > 0) _countBuilder(_chatCount)
           ],
+        ),
+      ),
+      Tab(
+        child: SvgPicture.asset(
+          'assets/images/svgs/home_tab.svg',
+          color: _tabController.index == 1 ? Colors.blue : null,
         ),
       ),
       Tab(
@@ -207,12 +196,12 @@ class _HomeScreenState extends State<HomeScreen>
           ],
         ),
       ),
-      Tab(
-        child: SvgPicture.asset(
-          'assets/images/svgs/profile_tab.svg',
-          color: _tabController.index == 3 ? Colors.blue : null,
-        ),
-      ),
+      // Tab(
+      //   child: SvgPicture.asset(
+      //     'assets/images/svgs/profile_tab.svg',
+      //     color: _tabController.index == 3 ? Colors.blue : null,
+      //   ),
+      // ),
     ];
     return _tabsList;
   }
