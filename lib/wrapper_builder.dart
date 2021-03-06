@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:peaman/models/app_models/chat_model.dart';
 import 'package:peaman/services/database_services/message_provider.dart';
 import 'package:peaman/services/database_services/notif_provider.dart';
+import 'package:peaman/services/database_services/tournament_provider.dart';
 import 'package:peaman/services/database_services/user_provider.dart';
 import 'package:peaman/viewmodels/temp_img_vm.dart';
 import 'package:provider/provider.dart';
 import 'package:peaman/models/app_models/notification_model.dart';
+import 'models/app_models/tournament_model.dart';
 import 'models/app_models/user_model.dart';
 
 class WrapperBuilder extends StatelessWidget {
@@ -32,6 +34,9 @@ class WrapperBuilder extends StatelessWidget {
           ),
           ChangeNotifierProvider<TempImgVm>(
             create: (_) => TempImgVm(),
+          ),
+          StreamProvider<List<Tournament>>.value(
+            value: TournamentProvider().tournamentsList,
           ),
         ],
         child: builder(context, _user),

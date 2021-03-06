@@ -1,53 +1,61 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:peaman/helpers/date_time_helper.dart';
 import 'package:peaman/models/app_models/tournament_model.dart';
-import 'package:peaman/views/screens/tounament_view_screen.dart';
+import 'package:peaman/viewmodels/tournament_vm.dart';
+import 'package:peaman/viewmodels/viewmodel_builder.dart';
+import 'package:peaman/views/screens/tournament_view_screen.dart';
 
 class TournamentListItem extends StatelessWidget {
   final Tournament tournament;
   TournamentListItem(this.tournament);
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        left: 20.0,
-        right: 20.0,
-        bottom: 20.0,
-      ),
-      child: GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => TournamentViewScreen(tournament),
-            ),
-          );
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey[300],
-                blurRadius: 20.0,
+    return ViewmodelProvider<TournamentVm>(
+      vm: TournamentVm(context),
+      builder: (context, vm, appVm, appUser) {
+        return Padding(
+          padding: const EdgeInsets.only(
+            left: 20.0,
+            right: 20.0,
+            bottom: 20.0,
+          ),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => TournamentViewScreen(tournament),
+                ),
+              );
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey[300],
+                    blurRadius: 20.0,
+                  ),
+                ],
               ),
-            ],
+              height: 250.0,
+              child: Column(
+                children: [
+                  _imgBuilder(vm),
+                  _detailsBuilder(),
+                ],
+              ),
+            ),
           ),
-          height: 250.0,
-          child: Column(
-            children: [
-              _imgBuilder(),
-              _detailsBuilder(),
-            ],
-          ),
-        ),
-      ),
+        );
+      },
     );
   }
 
-  Widget _imgBuilder() {
+  Widget _imgBuilder(final TournamentVm vm) {
     return Container(
       height: 150.0,
       decoration: BoxDecoration(
@@ -72,23 +80,73 @@ class TournamentListItem extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                tournament.isRegistered ? _registeredBuilder() : Container(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 5.0, horizontal: 10.0),
-                  child: Text(
-                    'March 5, 2021 7 PM',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12.0,
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      tournament.isRegistered
+                          ? _registeredBuilder()
+                          : Container(),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 50.0,
+                              height: 50.0,
+                              decoration: BoxDecoration(
+                                color: Colors.black38,
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              child: IconButton(
+                                icon: Icon(Icons.edit),
+                                iconSize: 18.0,
+                                color: Colors.grey[100],
+                                onPressed: () =>
+                                    vm.updateTournament(tournament),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10.0,
+                            ),
+                            Container(
+                              width: 50.0,
+                              height: 50.0,
+                              decoration: BoxDecoration(
+                                color: Colors.black38,
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              child: IconButton(
+                                icon: Icon(Icons.delete),
+                                iconSize: 18.0,
+                                color: Colors.grey[100],
+                                onPressed: () =>
+                                    vm.deleteTournament(tournament),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 5.0, horizontal: 10.0),
+                    child: Text(
+                      '${DateTimeHelper().getFormattedDate(DateTime.fromMillisecondsSinceEpoch(tournament.date))} ${tournament.time}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12.0,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),
@@ -107,9 +165,9 @@ class TournamentListItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  width: 200.0,
+                  width: 300.0,
                   child: Text(
-                    '${tournament.title}',
+                    '${tournament.title}'.toUpperCase(),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
@@ -148,7 +206,7 @@ class TournamentListItem extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 8.0),
         child: Text(
-          '${Tournament().getTypeTitle(tournament.type)}',
+          '${Tournament().getMatchTypeTitle(tournament.type)}',
           style: TextStyle(
             color: Colors.white,
             fontSize: 10.0,

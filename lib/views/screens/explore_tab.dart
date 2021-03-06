@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:peaman/enums/match_type.dart';
-import 'package:peaman/models/app_models/tournament_model.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/viewmodels/app_vm.dart';
 import 'package:peaman/viewmodels/explore_vm.dart';
@@ -11,6 +9,8 @@ import 'package:peaman/views/screens/search_screen.dart';
 import 'package:peaman/views/widgets/explore_tab_widgets/tournament_list.dart';
 import 'package:peaman/views/widgets/explore_tab_widgets/video_carousel.dart';
 import 'package:provider/provider.dart';
+
+import 'create_tournament_screen.dart';
 
 class ExploreTab extends HookWidget {
   final TabController tabController;
@@ -62,28 +62,7 @@ class ExploreTab extends HookWidget {
                     SizedBox(
                       height: 10.0,
                     ),
-                    TournamentList([
-                      Tournament(
-                        imgUrl:
-                            'https://staticg.sportskeeda.com/editor/2019/12/09b05-15764171580892-800.jpg',
-                        title: 'MUNNA BHAI GAMING DAILY Solo War 3',
-                        type: MatchType.solo,
-                        maxPlayers: 50,
-                        joinedPlayers: 20,
-                        entryCost: '10',
-                        isRegistered: false,
-                      ),
-                      Tournament(
-                        imgUrl:
-                            'https://play-lh.googleusercontent.com/KxIKOXKi9bJukZCQyzilpDqHL6f7WTcXgMQFo1IaJOhd6rrTdYONMvdewqnvivauTSGL',
-                        title: 'OP GAMING HEADSHOT SQUAD War',
-                        type: MatchType.squad,
-                        maxPlayers: 48,
-                        joinedPlayers: 40,
-                        entryCost: '4',
-                        isRegistered: true,
-                      ),
-                    ]),
+                    if (vm.tournaments != null) TournamentList(vm.tournaments),
                     SizedBox(
                       height: 100.0,
                     ),
@@ -94,14 +73,14 @@ class ExploreTab extends HookWidget {
             floatingActionButton: FloatingActionButton(
               backgroundColor: Colors.blue,
               onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (_) => CreatePostScreen(tabController),
-                //   ),
-                // );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => CreateTournamentScreen(),
+                  ),
+                );
               },
-              child: Icon(Icons.create),
+              child: Icon(Icons.add),
             ),
           );
         });

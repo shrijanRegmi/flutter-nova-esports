@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:peaman/helpers/date_time_helper.dart';
 import 'package:peaman/models/app_models/tournament_model.dart';
 import 'package:peaman/views/screens/match_up_screen.dart';
 import 'package:peaman/views/widgets/tournament_widgets/updates_list.dart';
@@ -86,7 +87,7 @@ class TournamentViewScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 Text(
-                  'March 5, 2021 7 PM',
+                  '${DateTimeHelper().getFormattedDate(DateTime.fromMillisecondsSinceEpoch(tournament.date))} ${tournament.time}',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 14.0,

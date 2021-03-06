@@ -123,6 +123,42 @@ class DialogProvider {
     );
   }
 
+  // show this to confirm something
+  showConfirmationDialog(final String title, final Function onPressed) async {
+    return await showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(
+          '$title',
+        ),
+        actions: [
+          TextButton(
+            child: Text(
+              'No',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          TextButton(
+            child: Text(
+              'Yes',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onPressed: onPressed,
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _addMomentBuilder() {
     return Container(
       color: Colors.transparent,
