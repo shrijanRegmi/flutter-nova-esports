@@ -199,11 +199,7 @@ class CreateTournamentVm extends ChangeNotifier {
           .removeVideoStreams();
     }
 
-    if (_link1.text.trim() != '' ||
-        _link2.text.trim() != '' ||
-        _link3.text.trim() != '') {
-      Navigator.pop(context);
-    }
+    Navigator.pop(context);
   }
 
   // initialize tournament

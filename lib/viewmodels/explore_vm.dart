@@ -9,16 +9,29 @@ class ExploreVm extends ChangeNotifier {
   BuildContext context;
   ExploreVm(this.context);
 
-  bool _isShowingTopLoader = false;
+  bool _showLoader = false;
   ScrollController _scrollController = ScrollController();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   ScrollController get scrollController => _scrollController;
-  bool get isShowingTopLoader => _isShowingTopLoader;
+  bool get showLoader => _showLoader;
   GlobalKey<ScaffoldState> get scaffoldKey => _scaffoldKey;
   List<Tournament> get tournaments => Provider.of<List<Tournament>>(context);
   List<VideoStream> get videoStreams => Provider.of<List<VideoStream>>(context);
 
   // init function
   onInit(AppVm appVm, AppUser appUser) {}
+
+  // show loader
+  showFullLoader() async {
+    _updateShowLoader(true);
+    await Future.delayed(Duration(milliseconds: 2000));
+    _updateShowLoader(false);
+  }
+
+  // update value of show loader
+  _updateShowLoader(final bool newVal) {
+    _showLoader = newVal;
+    notifyListeners();
+  }
 }

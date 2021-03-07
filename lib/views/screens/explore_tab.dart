@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lottie/lottie.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/viewmodels/app_vm.dart';
 import 'package:peaman/viewmodels/explore_vm.dart';
@@ -29,40 +30,61 @@ class ExploreTab extends HookWidget {
             key: vm.scaffoldKey,
             backgroundColor: Color(0xffF3F5F8),
             body: RefreshIndicator(
-              onRefresh: () async {},
+              onRefresh: () async {
+                vm.showFullLoader();
+              },
               backgroundColor: Colors.blue,
               color: Colors.white,
-              child: SingleChildScrollView(
-                controller: vm.scrollController,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 15.0,
-                    ),
-                    _topSectionBuilder(context),
-                    SizedBox(
-                      height: 5.0,
-                    ),
-                    Divider(),
-                    // SizedBox(
-                    //   height: 10.0,
-                    // ),
-                    if (vm.videoStreams != null) VideoCarousel(vm.videoStreams),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    Divider(
-                      color: Color(0xff3D4A5A).withOpacity(0.2),
-                    ),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    if (vm.tournaments != null) TournamentList(vm.tournaments),
-                    SizedBox(
-                      height: 100.0,
-                    ),
-                  ],
+              child: Container(
+                height: MediaQuery.of(context).size.height,
+                child: SingleChildScrollView(
+                  controller: vm.scrollController,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 15.0,
+                      ),
+                      _topSectionBuilder(context),
+                      SizedBox(
+                        height: 5.0,
+                      ),
+                      Divider(),
+                      vm.showLoader
+                          ? Padding(
+                              padding: const EdgeInsets.only(top: 100.0),
+                              child: Center(
+                                child: Lottie.asset(
+                                  'assets/lottie/loader.json',
+                                  width:
+                                      MediaQuery.of(context).size.width - 100.0,
+                                  height:
+                                      MediaQuery.of(context).size.width - 100.0,
+                                ),
+                              ),
+                            )
+                          : Column(
+                              children: [
+                                if (vm.videoStreams != null)
+                                  VideoCarousel(vm.videoStreams),
+                                SizedBox(
+                                  height: 10.0,
+                                ),
+                                Divider(
+                                  color: Color(0xff3D4A5A).withOpacity(0.2),
+                                ),
+                                SizedBox(
+                                  height: 10.0,
+                                ),
+                                if (vm.tournaments != null)
+                                  TournamentList(vm.tournaments),
+                                SizedBox(
+                                  height: 100.0,
+                                ),
+                              ],
+                            ),
+                    ],
+                  ),
                 ),
               ),
             ),

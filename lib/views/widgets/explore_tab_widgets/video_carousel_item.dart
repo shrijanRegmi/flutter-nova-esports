@@ -16,7 +16,9 @@ class _VideoCarouselItemState extends State<VideoCarouselItem> {
   void initState() {
     super.initState();
     _controller = YoutubePlayerController(
-      initialVideoId: '${widget.videoStream.link.split('v=').last}',
+      initialVideoId: widget.videoStream.link.contains('youtu.be/')
+          ? '${widget.videoStream.link.split('.be/').last}'
+          : '${widget.videoStream.link.split('v=').last}',
       flags: YoutubePlayerFlags(
         autoPlay: false,
         isLive: widget.videoStream.isLive,

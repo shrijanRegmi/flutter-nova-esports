@@ -18,7 +18,7 @@ class _VideoCarouselState extends State<VideoCarousel> {
   void initState() {
     super.initState();
     _controller = PageController(
-      initialPage: widget.videoStreams.length ~/ 2,
+      initialPage: widget.videoStreams.length ~/ 3,
       viewportFraction: 0.9,
     );
   }
@@ -31,13 +31,15 @@ class _VideoCarouselState extends State<VideoCarousel> {
         _titleBuilder(),
         Container(
           height: 200.0,
-          child: PageView.builder(
-            controller: _controller,
-            itemCount: widget.videoStreams.length,
-            itemBuilder: (context, index) {
-              return VideoCarouselItem(widget.videoStreams[index]);
-            },
-          ),
+          child: widget.videoStreams.isEmpty
+              ? _newVideoBuilder()
+              : PageView.builder(
+                  controller: _controller,
+                  itemCount: widget.videoStreams.length,
+                  itemBuilder: (context, index) {
+                    return VideoCarouselItem(widget.videoStreams[index]);
+                  },
+                ),
         ),
       ],
     );
@@ -57,10 +59,37 @@ class _VideoCarouselState extends State<VideoCarousel> {
               color: Color(0xff3D4A5A),
             ),
           ),
+          if (widget.videoStreams.isNotEmpty)
+            IconButton(
+              icon: Icon(Icons.add),
+              splashRadius: 20.0,
+              color: Color(0xff3D4A5A),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => CreateVideoStreamScreen(
+                        videoStreams: widget.videoStreams),
+                  ),
+                );
+              },
+            )
+        ],
+      ),
+    );
+  }
+
+  Widget _newVideoBuilder() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
           IconButton(
-            icon: Icon(Icons.add),
-            splashRadius: 20.0,
-            color: Color(0xff3D4A5A),
+            icon: Icon(
+              Icons.add_circle,
+              color: Colors.blue,
+            ),
+            iconSize: 50.0,
             onPressed: () {
               Navigator.push(
                 context,
@@ -70,6 +99,15 @@ class _VideoCarouselState extends State<VideoCarousel> {
                 ),
               );
             },
+          ),
+          SizedBox(
+            height: 10.0,
+          ),
+          Text(
+            'Add Video Stream',
+            style: TextStyle(
+              color: Color(0xff3D4A5A),
+            ),
           )
         ],
       ),
