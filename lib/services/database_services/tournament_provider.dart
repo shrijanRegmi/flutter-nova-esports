@@ -1,9 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:peaman/models/app_models/tournament_model.dart';
+import 'package:peaman/models/app_models/video_stream_model.dart';
 
 class TournamentProvider {
   final Tournament tournament;
-  TournamentProvider({this.tournament});
+  final VideoStream videoStream;
+  TournamentProvider({
+    this.tournament,
+    this.videoStream,
+  });
 
   final _ref = FirebaseFirestore.instance;
 
@@ -16,7 +21,7 @@ class TournamentProvider {
       );
       await _tournamentRef.set(_tournament.toJson());
       print('Success: Creating tournament ${_tournament.id}');
-      return 'Success';
+      return _tournament;
     } catch (e) {
       print(e);
       print('Error!!!: Creating tournament');
@@ -52,9 +57,42 @@ class TournamentProvider {
     }
   }
 
+  // add video streams
+  Future addVideoStreams() async {
+    try {
+      final _videoStreamRef =
+          _ref.collection('video_streams').doc(videoStream.id);
+      await _videoStreamRef.set(videoStream.toJson());
+      print('Success: Adding video stream ${videoStream.id}');
+      return videoStream;
+    } catch (e) {
+      print(e);
+      print('Error!!!: Adding video stream');
+    }
+  }
+
+  // remove video streams
+  Future removeVideoStreams() async {
+    try {
+      final _videoStreamRef =
+          _ref.collection('video_streams').doc(videoStream.id);
+      await _videoStreamRef.delete();
+      print('Success: Adding video stream ${videoStream.id}');
+      return videoStream;
+    } catch (e) {
+      print(e);
+      print('Error!!!: Adding video stream');
+    }
+  }
+
   // get list of tournaments from firestore
   List<Tournament> _tournamentsFromFirestore(final QuerySnapshot colSnap) {
     return colSnap.docs.map((e) => Tournament.fromJson(e.data())).toList();
+  }
+
+  // get list of videostreams from firestore
+  List<VideoStream> _videoStreamsFromFirestore(final QuerySnapshot colSnap) {
+    return colSnap.docs.map((e) => VideoStream.fromJson(e.data())).toList();
   }
 
   // stream of list of tournaments
@@ -64,5 +102,13 @@ class TournamentProvider {
         .orderBy('date')
         .snapshots()
         .map(_tournamentsFromFirestore);
+  }
+
+  // stream of list of tournaments
+  Stream<List<VideoStream>> get videoStreamsList {
+    return _ref
+        .collection('video_streams')
+        .snapshots()
+        .map(_videoStreamsFromFirestore);
   }
 }

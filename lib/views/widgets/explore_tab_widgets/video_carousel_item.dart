@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:peaman/models/app_models/video_stream_model.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class VideoCarouselItem extends StatefulWidget {
-  final String link;
-  VideoCarouselItem(this.link);
+  final VideoStream videoStream;
+  VideoCarouselItem(this.videoStream);
 
   @override
   _VideoCarouselItemState createState() => _VideoCarouselItemState();
@@ -15,10 +16,10 @@ class _VideoCarouselItemState extends State<VideoCarouselItem> {
   void initState() {
     super.initState();
     _controller = YoutubePlayerController(
-      initialVideoId: '${widget.link}',
+      initialVideoId: '${widget.videoStream.link.split('v=').last}',
       flags: YoutubePlayerFlags(
         autoPlay: false,
-        isLive: true,
+        isLive: widget.videoStream.isLive,
       ),
     );
   }

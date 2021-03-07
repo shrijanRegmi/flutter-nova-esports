@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:peaman/models/app_models/chat_model.dart';
+import 'package:peaman/models/app_models/video_stream_model.dart';
 import 'package:peaman/services/database_services/message_provider.dart';
 import 'package:peaman/services/database_services/notif_provider.dart';
 import 'package:peaman/services/database_services/tournament_provider.dart';
@@ -37,6 +38,9 @@ class WrapperBuilder extends StatelessWidget {
           ),
           StreamProvider<List<Tournament>>.value(
             value: TournamentProvider().tournamentsList,
+          ),
+          StreamProvider<List<VideoStream>>.value(
+            value: TournamentProvider().videoStreamsList,
           ),
         ],
         child: builder(context, _user),

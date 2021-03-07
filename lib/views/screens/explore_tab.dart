@@ -45,14 +45,10 @@ class ExploreTab extends HookWidget {
                       height: 5.0,
                     ),
                     Divider(),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    VideoCarousel([
-                      'orxj4f8dBRY',
-                      'tWGUUlbBEN0',
-                      'rQjDhp4BLPA',
-                    ]),
+                    // SizedBox(
+                    //   height: 10.0,
+                    // ),
+                    if (vm.videoStreams != null) VideoCarousel(vm.videoStreams),
                     SizedBox(
                       height: 10.0,
                     ),

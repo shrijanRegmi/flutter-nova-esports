@@ -6,6 +6,7 @@ import 'package:peaman/enums/match_type.dart';
 import 'package:peaman/enums/tournament_type.dart';
 import 'package:peaman/helpers/date_time_helper.dart';
 import 'package:peaman/models/app_models/tournament_model.dart';
+import 'package:peaman/models/app_models/video_stream_model.dart';
 import 'package:peaman/services/database_services/tournament_provider.dart';
 import 'package:peaman/services/storage_services/tournament_storage.dart';
 
@@ -23,6 +24,12 @@ class CreateTournamentVm extends ChangeNotifier {
   TimeOfDay _matchTime;
   bool _isEditing = false;
   String _tournamentId;
+  TextEditingController _link1 = TextEditingController();
+  TextEditingController _link2 = TextEditingController();
+  TextEditingController _link3 = TextEditingController();
+  bool _live1 = false;
+  bool _live2 = false;
+  bool _live3 = false;
 
   TextEditingController get titleController => _titleController;
   TextEditingController get entryController => _entryCostController;
@@ -32,11 +39,21 @@ class CreateTournamentVm extends ChangeNotifier {
   TournamentType get selectedTournament => _selectedTournament;
   DateTime get matchDate => _matchDate;
   TimeOfDay get matchTime => _matchTime;
+  TextEditingController get link1 => _link1;
+  TextEditingController get link2 => _link2;
+  TextEditingController get link3 => _link3;
+  bool get live1 => _live1;
+  bool get live2 => _live2;
+  bool get live3 => _live3;
 
   // init function
-  onInit(final Tournament tournament) {
+  onInit(final Tournament tournament, final List<VideoStream> videoStreams) {
     if (tournament != null) {
       _initializeTournament(tournament);
+    }
+
+    if (videoStreams != null) {
+      _initializeVideoStream(videoStreams);
     }
   }
 
@@ -141,6 +158,54 @@ class CreateTournamentVm extends ChangeNotifier {
     }
   }
 
+  // publish video stream
+  publishVideoStream() async {
+    if (_link1.text.trim() != '') {
+      final _stream1 = VideoStream(
+        id: 'stream1',
+        link: _link1.text.trim(),
+        isLive: _live1,
+        updatedAt: DateTime.now().millisecondsSinceEpoch,
+      );
+      await TournamentProvider(videoStream: _stream1).addVideoStreams();
+    } else {
+      await TournamentProvider(videoStream: VideoStream(id: 'stream1'))
+          .removeVideoStreams();
+    }
+
+    if (_link2.text.trim() != '') {
+      final _stream2 = VideoStream(
+        id: 'stream2',
+        link: _link2.text.trim(),
+        isLive: _live2,
+        updatedAt: DateTime.now().millisecondsSinceEpoch,
+      );
+      await TournamentProvider(videoStream: _stream2).addVideoStreams();
+    } else {
+      await TournamentProvider(videoStream: VideoStream(id: 'stream2'))
+          .removeVideoStreams();
+    }
+
+    if (_link3.text.trim() != '') {
+      final _stream3 = VideoStream(
+        id: 'stream3',
+        link: _link3.text.trim(),
+        isLive: _live3,
+        updatedAt: DateTime.now().millisecondsSinceEpoch,
+      );
+      await TournamentProvider(videoStream: _stream3).addVideoStreams();
+    } else {
+      await TournamentProvider(videoStream: VideoStream(id: 'stream3'))
+          .removeVideoStreams();
+    }
+
+    if (_link1.text.trim() != '' ||
+        _link2.text.trim() != '' ||
+        _link3.text.trim() != '') {
+      Navigator.pop(context);
+    }
+  }
+
   // initialize tournament
   _initializeTournament(final Tournament tournament) async {
     _isEditing = true;
@@ -157,6 +222,39 @@ class CreateTournamentVm extends ChangeNotifier {
     );
     _dp = File(tournament.imgUrl);
 
+    notifyListeners();
+  }
+
+  // initialize video streams
+  _initializeVideoStream(final List<VideoStream> videoStreams) {
+    final _controller = <TextEditingController>[
+      _link1,
+      _link2,
+      _link3,
+    ];
+
+    for (int i = 0; i < videoStreams.length; i++) {
+      _controller[i].text = videoStreams[i].link;
+      if (i == 0) {
+        updateLives(newVal1: videoStreams[i].isLive);
+      } else if (i == 1) {
+        updateLives(newVal2: videoStreams[i].isLive);
+      } else if (i == 2) {
+        updateLives(newVal3: videoStreams[i].isLive);
+      }
+    }
+    print(_live3);
+  }
+
+  // update value of lives
+  updateLives({
+    final bool newVal1,
+    final bool newVal2,
+    final bool newVal3,
+  }) {
+    _live1 = newVal1 ?? _live1;
+    _live2 = newVal2 ?? _live2;
+    _live3 = newVal3 ?? _live3;
     notifyListeners();
   }
 }

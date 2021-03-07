@@ -18,7 +18,7 @@ class CreateTournamentScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewmodelProvider<CreateTournamentVm>(
       vm: CreateTournamentVm(context),
-      onInit: (vm) => vm.onInit(tournament),
+      onInit: (vm) => vm.onInit(tournament, null),
       builder: (context, vm, appVm, appUser) {
         return Scaffold(
           appBar: PreferredSize(
@@ -364,7 +364,7 @@ class CreateTournamentScreen extends StatelessWidget {
     return Align(
       alignment: Alignment.center,
       child: FilledBtn(
-        title: 'Create Tournament',
+        title: 'Publish',
         color: Colors.green,
         onPressed: vm.createTournament,
       ),
