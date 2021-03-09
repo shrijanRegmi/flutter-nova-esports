@@ -4,13 +4,12 @@ import 'package:lottie/lottie.dart';
 import 'package:peaman/enums/online_status.dart';
 import 'package:peaman/models/app_models/chat_model.dart';
 import 'package:peaman/models/app_models/user_model.dart';
-import 'package:peaman/services/auth_services/auth_provider.dart';
 import 'package:peaman/services/database_services/user_provider.dart';
 import 'package:peaman/viewmodels/home_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
 import 'package:peaman/views/screens/chat_list_tab.dart';
 import 'package:peaman/views/screens/explore_tab.dart';
-import 'package:peaman/views/screens/notif_tab.dart';
+import 'package:peaman/views/screens/profile_tab.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -130,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen>
         children: <Widget>[
           ChatListTab(),
           ExploreTab(_tabController),
-          NotificationTab(),
+          ProfileTab(),
           // FriendProfileScreen(appUser),
         ],
       ),
@@ -196,23 +195,23 @@ class _HomeScreenState extends State<HomeScreen>
           color: _tabController.index == 1 ? Colors.blue : null,
         ),
       ),
-      Tab(
-        child: Stack(
-          overflow: Overflow.visible,
-          children: [
-            SvgPicture.asset(
-              'assets/images/svgs/notification_tab.svg',
-              color: _tabController.index == 2 ? Colors.blue : null,
-            ),
-          ],
-        ),
-      ),
       // Tab(
-      //   child: SvgPicture.asset(
-      //     'assets/images/svgs/profile_tab.svg',
-      //     color: _tabController.index == 3 ? Colors.blue : null,
+      //   child: Stack(
+      //     overflow: Overflow.visible,
+      //     children: [
+      //       SvgPicture.asset(
+      //         'assets/images/svgs/notification_tab.svg',
+      //         color: _tabController.index == 2 ? Colors.blue : null,
+      //       ),
+      //     ],
       //   ),
       // ),
+      Tab(
+        child: SvgPicture.asset(
+          'assets/images/svgs/profile_tab.svg',
+          color: _tabController.index == 2 ? Colors.blue : null,
+        ),
+      ),
     ];
     return _tabsList;
   }
