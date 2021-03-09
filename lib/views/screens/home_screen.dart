@@ -4,6 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:peaman/enums/online_status.dart';
 import 'package:peaman/models/app_models/chat_model.dart';
 import 'package:peaman/models/app_models/user_model.dart';
+import 'package:peaman/services/auth_services/auth_provider.dart';
 import 'package:peaman/services/database_services/user_provider.dart';
 import 'package:peaman/viewmodels/home_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
@@ -32,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen>
       vsync: this,
       initialIndex: 1,
     );
+    // AuthProvider().logOut();
   }
 
   @override
@@ -67,10 +69,28 @@ class _HomeScreenState extends State<HomeScreen>
     final _appUser = Provider.of<AppUser>(context);
     return _appUser == null
         ? Center(
-            child: Lottie.asset(
-              'assets/lottie/loader.json',
-              width: MediaQuery.of(context).size.width - 100.0,
-              height: MediaQuery.of(context).size.width - 100.0,
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  bottom: 100.0,
+                  child: Lottie.asset(
+                    'assets/lottie/game_loader.json',
+                    width: MediaQuery.of(context).size.width - 100.0,
+                    height: MediaQuery.of(context).size.width - 100.0,
+                  ),
+                ),
+                Positioned.fill(
+                  top: 100.0,
+                  child: Center(
+                    child: Text(
+                      'Loading...',
+                      style: TextStyle(
+                        color: Color(0xff3D4A5A),
+                      ),
+                    ),
+                  ),
+                )
+              ],
             ),
           )
         : ViewmodelProvider(
@@ -118,11 +138,6 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Widget _tabsBuilder(final AppUser appUser) {
-    if (_tabController.index == 2 && appUser.notifCount > 0) {
-      AppUserProvider(uid: appUser.uid).updateUserDetail(data: {
-        'notification_count': 0,
-      });
-    }
     return Container(
       decoration: BoxDecoration(
         boxShadow: [
@@ -189,10 +204,6 @@ class _HomeScreenState extends State<HomeScreen>
               'assets/images/svgs/notification_tab.svg',
               color: _tabController.index == 2 ? Colors.blue : null,
             ),
-            if (appUser != null &&
-                appUser.notifCount != 0 &&
-                _tabController.index != 2)
-              _countBuilder(appUser.notifCount)
           ],
         ),
       ),

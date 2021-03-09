@@ -5,11 +5,13 @@ class FilledBtn extends StatelessWidget {
   final Function onPressed;
   final Color color;
   final Color textColor;
+  final double minWidth;
   FilledBtn({
     this.title,
     this.onPressed,
     this.color,
     this.textColor = Colors.white,
+    this.minWidth,
   });
 
   @override
@@ -18,7 +20,7 @@ class FilledBtn extends StatelessWidget {
       color: color,
       textColor: textColor,
       onPressed: onPressed,
-      minWidth: MediaQuery.of(context).size.width - 100.0,
+      minWidth: minWidth ?? MediaQuery.of(context).size.width - 100.0,
       height: 50.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(

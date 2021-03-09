@@ -20,10 +20,28 @@ class LoginScreen extends StatelessWidget {
           body: SafeArea(
             child: vm.isLoading
                 ? Center(
-                    child: Lottie.asset(
-                      'assets/lottie/loader.json',
-                      width: MediaQuery.of(context).size.width - 100.0,
-                      height: MediaQuery.of(context).size.width - 100.0,
+                    child: Stack(
+                      children: [
+                        Positioned.fill(
+                          bottom: 100.0,
+                          child: Lottie.asset(
+                            'assets/lottie/game_loader.json',
+                            width: MediaQuery.of(context).size.width - 100.0,
+                            height: MediaQuery.of(context).size.width - 100.0,
+                          ),
+                        ),
+                        Positioned.fill(
+                          top: 100.0,
+                          child: Center(
+                            child: Text(
+                              'Loading...',
+                              style: TextStyle(
+                                color: Color(0xff3D4A5A),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
                   )
                 : Stack(
@@ -49,12 +67,12 @@ class LoginScreen extends StatelessWidget {
                                   ),
                                   _authFieldSection(vm),
                                   SizedBox(
-                                    height: 20.0,
+                                    height: 40.0,
                                   ),
                                   // _forgetPassSection(),
-                                  SizedBox(
-                                    height: 50.0,
-                                  ),
+                                  // SizedBox(
+                                  //   height: 50.0,
+                                  // ),
                                   _btnSection(context, vm),
                                   SizedBox(
                                     height: 50.0,
@@ -148,8 +166,52 @@ class LoginScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: FilledBtn(
               title: 'Log in',
+              minWidth: MediaQuery.of(context).size.width,
               color: Color(0xff5C49E0),
               onPressed: vm.loginUser,
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 20.0,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 100.0,
+              child: Divider(),
+            ),
+            SizedBox(
+              width: 5.0,
+            ),
+            Text(
+              'or',
+              style: TextStyle(
+                color: Color(0xff3D4A5A),
+              ),
+            ),
+            SizedBox(
+              width: 5.0,
+            ),
+            Container(
+              width: 100.0,
+              child: Divider(),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 20.0,
+        ),
+        Align(
+          alignment: Alignment.center,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: FilledBtn(
+              title: 'Google',
+              color: Color(0xffe81515),
+              minWidth: MediaQuery.of(context).size.width,
+              onPressed: vm.logInWithGoogle,
             ),
           ),
         ),

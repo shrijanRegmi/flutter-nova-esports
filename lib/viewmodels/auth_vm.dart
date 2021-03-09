@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:peaman/enums/age.dart';
+import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/services/auth_services/auth_provider.dart';
 import 'package:peaman/services/firebase_messaging_services/firebase_messaging_provider.dart';
 import 'package:peaman/services/storage_services/user_storage_service.dart';
@@ -16,6 +17,7 @@ class AuthVm extends ChangeNotifier {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passController = TextEditingController();
+  TextEditingController _phoneController = TextEditingController();
   bool _isLoading = false;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   File _imgFile;
@@ -27,6 +29,7 @@ class AuthVm extends ChangeNotifier {
   TextEditingController get nameController => _nameController;
   TextEditingController get emailController => _emailController;
   TextEditingController get passController => _passController;
+  TextEditingController get phoneController => _phoneController;
   bool get isLoading => _isLoading;
   GlobalKey<ScaffoldState> get scaffoldKey => _scaffoldKey;
   File get imgFile => _imgFile;
@@ -119,19 +122,20 @@ class AuthVm extends ChangeNotifier {
 
   // on next btn pressed
   onPressedNextBtn() {
-    if (_imgFile != null && _age != null) {
+    if (_nameController.text.trim() != '' &&
+        _phoneController.text.trim() != '') {
       _updateIsNextBtnPressed(true);
     } else {
-      if (_imgFile == null) {
+      if (_nameController.text.trim() == '') {
         _scaffoldKey.currentState.showSnackBar(
           SnackBar(
-            content: Text('Please upload your image'),
+            content: Text('Please add your username !'),
           ),
         );
       } else {
         _scaffoldKey.currentState.showSnackBar(
           SnackBar(
-            content: Text('Please select your age'),
+            content: Text('Please add your phone number !'),
           ),
         );
       }
@@ -161,5 +165,33 @@ class AuthVm extends ChangeNotifier {
     File _myImg = _pickedImg != null ? File(_pickedImg.path) : null;
     _imgFile = _myImg;
     notifyListeners();
+  }
+
+  // log in using google
+  logInWithGoogle() async {
+    _updateLoader(true);
+    final _result = await AuthProvider().loginWithGoogle(_scaffoldKey);
+    if (_result == null) {
+      _updateLoader(false);
+    }
+  }
+
+  // sign up using google
+  signUpWithGoogle() async {
+    _updateLoader(true);
+    String _imgUrl;
+    if (_imgFile != null) {
+      _imgUrl = await UserStorage().uploadUserImage(imgFile: imgFile);
+    }
+    final _appUser = AppUser(
+      name: _nameController.text.trim(),
+      phone: _phoneController.text.trim(),
+      photoUrl: _imgUrl,
+    );
+    final _result =
+        await AuthProvider().signUpWithGoogle(_appUser, _scaffoldKey);
+    if (_result == null) {
+      _updateLoader(false);
+    }
   }
 }

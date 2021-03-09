@@ -72,17 +72,6 @@ class UserListItem extends StatelessWidget {
           SizedBox(
             height: 3.0,
           ),
-          // user status
-          AutoSizeText(
-            "${friend?.profileStatus}",
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            minFontSize: 12.0,
-            style: TextStyle(
-              fontSize: 12.0,
-              color: Color(0xff3D4A5A),
-            ),
-          ),
         ],
       ),
     );

@@ -14,7 +14,7 @@
     
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="Peaman"
+        android:label="NOVA ESPORTS"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

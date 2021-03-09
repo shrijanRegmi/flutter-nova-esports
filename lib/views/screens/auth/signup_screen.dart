@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
-import 'package:peaman/enums/age.dart';
 import 'package:peaman/viewmodels/auth_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
-import 'package:peaman/views/widgets/auth_widgets/age_container.dart';
 import 'package:peaman/views/widgets/auth_widgets/auth_field.dart';
 import 'package:peaman/views/widgets/common_widgets/appbar.dart';
 import 'package:peaman/views/widgets/common_widgets/border_btn.dart';
+import 'package:peaman/views/widgets/common_widgets/filled_btn.dart';
 
 class SignUpScreen extends StatelessWidget {
   final Color _textColor = Color(0xff3D4A5A);
@@ -71,7 +70,7 @@ class SignUpScreen extends StatelessWidget {
                                     height: 40.0,
                                   ),
                                   vm.isNextPressed
-                                      ? _userCredBuilder(vm)
+                                      ? _userCredBuilder(vm, context)
                                       : _userInfoBuilder(context, vm),
                                   SizedBox(
                                     height: 50.0,
@@ -127,7 +126,19 @@ class SignUpScreen extends StatelessWidget {
         SizedBox(
           height: 40.0,
         ),
-        _ageBuilder(vm),
+        AuthField(
+          label: 'Username',
+          type: TextInputType.text,
+          controller: vm.nameController,
+        ),
+        SizedBox(
+          height: 30.0,
+        ),
+        AuthField(
+          label: 'Phone',
+          type: TextInputType.phone,
+          controller: vm.phoneController,
+        ),
         SizedBox(
           height: 50.0,
         ),
@@ -140,17 +151,60 @@ class SignUpScreen extends StatelessWidget {
     );
   }
 
-  Widget _userCredBuilder(AuthVm vm) {
+  Widget _userCredBuilder(AuthVm vm, final BuildContext context) {
     return Column(
       children: <Widget>[
         _authFieldContainerBuilder(vm),
         SizedBox(
-          height: 30.0,
+          height: 20.0,
         ),
         BorderBtn(
           title: 'Sign up',
           onPressed: vm.signUpUser,
           textColor: Color(0xff5C49E0),
+        ),
+        SizedBox(
+          height: 20.0,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 100.0,
+              child: Divider(),
+            ),
+            SizedBox(
+              width: 5.0,
+            ),
+            Text(
+              'or',
+              style: TextStyle(
+                color: Color(0xff3D4A5A),
+              ),
+            ),
+            SizedBox(
+              width: 5.0,
+            ),
+            Container(
+              width: 100.0,
+              child: Divider(),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 20.0,
+        ),
+        Align(
+          alignment: Alignment.center,
+          child: FilledBtn(
+            title: 'Google',
+            minWidth: MediaQuery.of(context).size.width,
+            color: Color(0xffe81515),
+            onPressed: vm.signUpWithGoogle,
+          ),
+        ),
+        SizedBox(
+          height: 20.0,
         ),
       ],
     );
@@ -160,13 +214,18 @@ class SignUpScreen extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Text(
-          'Upload your image',
-          style: TextStyle(
-            fontSize: 16.0,
-            color: _textColor,
-            fontWeight: FontWeight.bold,
+        Expanded(
+          child: Text(
+            'Upload your image\n(optional)',
+            style: TextStyle(
+              fontSize: 16.0,
+              color: _textColor,
+              fontWeight: FontWeight.bold,
+            ),
           ),
+        ),
+        SizedBox(
+          width: 10.0,
         ),
         GestureDetector(
           onTap: vm.uploadImage,
@@ -212,57 +271,53 @@ class SignUpScreen extends StatelessWidget {
     );
   }
 
-  Widget _ageBuilder(AuthVm vm) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          'Age',
-          style: TextStyle(
-            fontSize: 16.0,
-            color: _textColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(
-          height: 20.0,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            AgeContainer(
-              ageRange: '15-20',
-              onPressed: () => vm.updateAgeValue(Age.below20),
-              color: vm.age == Age.below20 ? Color(0xff3D4A5A) : null,
-            ),
-            AgeContainer(
-              ageRange: '21-30',
-              onPressed: () => vm.updateAgeValue(Age.below30),
-              color: vm.age == Age.below30 ? Color(0xff3D4A5A) : null,
-            ),
-            AgeContainer(
-              ageRange: '31-40',
-              onPressed: () => vm.updateAgeValue(Age.below40),
-              color: vm.age == Age.below40 ? Color(0xff3D4A5A) : null,
-            ),
-            AgeContainer(
-              ageRange: '41-50',
-              onPressed: () => vm.updateAgeValue(Age.below50),
-              color: vm.age == Age.below50 ? Color(0xff3D4A5A) : null,
-            ),
-          ],
-        ),
-      ],
-    );
-  }
+  // Widget _ageBuilder(AuthVm vm) {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: <Widget>[
+  //       Text(
+  //         'Age',
+  //         style: TextStyle(
+  //           fontSize: 16.0,
+  //           color: _textColor,
+  //           fontWeight: FontWeight.bold,
+  //         ),
+  //       ),
+  //       SizedBox(
+  //         height: 20.0,
+  //       ),
+  //       Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceAround,
+  //         children: <Widget>[
+  //           AgeContainer(
+  //             ageRange: '15-20',
+  //             onPressed: () => vm.updateAgeValue(Age.below20),
+  //             color: vm.age == Age.below20 ? Color(0xff3D4A5A) : null,
+  //           ),
+  //           AgeContainer(
+  //             ageRange: '21-30',
+  //             onPressed: () => vm.updateAgeValue(Age.below30),
+  //             color: vm.age == Age.below30 ? Color(0xff3D4A5A) : null,
+  //           ),
+  //           AgeContainer(
+  //             ageRange: '31-40',
+  //             onPressed: () => vm.updateAgeValue(Age.below40),
+  //             color: vm.age == Age.below40 ? Color(0xff3D4A5A) : null,
+  //           ),
+  //           AgeContainer(
+  //             ageRange: '41-50',
+  //             onPressed: () => vm.updateAgeValue(Age.below50),
+  //             color: vm.age == Age.below50 ? Color(0xff3D4A5A) : null,
+  //           ),
+  //         ],
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _authFieldContainerBuilder(AuthVm vm) {
     return Column(
       children: <Widget>[
-        AuthField(
-            label: 'Name',
-            type: TextInputType.text,
-            controller: vm.nameController),
         SizedBox(
           height: 20.0,
         ),

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/models/app_models/video_stream_model.dart';
 import 'package:peaman/views/screens/create_video_stream_screen.dart';
 import 'package:peaman/views/widgets/explore_tab_widgets/video_carousel_item.dart';
 
 class VideoCarousel extends StatefulWidget {
   final List<VideoStream> videoStreams;
-  VideoCarousel(this.videoStreams);
+  final AppUser appUser;
+  VideoCarousel(this.videoStreams, this.appUser);
 
   @override
   _VideoCarouselState createState() => _VideoCarouselState();
@@ -25,14 +27,16 @@ class _VideoCarouselState extends State<VideoCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    final _widget = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _titleBuilder(),
         Container(
           height: 200.0,
           child: widget.videoStreams.isEmpty
-              ? _newVideoBuilder()
+              ? widget.appUser.admin
+                  ? _newVideoBuilder()
+                  : Container()
               : PageView.builder(
                   controller: _controller,
                   itemCount: widget.videoStreams.length,
@@ -43,6 +47,11 @@ class _VideoCarouselState extends State<VideoCarousel> {
         ),
       ],
     );
+    return widget.videoStreams.isEmpty
+        ? widget.appUser.admin
+            ? _widget
+            : Container()
+        : _widget;
   }
 
   Widget _titleBuilder() {
@@ -59,7 +68,7 @@ class _VideoCarouselState extends State<VideoCarousel> {
               color: Color(0xff3D4A5A),
             ),
           ),
-          if (widget.videoStreams.isNotEmpty)
+          if (widget.videoStreams.isNotEmpty && widget.appUser.admin)
             IconButton(
               icon: Icon(Icons.add),
               splashRadius: 20.0,
@@ -74,6 +83,10 @@ class _VideoCarouselState extends State<VideoCarousel> {
                 );
               },
             )
+          else
+            Container(
+              height: 47.0,
+            ),
         ],
       ),
     );

@@ -35,6 +35,20 @@ class AppUserProvider {
     }
   }
 
+  // send user to firestore
+  Future sendUserToFirestore() async {
+    try {
+      final _userRef = _ref.collection('users').doc(user.uid);
+
+      print('Success: Sending user data to firestore');
+      await _userRef.set(AppUser.toJson(user));
+    } catch (e) {
+      print(e);
+      print('Error!!!: Sending user data to firestore');
+      return null;
+    }
+  }
+
   // update user details
   Future updateUserDetail({@required final Map<String, dynamic> data}) async {
     try {

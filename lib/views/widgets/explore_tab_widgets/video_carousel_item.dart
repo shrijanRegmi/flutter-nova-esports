@@ -22,6 +22,7 @@ class _VideoCarouselItemState extends State<VideoCarouselItem> {
       flags: YoutubePlayerFlags(
         autoPlay: false,
         isLive: widget.videoStream.isLive,
+        disableDragSeek: true,
       ),
     );
   }

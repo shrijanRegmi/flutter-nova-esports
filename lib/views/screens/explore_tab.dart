@@ -6,7 +6,6 @@ import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/viewmodels/app_vm.dart';
 import 'package:peaman/viewmodels/explore_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
-import 'package:peaman/views/screens/search_screen.dart';
 import 'package:peaman/views/widgets/explore_tab_widgets/tournament_list.dart';
 import 'package:peaman/views/widgets/explore_tab_widgets/video_carousel.dart';
 import 'package:provider/provider.dart';
@@ -51,28 +50,52 @@ class ExploreTab extends HookWidget {
                       ),
                       Divider(),
                       vm.showLoader
-                          ? Padding(
-                              padding: const EdgeInsets.only(top: 100.0),
-                              child: Center(
-                                child: Lottie.asset(
-                                  'assets/lottie/loader.json',
-                                  width:
-                                      MediaQuery.of(context).size.width - 100.0,
-                                  height:
-                                      MediaQuery.of(context).size.width - 100.0,
+                          ? Center(
+                              child: Container(
+                                height: MediaQuery.of(context).size.height,
+                                child: Stack(
+                                  children: [
+                                    Positioned.fill(
+                                      bottom: 250.0,
+                                      child: Lottie.asset(
+                                        'assets/lottie/game_loader.json',
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                100.0,
+                                        height:
+                                            MediaQuery.of(context).size.width -
+                                                100.0,
+                                      ),
+                                    ),
+                                    Positioned.fill(
+                                      bottom: 20.0,
+                                      child: Center(
+                                        child: Text(
+                                          'Loading...',
+                                          style: TextStyle(
+                                            color: Color(0xff3D4A5A),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
                                 ),
                               ),
                             )
                           : Column(
                               children: [
                                 if (vm.videoStreams != null)
-                                  VideoCarousel(vm.videoStreams),
-                                SizedBox(
-                                  height: 10.0,
-                                ),
-                                Divider(
-                                  color: Color(0xff3D4A5A).withOpacity(0.2),
-                                ),
+                                  VideoCarousel(vm.videoStreams, appUser),
+                                if (vm.videoStreams != null &&
+                                    vm.videoStreams.isNotEmpty)
+                                  SizedBox(
+                                    height: 10.0,
+                                  ),
+                                if (vm.videoStreams != null &&
+                                    vm.videoStreams.isNotEmpty)
+                                  Divider(
+                                    color: Color(0xff3D4A5A).withOpacity(0.2),
+                                  ),
                                 SizedBox(
                                   height: 10.0,
                                 ),
@@ -88,18 +111,20 @@ class ExploreTab extends HookWidget {
                 ),
               ),
             ),
-            floatingActionButton: FloatingActionButton(
-              backgroundColor: Colors.blue,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => CreateTournamentScreen(),
-                  ),
-                );
-              },
-              child: Icon(Icons.add),
-            ),
+            floatingActionButton: appUser.admin
+                ? FloatingActionButton(
+                    backgroundColor: Colors.blue,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => CreateTournamentScreen(),
+                        ),
+                      );
+                    },
+                    child: Icon(Icons.add),
+                  )
+                : Container(),
           );
         });
   }
@@ -111,7 +136,7 @@ class ExploreTab extends HookWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(bottom: 5.0),
+            padding: const EdgeInsets.only(bottom: 5.0, right: 10.0),
             child: SvgPicture.asset(
               'assets/images/svgs/home_tab.svg',
               color: Color(0xff3D4A5A),
@@ -125,20 +150,11 @@ class ExploreTab extends HookWidget {
                 fontSize: 24.0,
                 color: Color(0xff3D4A5A)),
           ),
-          // searchbar
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => SearchScreen(),
-                ),
-              );
-            },
-            child: Container(
-              color: Colors.transparent,
-              child: SvgPicture.asset('assets/images/svgs/search_icon.svg'),
-            ),
+          Image.asset(
+            'assets/images/logo.png',
+            width: 35.0,
+            height: 35.0,
+            fit: BoxFit.contain,
           ),
         ],
       ),
