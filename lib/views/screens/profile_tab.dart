@@ -19,8 +19,7 @@ class ProfileTab extends StatelessWidget {
               SizedBox(
                 height: 10.0,
               ),
-              // TabHeader('Profile'),
-              _headerBuilder(),
+              _headerBuilder(appUser),
               SizedBox(
                 height: 20.0,
               ),
@@ -108,7 +107,7 @@ class ProfileTab extends StatelessWidget {
     );
   }
 
-  Widget _headerBuilder() {
+  Widget _headerBuilder(final AppUser appUser) {
     return Container(
       padding: const EdgeInsets.only(left: 20.0, top: 10.0),
       child: Row(
@@ -122,7 +121,7 @@ class ProfileTab extends StatelessWidget {
             width: 10.0,
           ),
           Text(
-            '200 Coins',
+            '${appUser.coins} Coins',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16.0,

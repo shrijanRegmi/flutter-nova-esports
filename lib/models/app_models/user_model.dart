@@ -10,6 +10,7 @@ class AppUser {
   final OnlineStatus onlineStatus;
   final DocumentReference appUserRef;
   final bool admin;
+  final int coins;
 
   AppUser({
     this.uid,
@@ -20,6 +21,7 @@ class AppUser {
     this.appUserRef,
     this.admin,
     this.phone,
+    this.coins,
   });
 
   AppUser copyWith({
@@ -31,6 +33,7 @@ class AppUser {
     final OnlineStatus onlineStatus,
     final DocumentReference appUserRef,
     final bool admin,
+    final int coins,
   }) {
     return AppUser(
       photoUrl: photoUrl ?? this.photoUrl,
@@ -41,6 +44,7 @@ class AppUser {
       onlineStatus: onlineStatus ?? this.onlineStatus,
       appUserRef: appUserRef ?? this.appUserRef,
       admin: admin ?? this.admin,
+      coins: coins ?? this.coins,
     );
   }
 
@@ -51,15 +55,6 @@ class AppUser {
       'name': appUser.name,
       'email': appUser.email,
       'phone': appUser.phone,
-    };
-  }
-
-  Map<String, dynamic> toFeedUser() {
-    return {
-      'uid': uid,
-      'photoUrl': photoUrl,
-      'name': name,
-      'email': email,
     };
   }
 
@@ -75,6 +70,7 @@ class AppUser {
           data['active_status'] == 1 ? OnlineStatus.active : OnlineStatus.away,
       appUserRef: _ref.collection('users').doc(data['uid']),
       admin: data['admin'] ?? false,
+      coins: data['coins'] ?? 0,
     );
   }
 
