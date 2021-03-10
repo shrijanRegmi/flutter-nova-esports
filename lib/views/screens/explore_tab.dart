@@ -99,7 +99,8 @@ class ExploreTab extends HookWidget {
                                 SizedBox(
                                   height: 10.0,
                                 ),
-                                if (vm.tournaments != null)
+                                if (vm.tournaments != null &&
+                                    vm.tournaments.isNotEmpty)
                                   TournamentList(vm.tournaments),
                                 SizedBox(
                                   height: 100.0,

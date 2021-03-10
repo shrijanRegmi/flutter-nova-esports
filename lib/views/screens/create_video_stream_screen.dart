@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:peaman/models/app_models/video_stream_model.dart';
 import 'package:peaman/viewmodels/create_tournament_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
@@ -30,33 +31,59 @@ class CreateVideoStreamScreen extends StatelessWidget {
               ),
             ),
           ),
-          body: SingleChildScrollView(
-            child: GestureDetector(
-              onTap: () => FocusScope.of(context).unfocus(),
-              child: Container(
-                height: MediaQuery.of(context).size.height,
-                color: Colors.transparent,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Column(
+          body: vm.isLoading
+              ? Center(
+                  child: Stack(
                     children: [
-                      SizedBox(
-                        height: 10.0,
+                      Positioned.fill(
+                        bottom: 100.0,
+                        child: Lottie.asset(
+                          'assets/lottie/game_loader.json',
+                          width: MediaQuery.of(context).size.width - 100.0,
+                          height: MediaQuery.of(context).size.width - 100.0,
+                        ),
                       ),
-                      ..._linkBuilder(vm),
-                      SizedBox(
-                        height: 50.0,
-                      ),
-                      _buttonBuilder(vm),
-                      SizedBox(
-                        height: 50.0,
-                      ),
+                      Positioned.fill(
+                        top: 100.0,
+                        child: Center(
+                          child: Text(
+                            'Publishing video streams...',
+                            style: TextStyle(
+                              color: Color(0xff3D4A5A),
+                            ),
+                          ),
+                        ),
+                      )
                     ],
                   ),
+                )
+              : SingleChildScrollView(
+                  child: GestureDetector(
+                    onTap: () => FocusScope.of(context).unfocus(),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height,
+                      color: Colors.transparent,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                            ..._linkBuilder(vm),
+                            SizedBox(
+                              height: 50.0,
+                            ),
+                            _buttonBuilder(vm),
+                            SizedBox(
+                              height: 50.0,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
         );
       },
     );

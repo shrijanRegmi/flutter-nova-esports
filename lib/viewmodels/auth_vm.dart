@@ -81,17 +81,17 @@ class AuthVm extends ChangeNotifier {
     if (_nameController.text.trim() != '' &&
         _emailController.text.trim() != '' &&
         _passController.text.trim() != '') {
-      _result = await UserStorage().uploadUserImage(imgFile: imgFile);
-
-      if (_result != null) {
-        _result = await AuthProvider().signUpWithEmailAndPassword(
-          photoUrl: _result,
-          age: _age,
-          name: _nameController.text.trim(),
-          email: _emailController.text.trim(),
-          password: _passController.text.trim(),
-        );
+      if (imgFile != null) {
+        _result = await UserStorage().uploadUserImage(imgFile: imgFile);
       }
+
+      _result = await AuthProvider().signUpWithEmailAndPassword(
+        photoUrl: _result,
+        age: _age,
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        password: _passController.text.trim(),
+      );
     } else {
       _scaffoldKey.currentState.showSnackBar(SnackBar(
         content: Text('Please fill up all fields'),

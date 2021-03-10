@@ -25,7 +25,7 @@ class OptionsListItem extends StatelessWidget {
         color: Color(0xff9496ab),
         size: 17.0,
       ),
-      onTap: () {},
+      onTap: () => option.onPressed(context),
     );
   }
 }

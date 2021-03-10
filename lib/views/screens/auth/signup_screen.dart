@@ -35,10 +35,28 @@ class SignUpScreen extends StatelessWidget {
                 ),
           body: vm.isLoading
               ? Center(
-                  child: Lottie.asset(
-                    'assets/lottie/loader.json',
-                    width: MediaQuery.of(context).size.width - 100.0,
-                    height: MediaQuery.of(context).size.width - 100.0,
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        bottom: 100.0,
+                        child: Lottie.asset(
+                          'assets/lottie/game_loader.json',
+                          width: MediaQuery.of(context).size.width - 100.0,
+                          height: MediaQuery.of(context).size.width - 100.0,
+                        ),
+                      ),
+                      Positioned.fill(
+                        top: 100.0,
+                        child: Center(
+                          child: Text(
+                            'Loading...',
+                            style: TextStyle(
+                              color: Color(0xff3D4A5A),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
                   ),
                 )
               : Stack(

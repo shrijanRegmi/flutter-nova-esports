@@ -30,6 +30,7 @@ class CreateTournamentVm extends ChangeNotifier {
   bool _live1 = false;
   bool _live2 = false;
   bool _live3 = false;
+  bool _isLoading = false;
 
   TextEditingController get titleController => _titleController;
   TextEditingController get entryController => _entryCostController;
@@ -45,6 +46,7 @@ class CreateTournamentVm extends ChangeNotifier {
   bool get live1 => _live1;
   bool get live2 => _live2;
   bool get live3 => _live3;
+  bool get isLoading => _isLoading;
 
   // init function
   onInit(final Tournament tournament, final List<VideoStream> videoStreams) {
@@ -120,6 +122,7 @@ class CreateTournamentVm extends ChangeNotifier {
         _matchDate != null &&
         _matchTime != null;
     if (_isFormComplete) {
+      updateIsLoading(true);
       String _imgUrl;
 
       if (_dp != null) {
@@ -154,12 +157,15 @@ class CreateTournamentVm extends ChangeNotifier {
       }
       if (_result != null) {
         Navigator.pop(context);
+      } else {
+        updateIsLoading(false);
       }
     }
   }
 
   // publish video stream
   publishVideoStream() async {
+    updateIsLoading(true);
     if (_link1.text.trim() != '') {
       final _stream1 = VideoStream(
         id: 'stream1',
@@ -251,6 +257,13 @@ class CreateTournamentVm extends ChangeNotifier {
     _live1 = newVal1 ?? _live1;
     _live2 = newVal2 ?? _live2;
     _live3 = newVal3 ?? _live3;
+    notifyListeners();
+  }
+
+  // update value of isloading
+  updateIsLoading(final bool newVal) {
+    _isLoading = newVal;
+
     notifyListeners();
   }
 }

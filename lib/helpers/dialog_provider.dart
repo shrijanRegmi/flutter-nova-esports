@@ -152,7 +152,10 @@ class DialogProvider {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            onPressed: onPressed,
+            onPressed: () {
+              Navigator.pop(context);
+              onPressed();
+            },
           ),
         ],
       ),

@@ -65,6 +65,7 @@ class ProfileTab extends StatelessWidget {
           child: appUser.photoUrl == null
               ? SvgPicture.asset(
                   'assets/images/svgs/upload_img.svg',
+                  color: Colors.grey,
                 )
               : Container(),
         ),

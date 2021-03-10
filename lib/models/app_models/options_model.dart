@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:peaman/helpers/dialog_provider.dart';
+import 'package:peaman/services/auth_services/auth_provider.dart';
 
 class Option {
   final IconData iconData;
   final String title;
-  final Widget navigator;
+  final Function(BuildContext) onPressed;
   Option({
     this.iconData,
     this.title,
-    this.navigator,
+    this.onPressed,
   });
 }
 
@@ -15,26 +17,33 @@ final optionsList = <Option>[
   Option(
     iconData: Icons.person,
     title: 'Edit Profile',
-    navigator: null,
+    onPressed: null,
   ),
   Option(
     iconData: Icons.sports_esports,
     title: 'Registered Tournaments',
-    navigator: null,
+    onPressed: null,
   ),
   Option(
     iconData: Icons.video_library,
     title: 'Watch and Earn',
-    navigator: null,
+    onPressed: null,
   ),
   Option(
     iconData: Icons.bookmark,
     title: 'Saved Tournaments',
-    navigator: null,
+    onPressed: null,
   ),
   Option(
     iconData: Icons.logout,
     title: 'Log Out',
-    navigator: null,
+    onPressed: (final BuildContext context) async {
+      await DialogProvider(context).showConfirmationDialog(
+        'Are you sure you want to logout ?',
+        () async {
+          await AuthProvider().logOut();
+        },
+      );
+    },
   ),
 ];

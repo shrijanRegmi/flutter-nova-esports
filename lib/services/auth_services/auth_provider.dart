@@ -6,7 +6,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:peaman/enums/age.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/services/database_services/user_provider.dart';
-import 'package:peaman/services/functions_services/user_functions.dart';
 
 class AuthProvider {
   final _auth = FirebaseAuth.instance;
@@ -31,7 +30,7 @@ class AuthProvider {
         name: name,
       );
 
-      await UserFunctions().sendUserToFunctions(_user);
+      await AppUserProvider(user: _user).sendUserToFirestore();
 
       _userFromFirebase(_result.user);
       print('Success: Creating user with name $name');
@@ -106,10 +105,7 @@ class AuthProvider {
       final _userSnap = await _userRef.get();
 
       if (!_userSnap.exists) {
-        final _appUser = appUser.copyWith(
-          uid: _user.uid,
-          email: _user.email
-        );
+        final _appUser = appUser.copyWith(uid: _user.uid, email: _user.email);
         await AppUserProvider(user: _appUser).sendUserToFirestore();
         _userFromFirebase(_user);
         print('Success: Signing up user with name ${_user.displayName}');

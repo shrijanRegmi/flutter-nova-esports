@@ -1,4 +1,4 @@
-package com.example.peaman
+package com.novaesports.app
 
 import io.flutter.embedding.android.FlutterActivity
 

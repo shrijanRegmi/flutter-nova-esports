@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:peaman/enums/match_type.dart';
 import 'package:peaman/enums/tournament_type.dart';
 import 'package:peaman/helpers/date_time_helper.dart';
@@ -40,23 +41,49 @@ class CreateTournamentScreen extends StatelessWidget {
             onTap: () => FocusScope.of(context).unfocus(),
             child: Container(
               color: Colors.transparent,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 20.0,
+              child: vm.isLoading
+                  ? Center(
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            bottom: 100.0,
+                            child: Lottie.asset(
+                              'assets/lottie/game_loader.json',
+                              width: MediaQuery.of(context).size.width - 100.0,
+                              height: MediaQuery.of(context).size.width - 100.0,
+                            ),
+                          ),
+                          Positioned.fill(
+                            top: 100.0,
+                            child: Center(
+                              child: Text(
+                                'Publishing tournament...',
+                                style: TextStyle(
+                                  color: Color(0xff3D4A5A),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  : SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          _textFieldsContainer(context, vm),
+                          SizedBox(
+                            height: 50.0,
+                          ),
+                          _buttonBuilder(vm),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                        ],
+                      ),
                     ),
-                    _textFieldsContainer(context, vm),
-                    SizedBox(
-                      height: 50.0,
-                    ),
-                    _buttonBuilder(vm),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                  ],
-                ),
-              ),
             ),
           ),
         );

@@ -13,7 +13,6 @@ class TournamentVm extends ChangeNotifier {
     DialogProvider(context).showConfirmationDialog(
       'Are you sure you want to delete this tournament ?',
       () async {
-        Navigator.pop(context);
         await TournamentProvider(tournament: tournament).deleteTournament();
       },
     );
