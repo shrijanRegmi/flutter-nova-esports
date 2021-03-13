@@ -7,7 +7,6 @@ import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/viewmodels/tournament_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
 import 'package:peaman/views/screens/tournament_view_screen.dart';
-import 'package:provider/provider.dart';
 
 class TournamentListItem extends StatelessWidget {
   final Tournament tournament;
@@ -46,7 +45,7 @@ class TournamentListItem extends StatelessWidget {
               height: 250.0,
               child: Column(
                 children: [
-                  _imgBuilder(vm, context),
+                  _imgBuilder(vm, context, appUser),
                   _detailsBuilder(),
                 ],
               ),
@@ -57,9 +56,11 @@ class TournamentListItem extends StatelessWidget {
     );
   }
 
-  Widget _imgBuilder(final TournamentVm vm, final BuildContext context) {
-    final _appUser = Provider.of<AppUser>(context);
-
+  Widget _imgBuilder(
+    final TournamentVm vm,
+    final BuildContext context,
+    final AppUser appUser,
+  ) {
     return Container(
       height: 150.0,
       decoration: BoxDecoration(
@@ -93,10 +94,10 @@ class TournamentListItem extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      tournament.isRegistered
+                      tournament.users.contains(appUser.uid)
                           ? _registeredBuilder()
                           : Container(),
-                      if (_appUser?.admin ?? false)
+                      if (appUser?.admin ?? false)
                         Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Row(

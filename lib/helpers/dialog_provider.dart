@@ -124,13 +124,16 @@ class DialogProvider {
   }
 
   // show this to confirm something
-  showConfirmationDialog(final String title, final Function onPressed) async {
+  showConfirmationDialog(
+    final String title,
+    final Function onPressed, {
+    final String description,
+  }) async {
     return await showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text(
-          '$title',
-        ),
+        title: Text('$title'),
+        content: description != null ? Text('$description') : null,
         actions: [
           TextButton(
             child: Text(
@@ -147,6 +150,50 @@ class DialogProvider {
           TextButton(
             child: Text(
               'Yes',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              onPressed();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  // show this to warn the user
+  showWarningDialog(
+    final String title,
+    final String description,
+    final Function onPressed, {
+    final bool requiredCancelBtn = false,
+  }) async {
+    return await showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text('$title'),
+        content: Text('$description'),
+        actions: [
+          if (requiredCancelBtn)
+            TextButton(
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          TextButton(
+            child: Text(
+              'OK, Got it!',
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,

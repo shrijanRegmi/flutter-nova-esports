@@ -58,6 +58,16 @@ class AppUser {
     };
   }
 
+  Map<String, dynamic> toShortJson() {
+    return {
+      'uid': uid,
+      'photoUrl': photoUrl,
+      'name': name,
+      'email': email,
+      'phone': phone,
+    };
+  }
+
   static AppUser fromJson(Map<String, dynamic> data) {
     final _ref = FirebaseFirestore.instance;
 

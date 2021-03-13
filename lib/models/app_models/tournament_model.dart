@@ -14,6 +14,7 @@ class Tournament {
   final int joinedPlayers;
   final bool isRegistered;
   final int updatedAt;
+  final List<String> users;
 
   Tournament({
     this.id,
@@ -28,6 +29,7 @@ class Tournament {
     this.joinedPlayers,
     this.isRegistered = false,
     this.updatedAt,
+    this.users,
   });
 
   Tournament copyWith({
@@ -43,6 +45,7 @@ class Tournament {
     final int joinedPlayers,
     final bool isRegistered,
     final int updatedAt,
+    final List<String> users,
   }) {
     return Tournament(
       id: id ?? this.id,
@@ -57,6 +60,7 @@ class Tournament {
       joinedPlayers: joinedPlayers ?? this.joinedPlayers,
       isRegistered: isRegistered ?? this.isRegistered,
       updatedAt: updatedAt ?? this.updatedAt,
+      users: users ?? this.users,
     );
   }
 
@@ -74,6 +78,7 @@ class Tournament {
       joinedPlayers: data['joined_players'] ?? 0,
       isRegistered: data['is_registered'] ?? false,
       updatedAt: data['updated_at'],
+      users: data['users'] != null ? List<String>.from(data['users']) : [],
     );
   }
 
