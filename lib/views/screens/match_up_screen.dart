@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:peaman/models/app_models/team_model.dart';
 import 'package:peaman/models/app_models/tournament_model.dart';
 import 'package:peaman/views/widgets/common_widgets/appbar.dart';
 import 'package:peaman/views/widgets/matchup_widgets/lobbies_list.dart';
 
 class MatchUpScreen extends StatelessWidget {
   final Tournament tournament;
-  MatchUpScreen(this.tournament);
+  final Team team;
+  MatchUpScreen(this.tournament, this.team);
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class MatchUpScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _roundSelectionBuilder(),
-              LobbiesList(),
+              LobbiesList(tournament, team),
             ],
           ),
         ),

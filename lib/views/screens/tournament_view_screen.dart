@@ -188,7 +188,7 @@ class TournamentViewScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => MatchUpScreen(vm.thisTournament),
+                  builder: (_) => MatchUpScreen(vm.thisTournament, vm.team),
                 ),
               );
             },

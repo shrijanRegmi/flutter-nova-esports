@@ -197,6 +197,10 @@ class TournamentProvider {
             ? _team.users.length >= 2
             : _team.users.length >= 4;
 
+        final _assignLobby = tournament.type == MatchType.duo
+            ? _team.users.length == 1
+            : _team.users.length == 3;
+
         if (!_teamFull) {
           final _tournamentRef =
               _ref.collection('tournaments').doc(tournament.id);
@@ -209,10 +213,19 @@ class TournamentProvider {
                 await _tournamentRef.update({
                   'users': FieldValue.arrayUnion([appUser.uid]),
                 });
-                await _teamRef.update({
-                  'user_ids': FieldValue.arrayUnion([appUser.uid]),
-                  'users': FieldValue.arrayUnion([appUser.toShortJson()]),
-                });
+                if (_assignLobby) {
+                  await _teamRef.update({
+                    'user_ids': FieldValue.arrayUnion([appUser.uid]),
+                    'users': FieldValue.arrayUnion([appUser.toShortJson()]),
+                    'team_completed_at': DateTime.now().millisecondsSinceEpoch,
+                  });
+                } else {
+                  await _teamRef.update({
+                    'user_ids': FieldValue.arrayUnion([appUser.uid]),
+                    'users': FieldValue.arrayUnion([appUser.toShortJson()]),
+                  });
+                }
+
                 await sendUpdate(
                   _team.id,
                   '${appUser.name} just joined the party.',
@@ -289,6 +302,11 @@ class TournamentProvider {
         .toList();
   }
 
+  // get list of tournament teams
+  List<Team> _tournamentTeamsFromFirebase(final QuerySnapshot colSnap) {
+    return colSnap.docs.map((e) => Team.fromJson(e.data())).toList();
+  }
+
   // stream of list of tournaments
   Stream<List<Tournament>> get tournamentsList {
     return _ref
@@ -315,5 +333,16 @@ class TournamentProvider {
         .orderBy('updated_at', descending: true)
         .snapshots()
         .map(_updatesFromFirebase);
+  }
+
+  // stream of list of tournament teams
+  Stream<List<Team>> get tournamentTeamsList {
+    return _ref
+        .collection('tournaments')
+        .doc(tournament.id)
+        .collection('teams')
+        .orderBy('team_completed_at')
+        .snapshots()
+        .map(_tournamentTeamsFromFirebase);
   }
 }
