@@ -180,13 +180,10 @@ class TournamentViewScreen extends StatelessWidget {
       child: Row(
         children: [
           _btnBuilder(Icons.assignment, 'Details', () {}),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25.0),
-            child: Container(
-              height: 40.0,
-              width: 2.0,
-              color: Colors.grey[300],
-            ),
+          Container(
+            height: 40.0,
+            width: 2.0,
+            color: Colors.grey[300],
           ),
           _btnBuilder(
             Icons.mediation,
@@ -201,13 +198,10 @@ class TournamentViewScreen extends StatelessWidget {
             },
             isEnabled: vm.team != null && vm.team.users.length > 1,
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25.0),
-            child: Container(
-              height: 40.0,
-              width: 2.0,
-              color: Colors.grey[300],
-            ),
+          Container(
+            height: 40.0,
+            width: 2.0,
+            color: Colors.grey[300],
           ),
           _btnBuilder(
             Icons.chat,
@@ -229,24 +223,27 @@ class TournamentViewScreen extends StatelessWidget {
       onTap: isEnabled ? onPressed : () {},
       child: Container(
         color: Colors.white,
-        child: Column(
-          children: [
-            Icon(
-              icon,
-              color: isEnabled ? Colors.black : Colors.grey,
-            ),
-            SizedBox(
-              height: 5.0,
-            ),
-            Text(
-              '$title',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 12.0,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: Column(
+            children: [
+              Icon(
+                icon,
                 color: isEnabled ? Colors.black : Colors.grey,
               ),
-            )
-          ],
+              SizedBox(
+                height: 5.0,
+              ),
+              Text(
+                '$title',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12.0,
+                  color: isEnabled ? Colors.black : Colors.grey,
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
