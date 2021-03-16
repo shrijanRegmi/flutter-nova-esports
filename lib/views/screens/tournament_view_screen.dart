@@ -90,7 +90,7 @@ class TournamentViewScreen extends StatelessWidget {
     final AppUser appUser,
   ) {
     return Stack(
-      overflow: Overflow.visible,
+      clipBehavior: Clip.none,
       children: [
         _imgBuilder(vm),
         Positioned(

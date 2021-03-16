@@ -179,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen>
     List<Tab> _tabsList = [
       Tab(
         child: Stack(
-          overflow: Overflow.visible,
+          clipBehavior: Clip.none,
           children: [
             SvgPicture.asset(
               'assets/images/svgs/chat_tab.svg',

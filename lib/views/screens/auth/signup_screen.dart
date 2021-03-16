@@ -249,7 +249,7 @@ class SignUpScreen extends StatelessWidget {
           onTap: vm.uploadImage,
           child: vm.imgFile == null
               ? Stack(
-                  overflow: Overflow.visible,
+                  clipBehavior: Clip.none,
                   children: <Widget>[
                     SvgPicture.asset('assets/images/svgs/upload_img.svg'),
                     Positioned(

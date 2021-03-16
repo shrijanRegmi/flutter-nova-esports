@@ -13,7 +13,7 @@ class MultiAvatarBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      overflow: Overflow.visible,
+      clipBehavior: Clip.none,
       children: <Widget>[
         AvatarBuilder(
           imgUrl: users.length > 1 ? users[1].photoUrl : users[0].photoUrl,
