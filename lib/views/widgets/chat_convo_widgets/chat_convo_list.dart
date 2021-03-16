@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:peaman/helpers/chat_helper.dart';
 import 'package:peaman/models/app_models/message_model.dart';
+import 'package:peaman/models/app_models/team_model.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/services/database_services/message_provider.dart';
 import 'package:peaman/views/widgets/chat_convo_widgets/chat_convo_list_item.dart';
 
 class ChatConvoList extends StatelessWidget {
+  final Team team;
+  final String chatId;
   final AppUser appUser;
-  final AppUser friend;
   final bool isTypingActive;
   final bool isSeen;
   final bool isTyping;
   ChatConvoList({
-    this.friend,
+    this.team,
+    this.chatId,
     this.appUser,
     this.isTypingActive,
     this.isSeen = false,
@@ -22,8 +24,7 @@ class ChatConvoList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _chatId =
-        ChatHelper().getChatId(myId: appUser.uid, friendId: friend.uid);
+    final _chatId = chatId ?? 'test';
 
     return StreamBuilder<List<Message>>(
         stream: MessageProvider(chatId: _chatId).messagesList,
@@ -50,7 +51,11 @@ class ChatConvoList extends StatelessWidget {
                                 child: ChatConvoListItem(
                                   chatId: _chatId,
                                   message: messagesSnap.data[index],
-                                  friend: appUser,
+                                  friend: team.users.firstWhere(
+                                      (element) =>
+                                          element.uid ==
+                                          messagesSnap.data[index].senderId,
+                                      orElse: () => null),
                                   alignment: Alignment.centerRight,
                                   isLast: true,
                                 ),
@@ -87,7 +92,10 @@ class ChatConvoList extends StatelessWidget {
                   return ChatConvoListItem(
                     chatId: _chatId,
                     message: messagesSnap.data[index],
-                    friend: appUser,
+                    friend: team.users.firstWhere(
+                        (element) =>
+                            element.uid == messagesSnap.data[index].senderId,
+                        orElse: () => null),
                     alignment: Alignment.centerRight,
                   );
                 } else {
@@ -104,7 +112,11 @@ class ChatConvoList extends StatelessWidget {
                             child: ChatConvoListItem(
                               chatId: _chatId,
                               message: messagesSnap.data[index],
-                              friend: friend,
+                              friend: team.users.firstWhere(
+                                  (element) =>
+                                      element.uid ==
+                                      messagesSnap.data[index].senderId,
+                                  orElse: () => null),
                               alignment: Alignment.centerLeft,
                               isLast: true,
                             ),
@@ -131,7 +143,10 @@ class ChatConvoList extends StatelessWidget {
                   return ChatConvoListItem(
                     chatId: _chatId,
                     message: messagesSnap.data[index],
-                    friend: friend,
+                    friend: team.users.firstWhere(
+                        (element) =>
+                            element.uid == messagesSnap.data[index].senderId,
+                        orElse: () => null),
                     alignment: Alignment.centerLeft,
                   );
                 }

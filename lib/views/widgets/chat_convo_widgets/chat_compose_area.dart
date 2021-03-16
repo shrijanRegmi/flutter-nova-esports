@@ -18,8 +18,6 @@ class ChatComposeArea extends StatefulWidget {
   final AppUser friend;
   final Function sendMessage;
   final Function(bool newIsTypingVal) updateIsTyping;
-  final Function updateChatTyping;
-  final Function updateIsSeen;
   final bool isTypingActive;
   final bool isCurrentUserTyping;
   final FocusNode focusNode;
@@ -30,8 +28,6 @@ class ChatComposeArea extends StatefulWidget {
     this.appUser,
     this.friend,
     this.updateIsTyping,
-    this.updateIsSeen,
-    this.updateChatTyping,
     this.focusNode,
     this.isTypingActive = false,
     this.isCurrentUserTyping = false,
@@ -74,14 +70,14 @@ class _ChatComposeAreaState extends State<ChatComposeArea> {
                 widget.focusNode.requestFocus();
               },
             ),
-            SizedBox(
-              width: 20.0,
-            ),
-            SingleIconBtn(
-              radius: 50.0,
-              icon: 'assets/images/svgs/call_btn.svg',
-              onPressed: _onPressedCall,
-            ),
+            // SizedBox(
+            //   width: 20.0,
+            // ),
+            // SingleIconBtn(
+            //   radius: 50.0,
+            //   icon: 'assets/images/svgs/call_btn.svg',
+            //   onPressed: _onPressedCall,
+            // ),
           ],
         ),
       ),
@@ -111,50 +107,22 @@ class _ChatComposeAreaState extends State<ChatComposeArea> {
                   ),
                   maxLines: 3,
                   minLines: 1,
-                  onChanged: (val) {
-                    if (val != '') {
-                      if (!widget.isCurrentUserTyping) {
-                        widget.updateChatTyping(
-                          true,
-                          widget.chatId,
-                          widget.appUser,
-                          widget.friend,
-                        );
-                      }
-                    } else {
-                      if (widget.isCurrentUserTyping) {
-                        widget.updateChatTyping(
-                          false,
-                          widget.chatId,
-                          widget.appUser,
-                          widget.friend,
-                        );
-                      }
-                    }
-                  },
                 ),
               ),
               GestureDetector(
                 onTap: () {
                   if (_messageController.text != '') {
-                    widget.updateChatTyping(
-                      false,
-                      widget.chatId,
-                      widget.appUser,
-                      widget.friend,
-                    );
                     final _text = _messageController.text.trim();
                     _messageController.clear();
                     final _message = TextMessage(
                       text: _text,
                       senderId: widget.appUser.uid,
-                      receiverId: widget.friend.uid,
+                      receiverId: widget.appUser.uid,
                       milliseconds: DateTime.now().millisecondsSinceEpoch,
                       type: MessageType.Text,
                     );
                     widget.sendMessage(
-                      myId: widget.appUser.uid,
-                      friendId: widget.friend.uid,
+                      chatId: widget.chatId,
                       message: _message,
                     );
                   }
@@ -194,19 +162,19 @@ class _ChatComposeAreaState extends State<ChatComposeArea> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  width: 15.0,
-                ),
-                GestureDetector(
-                  onTap: _onPressedCall,
-                  child: Container(
-                    color: Colors.transparent,
-                    child: Icon(
-                      Icons.call,
-                      color: Color(0xff3D4A5A),
-                    ),
-                  ),
-                ),
+                // SizedBox(
+                //   width: 15.0,
+                // ),
+                // GestureDetector(
+                //   onTap: _onPressedCall,
+                //   child: Container(
+                //     color: Colors.transparent,
+                //     child: Icon(
+                //       Icons.call,
+                //       color: Color(0xff3D4A5A),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -226,7 +194,7 @@ class _ChatComposeAreaState extends State<ChatComposeArea> {
 
     final _message = TextMessage(
       senderId: widget.appUser.uid,
-      receiverId: widget.friend.uid,
+      receiverId: widget.appUser.uid,
       milliseconds: DateTime.now().millisecondsSinceEpoch,
       type: MessageType.Image,
     );
@@ -247,10 +215,4 @@ class _ChatComposeAreaState extends State<ChatComposeArea> {
       _chatConvoVmProvider.removeItemToTempImagesList(_tempImg);
     }
   }
-
-  _onPressedCall() async {}
-
-  // Future<void> _handleCameraAndMic() async {
-  //   await [Permission.camera, Permission.microphone].request();
-  // }
 }

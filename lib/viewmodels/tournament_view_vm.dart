@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:peaman/models/app_models/chat_model.dart';
 import 'package:peaman/models/app_models/team_model.dart';
 import 'package:peaman/models/app_models/tournament_model.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/services/database_services/tournament_provider.dart';
+import 'package:peaman/views/screens/chat_convo_screen.dart';
+import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 
 class TournamentViewVm extends ChangeNotifier {
@@ -65,6 +68,24 @@ class TournamentViewVm extends ChangeNotifier {
         _updateIsLoading(false);
       }
     }
+  }
+
+  // navigate to chats
+  navigateToChats(final AppUser appUser) {
+    final _chats = Provider.of<List<Chat>>(context, listen: false) ?? [];
+    final _thisChat =
+        _chats.firstWhere((chat) => chat.id == _team.id, orElse: () => null);
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ChatConvoScreen(
+          friend: null,
+          chat: _thisChat,
+          team: _team,
+        ),
+      ),
+    );
   }
 
   // update value of team

@@ -7,7 +7,6 @@ import 'package:peaman/models/app_models/message_model.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/viewmodels/temp_img_vm.dart';
 import 'package:peaman/views/screens/photo_viewer_screen.dart';
-import 'package:peaman/views/widgets/common_widgets/avatar_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -145,14 +144,14 @@ class ChatConvoListItem extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      AvatarBuilder(
-                        imgUrl: friend.photoUrl,
-                        isOnline: false,
-                        radius: 17.0,
-                      ),
-                      SizedBox(
-                        width: 10.0,
-                      ),
+                      // AvatarBuilder(
+                      //   imgUrl: friend.photoUrl,
+                      //   isOnline: false,
+                      //   radius: 17.0,
+                      // ),
+                      // SizedBox(
+                      //   width: 10.0,
+                      // ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
@@ -206,14 +205,14 @@ class ChatConvoListItem extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(
-                width: 10.0,
-              ),
-              AvatarBuilder(
-                imgUrl: friend.photoUrl,
-                isOnline: false,
-                radius: 17.0,
-              ),
+              // SizedBox(
+              //   width: 10.0,
+              // ),
+              // AvatarBuilder(
+              //   imgUrl: friend.photoUrl,
+              //   isOnline: false,
+              //   radius: 17.0,
+              // ),
             ],
           );
   }
@@ -313,14 +312,6 @@ class ChatConvoListItem extends StatelessWidget {
                       ),
                     ),
                   ],
-                ),
-                SizedBox(
-                  width: 10.0,
-                ),
-                AvatarBuilder(
-                  imgUrl: friend.photoUrl,
-                  isOnline: false,
-                  radius: 17.0,
                 ),
               ],
             ),

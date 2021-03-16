@@ -25,85 +25,16 @@ class MessageProvider {
       if (_messagesDocs.docs.length == 0) {
         await _chatRef.set({'id': chatId});
       }
-      final bool _isAppUserFirstUser = ChatHelper().isAppUserFirstUser(
-          myId: message.senderId, friendId: message.receiverId);
-
-      final _chatSnap = await _chatRef.get();
-      if (_isAppUserFirstUser) {
-        final _secondUserUnreadMessagesCount = _chatSnap.data() != null
-            ? _chatSnap.data()['second_user_unread_messages_count'] ?? 0
-            : 0;
-
-        _chatRef.update(
-          {
-            'second_user_unread_messages_count':
-                _secondUserUnreadMessagesCount + 1
-          },
-        );
-      } else {
-        final _firstUserUnreadMessagesCount = _chatSnap.data() != null
-            ? _chatSnap.data()['first_user_unread_messages_count'] ?? 0
-            : 0;
-
-        _chatRef.update(
-          {
-            'first_user_unread_messages_count':
-                _firstUserUnreadMessagesCount + 1
-          },
-        );
-      }
 
       final _lastMsgRef = await _messagesRef.add(_message);
 
       _chatRef.update({'last_updated': DateTime.now()});
       _chatRef.update({'last_msg_ref': _lastMsgRef});
-
-      if (_messagesDocs.docs.length == 0) {
-        _sendAdditionalProperties(
-          myId: message.senderId,
-          friendId: message.receiverId,
-        );
-      }
       print('Success: Sending message to ${message.receiverId}');
     } catch (e) {
       print(e);
       print('Error: Sending message to ${message.receiverId}');
       return null;
-    }
-  }
-
-  // send additional properties with message
-  Future _sendAdditionalProperties(
-      {final String myId, final String friendId}) async {
-    try {
-      final _chatRef = _ref.collection('chats').doc(chatId);
-
-      final bool _isAppUserFirstUser =
-          ChatHelper().isAppUserFirstUser(myId: myId, friendId: friendId);
-
-      DocumentReference _firstUserRef;
-      DocumentReference _secondUserRef;
-
-      final _users = [myId, friendId];
-      Map<String, dynamic> _userData = {
-        'users': _users,
-      };
-
-      if (_isAppUserFirstUser) {
-        _firstUserRef = _ref.collection('users').doc(myId);
-        _secondUserRef = _ref.collection('users').doc(friendId);
-      } else {
-        _firstUserRef = _ref.collection('users').doc(friendId);
-        _secondUserRef = _ref.collection('users').doc(myId);
-      }
-      await _chatRef.update(_userData);
-      await _chatRef.update({'first_user_ref': _firstUserRef});
-      await _chatRef.update({'second_user_ref': _secondUserRef});
-
-      print('Success: Sending additonal fields in chats collection');
-    } catch (e) {
-      print(e);
-      print('Error!!!: Sending additonal fields in chats collection');
     }
   }
 

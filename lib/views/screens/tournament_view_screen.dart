@@ -55,7 +55,7 @@ class TournamentViewScreen extends StatelessWidget {
               : SingleChildScrollView(
                   child: Column(
                     children: [
-                      _headerBuilder(context, vm),
+                      _headerBuilder(context, vm, appUser),
                       SizedBox(
                         height: 50.0,
                       ),
@@ -84,7 +84,11 @@ class TournamentViewScreen extends StatelessWidget {
     );
   }
 
-  Widget _headerBuilder(final BuildContext context, final TournamentViewVm vm) {
+  Widget _headerBuilder(
+    final BuildContext context,
+    final TournamentViewVm vm,
+    final AppUser appUser,
+  ) {
     return Stack(
       overflow: Overflow.visible,
       children: [
@@ -96,7 +100,7 @@ class TournamentViewScreen extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _actionBtnBuilder(context, vm),
+              _actionBtnBuilder(context, vm, appUser),
             ],
           ),
         ),
@@ -156,7 +160,10 @@ class TournamentViewScreen extends StatelessWidget {
   }
 
   Widget _actionBtnBuilder(
-      final BuildContext context, final TournamentViewVm vm) {
+    final BuildContext context,
+    final TournamentViewVm vm,
+    final AppUser appUser,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -192,6 +199,7 @@ class TournamentViewScreen extends StatelessWidget {
                 ),
               );
             },
+            isEnabled: vm.team != null && vm.team.users.length > 1,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -201,21 +209,32 @@ class TournamentViewScreen extends StatelessWidget {
               color: Colors.grey[300],
             ),
           ),
-          _btnBuilder(Icons.chat, 'Chat', () {}),
+          _btnBuilder(
+            Icons.chat,
+            'Chat',
+            () {
+              vm.navigateToChats(appUser);
+            },
+            isEnabled: vm.team != null && vm.team.users.length > 1,
+          ),
         ],
       ),
     );
   }
 
   Widget _btnBuilder(
-      final IconData icon, final String title, final Function onPressed) {
+      final IconData icon, final String title, final Function onPressed,
+      {final bool isEnabled = true}) {
     return GestureDetector(
-      onTap: onPressed,
+      onTap: isEnabled ? onPressed : () {},
       child: Container(
         color: Colors.white,
         child: Column(
           children: [
-            Icon(icon),
+            Icon(
+              icon,
+              color: isEnabled ? Colors.black : Colors.grey,
+            ),
             SizedBox(
               height: 5.0,
             ),
@@ -224,6 +243,7 @@ class TournamentViewScreen extends StatelessWidget {
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 12.0,
+                color: isEnabled ? Colors.black : Colors.grey,
               ),
             )
           ],

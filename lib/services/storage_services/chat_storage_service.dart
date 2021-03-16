@@ -31,8 +31,7 @@ class ChatStorage {
       _message.text = _downloadUrl;
 
       sendMsgCallback(
-        myId: _message.senderId,
-        friendId: _message.receiverId,
+        chatId: chatId,
         message: _message,
       );
 

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:peaman/helpers/chat_helper.dart';
 import 'package:peaman/models/app_models/chat_model.dart';
 import 'package:peaman/models/app_models/message_model.dart';
 import 'package:peaman/models/app_models/user_model.dart';
@@ -19,12 +18,10 @@ class ChatConvoVm extends ChangeNotifier {
 
   // send message to friend
   Future sendMessage({
-    @required final String myId,
-    @required final String friendId,
-    @required final Message message,
+    final String chatId,
+    final Message message,
   }) {
-    final _chatId = ChatHelper().getChatId(myId: myId, friendId: friendId);
-    return MessageProvider(chatId: _chatId).sendMessage(message: message);
+    return MessageProvider(chatId: chatId).sendMessage(message: message);
   }
 
   // update is typing value
@@ -54,27 +51,5 @@ class ChatConvoVm extends ChangeNotifier {
 
   Future readMessages(final String chatId) async {
     return await MessageProvider(chatId: chatId).readChatMessage();
-  }
-
-  // update typing state of the chat
-  Future updateChatTyping(final bool typingVal, final String chatId,
-      final AppUser appUser, final AppUser friend) async {
-    final bool _isAppUserFirstUser = ChatHelper()
-        .isAppUserFirstUser(myId: appUser.uid, friendId: friend.uid);
-
-    Map<String, dynamic> _data;
-    if (_isAppUserFirstUser) {
-      _data = {
-        'first_user_typing': typingVal,
-      };
-    } else {
-      _data = {
-        'second_user_typing': typingVal,
-      };
-    }
-
-    if (_data != null) {
-      await MessageProvider(chatId: chatId).updateChatData(_data);
-    }
   }
 }
