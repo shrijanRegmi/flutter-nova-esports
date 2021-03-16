@@ -18,7 +18,8 @@ class AuthVm extends ChangeNotifier {
   TextEditingController _passController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
   bool _isLoading = false;
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldMessengerState> _scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
   File _imgFile;
   bool _isNextPressed = false;
   Age _age;
@@ -30,7 +31,7 @@ class AuthVm extends ChangeNotifier {
   TextEditingController get passController => _passController;
   TextEditingController get phoneController => _phoneController;
   bool get isLoading => _isLoading;
-  GlobalKey<ScaffoldState> get scaffoldKey => _scaffoldKey;
+  GlobalKey<ScaffoldMessengerState> get scaffoldKey => _scaffoldKey;
   File get imgFile => _imgFile;
   bool get isNextPressed => _isNextPressed;
   Age get age => _age;

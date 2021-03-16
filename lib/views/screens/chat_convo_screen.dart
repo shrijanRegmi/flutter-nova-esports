@@ -27,7 +27,7 @@ class ChatConvoScreen extends StatefulWidget {
 class _ChatConvoScreenState extends State<ChatConvoScreen> {
   final FocusNode _focusNode = FocusNode();
 
-  final _scaffolKey = GlobalKey<ScaffoldState>();
+  final _scaffolKey = GlobalKey<ScaffoldMessengerState>();
 
   @override
   Widget build(BuildContext context) {
