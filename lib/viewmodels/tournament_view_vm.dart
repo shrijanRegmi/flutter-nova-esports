@@ -16,11 +16,13 @@ class TournamentViewVm extends ChangeNotifier {
   bool _isLoading = false;
   TextEditingController _teamCodeController = TextEditingController();
   Tournament _thisTournament;
+  bool _isShowingDetails = false;
 
   Team get team => _team;
   bool get isLoading => _isLoading;
   TextEditingController get teamCodeController => _teamCodeController;
   Tournament get thisTournament => _thisTournament;
+  bool get isShowingDetails => _isShowingDetails;
 
   // init function
   onInit(final Tournament tournament, final AppUser appUser) async {
@@ -31,6 +33,7 @@ class TournamentViewVm extends ChangeNotifier {
         await getTeam(tournament, appUser);
         await Future.delayed(Duration(milliseconds: 1000));
       } else {
+        updateIsShowingDetails(true);
         await Future.delayed(Duration(milliseconds: 2000));
       }
       _updateIsLoading(false);
@@ -103,6 +106,12 @@ class TournamentViewVm extends ChangeNotifier {
   // update value of tournament
   updateTournament(final Tournament newVal) {
     _thisTournament = newVal;
+    notifyListeners();
+  }
+
+  // update value of is showing details
+  updateIsShowingDetails(final bool newVal) {
+    _isShowingDetails = newVal;
     notifyListeners();
   }
 }

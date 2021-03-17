@@ -212,7 +212,7 @@ class TournamentListItem extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 8.0),
         child: Text(
-          '${Tournament().getMatchTypeTitle(tournament.type)}',
+          '${tournament.getMatchTypeTitle()}',
           style: TextStyle(
             color: Colors.white,
             fontSize: 10.0,

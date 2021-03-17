@@ -98,7 +98,7 @@ class Tournament {
     };
   }
 
-  String getMatchTypeTitle(final MatchType type) {
+  String getMatchTypeTitle() {
     switch (type) {
       case MatchType.solo:
         return 'Solo';

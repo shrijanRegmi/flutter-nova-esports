@@ -11,6 +11,7 @@ import 'package:peaman/views/screens/enter_team_code_screen.dart';
 import 'package:peaman/views/screens/match_up_screen.dart';
 import 'package:peaman/views/screens/register_screen.dart';
 import 'package:peaman/views/widgets/tournament_widgets/join_team.dart';
+import 'package:peaman/views/widgets/tournament_widgets/tournament_details.dart';
 import 'package:peaman/views/widgets/tournament_widgets/updates_list.dart';
 import 'package:provider/provider.dart';
 
@@ -59,13 +60,22 @@ class TournamentViewScreen extends StatelessWidget {
                       SizedBox(
                         height: 50.0,
                       ),
-                      if (vm.thisTournament.users.contains(appUser.uid))
-                        JoinTeam(vm.thisTournament, vm),
-                      if (vm.thisTournament.users.contains(appUser.uid))
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                      UpdatesList(vm.team),
+                      vm.isShowingDetails
+                          ? TournamentDetails(vm)
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (vm.thisTournament.users
+                                    .contains(appUser.uid))
+                                  JoinTeam(vm.thisTournament, vm),
+                                if (vm.thisTournament.users
+                                    .contains(appUser.uid))
+                                  SizedBox(
+                                    height: 20.0,
+                                  ),
+                                UpdatesList(vm.team),
+                              ],
+                            ),
                     ],
                   ),
                 ),
@@ -179,7 +189,11 @@ class TournamentViewScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
       child: Row(
         children: [
-          _btnBuilder(Icons.assignment, 'Details', () {}),
+          _btnBuilder(Icons.assignment, 'Details', () {
+            if (vm.team != null) {
+              vm.updateIsShowingDetails(!vm.isShowingDetails);
+            }
+          }),
           Container(
             height: 40.0,
             width: 2.0,

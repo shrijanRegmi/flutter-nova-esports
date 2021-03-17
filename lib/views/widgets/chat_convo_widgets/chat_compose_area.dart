@@ -21,7 +21,7 @@ class ChatComposeArea extends StatefulWidget {
   final bool isTypingActive;
   final bool isCurrentUserTyping;
   final FocusNode focusNode;
-  final GlobalKey<ScaffoldMessengerState> scaffoldKey;
+  final GlobalKey<ScaffoldState> scaffoldKey;
   ChatComposeArea({
     this.chatId,
     this.sendMessage,

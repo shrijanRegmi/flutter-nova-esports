@@ -11,12 +11,12 @@ class ExploreVm extends ChangeNotifier {
 
   bool _showLoader = false;
   ScrollController _scrollController = ScrollController();
-  GlobalKey<ScaffoldMessengerState> _scaffoldKey =
-      GlobalKey<ScaffoldMessengerState>();
+  GlobalKey<ScaffoldState> _scaffoldKey =
+      GlobalKey<ScaffoldState>();
 
   ScrollController get scrollController => _scrollController;
   bool get showLoader => _showLoader;
-  GlobalKey<ScaffoldMessengerState> get scaffoldKey => _scaffoldKey;
+  GlobalKey<ScaffoldState> get scaffoldKey => _scaffoldKey;
   List<Tournament> get tournaments => Provider.of<List<Tournament>>(context);
   List<VideoStream> get videoStreams => Provider.of<List<VideoStream>>(context);
 

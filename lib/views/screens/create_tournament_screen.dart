@@ -248,7 +248,7 @@ class CreateTournamentScreen extends StatelessWidget {
               (e) => DropdownMenuItem(
                 value: e,
                 child: Text(
-                  '${Tournament().getMatchTypeTitle(e)}',
+                  '${tournament.getMatchTypeTitle()}',
                 ),
               ),
             )
