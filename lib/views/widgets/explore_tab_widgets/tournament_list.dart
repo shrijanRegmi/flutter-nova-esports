@@ -4,13 +4,14 @@ import 'package:peaman/views/widgets/explore_tab_widgets/tournament_list_item.da
 
 class TournamentList extends StatelessWidget {
   final List<Tournament> tournaments;
-  TournamentList(this.tournaments);
+  final bool requiredTitle;
+  TournamentList(this.tournaments, {this.requiredTitle = true});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _titleBuilder(),
+        if (requiredTitle) _titleBuilder(),
         SizedBox(
           height: 10.0,
         ),

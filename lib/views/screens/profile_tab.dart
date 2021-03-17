@@ -80,8 +80,16 @@ class ProfileTab extends StatelessWidget {
             color: Color(0xff3D4A5A),
           ),
         ),
+        Text(
+          '${appUser.email}',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 14.0,
+            color: Color(0xff3D4A5A),
+          ),
+        ),
         SizedBox(
-          height: 8.0,
+          height: 20.0,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
