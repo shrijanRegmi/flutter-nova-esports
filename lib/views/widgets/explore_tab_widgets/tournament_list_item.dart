@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:peaman/enums/tournament_type.dart';
 import 'package:peaman/helpers/date_time_helper.dart';
 import 'package:peaman/models/app_models/tournament_model.dart';
 import 'package:peaman/models/app_models/user_model.dart';
@@ -44,11 +45,11 @@ class TournamentListItem extends StatelessWidget {
                     ),
                   ],
                 ),
-                height: 250.0,
+                height: 270.0,
                 child: Column(
                   children: [
                     _imgBuilder(vm, context, appUser),
-                    _detailsBuilder(),
+                    Expanded(child: _detailsBuilder()),
                   ],
                 ),
               ),
@@ -171,29 +172,37 @@ class TournamentListItem extends StatelessWidget {
         children: [
           Expanded(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 300.0,
-                  child: Text(
-                    '${tournament.title}'.toUpperCase(),
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 10.0,
-                ),
-                Row(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _typeBuilder(),
-                    SizedBox(width: 10.0),
-                    _playersCountBuilder(),
-                    SizedBox(width: 10.0),
-                    _coinBuilder(),
+                    Container(
+                      width: 300.0,
+                      child: Text(
+                        '${tournament.title}'.toUpperCase(),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    Row(
+                      children: [
+                        _typeBuilder(),
+                        SizedBox(width: 10.0),
+                        _playersCountBuilder(),
+                        SizedBox(width: 10.0),
+                        _coinBuilder(),
+                      ],
+                    ),
                   ],
                 ),
+                if (tournament.tournamentType == TournamentType.private)
+                  _privateBuilder(),
               ],
             ),
           ),
@@ -282,6 +291,23 @@ class TournamentListItem extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _privateBuilder() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.black,
+        shape: BoxShape.circle,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Icon(
+          Icons.lock,
+          color: Colors.white,
+          size: 14.0,
         ),
       ),
     );

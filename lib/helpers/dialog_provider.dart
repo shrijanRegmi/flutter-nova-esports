@@ -209,6 +209,69 @@ class DialogProvider {
     );
   }
 
+  // show this when user wants to join private tournament
+  showPrivateTournamentDialog(final TextEditingController passController,
+      final Function onPressed) async {
+    return await showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text('Enter password'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              style: TextStyle(
+                fontSize: 14.0,
+              ),
+              controller: passController,
+              decoration: InputDecoration(
+                hintText: 'Eg: EViYEhEnLLHkO8ObUVyx',
+              ),
+            ),
+            SizedBox(
+              height: 20.0,
+            ),
+            Text(
+              'This is a private tournament. You need to enter password to register.',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 12.0,
+                // fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            child: Text(
+              'Cancel',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          TextButton(
+            child: Text(
+              'Done',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              onPressed();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _addMomentBuilder() {
     return Container(
       color: Colors.transparent,

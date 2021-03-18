@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:peaman/enums/tournament_type.dart';
 import 'package:peaman/helpers/dialog_provider.dart';
 import 'package:peaman/models/app_models/chat_model.dart';
 import 'package:peaman/models/app_models/team_model.dart';
@@ -18,6 +19,7 @@ class TournamentViewVm extends ChangeNotifier {
   TextEditingController _teamCodeController = TextEditingController();
   Tournament _thisTournament;
   bool _isShowingDetails = false;
+  TextEditingController _passController = TextEditingController();
 
   Team get team => _team;
   bool get isLoading => _isLoading;
@@ -108,6 +110,41 @@ class TournamentViewVm extends ChangeNotifier {
         updateTournament(_newTournament);
       },
     );
+  }
+
+  // on pressed registered or team code
+  onBtnPressed(final AppUser appUser,
+      final Widget Function(Tournament, TournamentViewVm) screen) async {
+    if (_thisTournament.tournamentType != TournamentType.private) {
+      if (!_thisTournament.users.contains(appUser.uid)) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => screen(_thisTournament, this)),
+        );
+      }
+    } else {
+      await DialogProvider(context).showPrivateTournamentDialog(
+        _passController,
+        () async {
+          final _pass = _passController.text.trim();
+          if (_pass == _thisTournament.id) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => screen(_thisTournament, this),
+              ),
+            );
+          } else {
+            await DialogProvider(context).showWarningDialog(
+              'Wrong password',
+              'The password you entered is not correct. Try again !',
+              () {},
+            );
+          }
+        },
+      );
+      _passController.clear();
+    }
   }
 
   // update value of team

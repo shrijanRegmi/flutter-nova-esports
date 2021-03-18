@@ -306,17 +306,10 @@ class TournamentViewScreen extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: MaterialButton(
-        onPressed: vm.thisTournament.users.contains(appUser.uid)
-            ? null
-            : () {
-                if (!vm.thisTournament.users.contains(appUser.uid))
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => RegisterScreen(vm.thisTournament, vm),
-                    ),
-                  );
-              },
+        onPressed: () => vm.onBtnPressed(
+          appUser,
+          (a, b) => RegisterScreen(a, b),
+        ),
         color: Color(0xffdc8843),
         disabledColor: Colors.grey,
         disabledTextColor: Colors.white,
@@ -375,14 +368,10 @@ class TournamentViewScreen extends StatelessWidget {
       elevation: 2.0,
       color: Colors.blue,
       child: InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => EnterTeamCodeScreen(vm.thisTournament, vm),
+          onTap: () => vm.onBtnPressed(
+                appUser,
+                (a, b) => EnterTeamCodeScreen(a, b),
               ),
-            );
-          },
           borderRadius: BorderRadius.circular(100.0),
           child: Container(
             padding:
