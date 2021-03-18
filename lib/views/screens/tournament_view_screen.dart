@@ -102,7 +102,7 @@ class TournamentViewScreen extends StatelessWidget {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        _imgBuilder(vm),
+        _imgBuilder(vm, context, appUser),
         Positioned(
           bottom: -33.0,
           left: 0.0,
@@ -118,7 +118,8 @@ class TournamentViewScreen extends StatelessWidget {
     );
   }
 
-  Widget _imgBuilder(final TournamentViewVm vm) {
+  Widget _imgBuilder(final TournamentViewVm vm, final BuildContext context,
+      final AppUser appUser) {
     return Stack(
       children: [
         Container(
@@ -140,7 +141,10 @@ class TournamentViewScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _liveBuilder(),
+                if (vm.thisTournament.isLive)
+                  _liveBuilder()
+                else if (appUser.admin)
+                  _startTournamentBtnBuilder(context, appUser, vm),
                 SizedBox(
                   height: 20.0,
                 ),
@@ -392,6 +396,36 @@ class TournamentViewScreen extends StatelessWidget {
               ),
             ),
           )),
+    );
+  }
+
+  Widget _startTournamentBtnBuilder(final BuildContext context,
+      final AppUser appUser, final TournamentViewVm vm) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Material(
+          borderRadius: BorderRadius.circular(100.0),
+          elevation: 2.0,
+          color: Colors.blue,
+          child: InkWell(
+              onTap: () => vm.startTournament(),
+              borderRadius: BorderRadius.circular(100.0),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 20.0, vertical: 10.0),
+                color: Colors.transparent,
+                child: Text(
+                  'Start Tournament',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontSize: 12.0,
+                  ),
+                ),
+              )),
+        ),
+      ],
     );
   }
 }

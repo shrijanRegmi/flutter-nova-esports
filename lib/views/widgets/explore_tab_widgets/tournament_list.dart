@@ -5,7 +5,12 @@ import 'package:peaman/views/widgets/explore_tab_widgets/tournament_list_item.da
 class TournamentList extends StatelessWidget {
   final List<Tournament> tournaments;
   final bool requiredTitle;
-  TournamentList(this.tournaments, {this.requiredTitle = true});
+  final bool isHorizontal;
+  TournamentList(
+    this.tournaments, {
+    this.requiredTitle = true,
+    this.isHorizontal = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,13 +20,17 @@ class TournamentList extends StatelessWidget {
         SizedBox(
           height: 10.0,
         ),
-        ListView.builder(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          itemCount: tournaments.length,
-          itemBuilder: (context, index) {
-            return TournamentListItem(tournaments[index]);
-          },
+        Container(
+          height: isHorizontal ? 300.0 : null,
+          child: ListView.builder(
+            shrinkWrap: isHorizontal ? false : true,
+            scrollDirection: isHorizontal ? Axis.horizontal : Axis.vertical,
+            physics: isHorizontal ? null : NeverScrollableScrollPhysics(),
+            itemCount: tournaments.length,
+            itemBuilder: (context, index) {
+              return TournamentListItem(tournaments[index]);
+            },
+          ),
         ),
       ],
     );

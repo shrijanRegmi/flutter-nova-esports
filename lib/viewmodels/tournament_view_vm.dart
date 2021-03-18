@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:peaman/helpers/dialog_provider.dart';
 import 'package:peaman/models/app_models/chat_model.dart';
 import 'package:peaman/models/app_models/team_model.dart';
 import 'package:peaman/models/app_models/tournament_model.dart';
@@ -88,6 +89,24 @@ class TournamentViewVm extends ChangeNotifier {
           team: _team,
         ),
       ),
+    );
+  }
+
+  // start tournament
+  startTournament() async {
+    await DialogProvider(context).showConfirmationDialog(
+      'Are you sure you want to start the tournament ?',
+      () async {
+        await TournamentProvider(tournament: _thisTournament).updateTournament(
+          data: {
+            'is_live': true,
+          },
+        );
+        final _newTournament = _thisTournament.copyWith(
+          isLive: true,
+        );
+        updateTournament(_newTournament);
+      },
     );
   }
 

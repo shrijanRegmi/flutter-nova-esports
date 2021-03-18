@@ -16,38 +16,41 @@ class TournamentListItem extends StatelessWidget {
     return ViewmodelProvider<TournamentVm>(
       vm: TournamentVm(context),
       builder: (context, vm, appVm, appUser) {
-        return Padding(
-          padding: const EdgeInsets.only(
-            left: 20.0,
-            right: 20.0,
-            bottom: 20.0,
-          ),
-          child: GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => TournamentViewScreen(tournament),
-                ),
-              );
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey[300],
-                    blurRadius: 20.0,
+        return Container(
+          width: MediaQuery.of(context).size.width - 40,
+          child: Padding(
+            padding: const EdgeInsets.only(
+              left: 20.0,
+              right: 5.0,
+              bottom: 20.0,
+            ),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => TournamentViewScreen(tournament),
                   ),
-                ],
-              ),
-              height: 250.0,
-              child: Column(
-                children: [
-                  _imgBuilder(vm, context, appUser),
-                  _detailsBuilder(),
-                ],
+                );
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey[300],
+                      blurRadius: 20.0,
+                    ),
+                  ],
+                ),
+                height: 250.0,
+                child: Column(
+                  children: [
+                    _imgBuilder(vm, context, appUser),
+                    _detailsBuilder(),
+                  ],
+                ),
               ),
             ),
           ),

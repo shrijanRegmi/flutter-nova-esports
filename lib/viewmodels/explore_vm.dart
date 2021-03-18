@@ -11,14 +11,18 @@ class ExploreVm extends ChangeNotifier {
 
   bool _showLoader = false;
   ScrollController _scrollController = ScrollController();
-  GlobalKey<ScaffoldState> _scaffoldKey =
-      GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   ScrollController get scrollController => _scrollController;
   bool get showLoader => _showLoader;
   GlobalKey<ScaffoldState> get scaffoldKey => _scaffoldKey;
   List<Tournament> get tournaments => Provider.of<List<Tournament>>(context);
   List<VideoStream> get videoStreams => Provider.of<List<VideoStream>>(context);
+
+  List<Tournament> get liveTournaments =>
+      (tournaments ?? []).where((element) => element.isLive).toList();
+  List<Tournament> get otherTournaments =>
+      (tournaments ?? []).where((element) => !element.isLive).toList();
 
   // init function
   onInit(AppVm appVm, AppUser appUser) {}

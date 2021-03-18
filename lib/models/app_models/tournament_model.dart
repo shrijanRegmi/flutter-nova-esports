@@ -15,6 +15,7 @@ class Tournament {
   final bool isRegistered;
   final int updatedAt;
   final List<String> users;
+  final bool isLive;
 
   Tournament({
     this.id,
@@ -30,6 +31,7 @@ class Tournament {
     this.isRegistered = false,
     this.updatedAt,
     this.users,
+    this.isLive,
   });
 
   Tournament copyWith({
@@ -46,6 +48,7 @@ class Tournament {
     final bool isRegistered,
     final int updatedAt,
     final List<String> users,
+    final bool isLive,
   }) {
     return Tournament(
       id: id ?? this.id,
@@ -61,6 +64,7 @@ class Tournament {
       isRegistered: isRegistered ?? this.isRegistered,
       updatedAt: updatedAt ?? this.updatedAt,
       users: users ?? this.users,
+      isLive: isLive ?? this.isLive,
     );
   }
 
@@ -79,6 +83,7 @@ class Tournament {
       isRegistered: data['is_registered'] ?? false,
       updatedAt: data['updated_at'],
       users: data['users'] != null ? List<String>.from(data['users']) : [],
+      isLive: data['is_live'] ?? false,
     );
   }
 
@@ -98,8 +103,9 @@ class Tournament {
     };
   }
 
-  String getMatchTypeTitle() {
-    switch (type) {
+  String getMatchTypeTitle({final MatchType matchType}) {
+    final _type = matchType ?? type;
+    switch (_type) {
       case MatchType.solo:
         return 'Solo';
         break;

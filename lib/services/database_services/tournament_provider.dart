@@ -58,10 +58,10 @@ class TournamentProvider {
   }
 
   // update tournament
-  Future updateTournament() async {
+  Future updateTournament({final Map<String, dynamic> data}) async {
     try {
       final _tournamentRef = _ref.collection('tournaments').doc(tournament.id);
-      await _tournamentRef.update(tournament.toJson());
+      await _tournamentRef.update(data ?? tournament.toJson());
       print('Success: Updating tournament ${tournament.id}');
       return 'Success';
     } catch (e) {

@@ -6,6 +6,7 @@ import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/viewmodels/app_vm.dart';
 import 'package:peaman/viewmodels/explore_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
+import 'package:peaman/views/widgets/explore_tab_widgets/live_tournament_list.dart';
 import 'package:peaman/views/widgets/explore_tab_widgets/tournament_list.dart';
 import 'package:peaman/views/widgets/explore_tab_widgets/video_carousel.dart';
 import 'package:provider/provider.dart';
@@ -100,8 +101,16 @@ class ExploreTab extends HookWidget {
                                   height: 10.0,
                                 ),
                                 if (vm.tournaments != null &&
-                                    vm.tournaments.isNotEmpty)
-                                  TournamentList(vm.tournaments),
+                                    vm.liveTournaments.isNotEmpty)
+                                  LiveTournamentList(vm.liveTournaments),
+                                if (vm.tournaments != null &&
+                                    vm.liveTournaments.isNotEmpty)
+                                  SizedBox(
+                                    height: 10.0,
+                                  ),
+                                if (vm.tournaments != null &&
+                                    vm.otherTournaments.isNotEmpty)
+                                  TournamentList(vm.otherTournaments),
                                 SizedBox(
                                   height: 100.0,
                                 ),
