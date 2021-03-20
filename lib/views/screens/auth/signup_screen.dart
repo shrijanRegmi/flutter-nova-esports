@@ -289,50 +289,6 @@ class SignUpScreen extends StatelessWidget {
     );
   }
 
-  // Widget _ageBuilder(AuthVm vm) {
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: <Widget>[
-  //       Text(
-  //         'Age',
-  //         style: TextStyle(
-  //           fontSize: 16.0,
-  //           color: _textColor,
-  //           fontWeight: FontWeight.bold,
-  //         ),
-  //       ),
-  //       SizedBox(
-  //         height: 20.0,
-  //       ),
-  //       Row(
-  //         mainAxisAlignment: MainAxisAlignment.spaceAround,
-  //         children: <Widget>[
-  //           AgeContainer(
-  //             ageRange: '15-20',
-  //             onPressed: () => vm.updateAgeValue(Age.below20),
-  //             color: vm.age == Age.below20 ? Color(0xff3D4A5A) : null,
-  //           ),
-  //           AgeContainer(
-  //             ageRange: '21-30',
-  //             onPressed: () => vm.updateAgeValue(Age.below30),
-  //             color: vm.age == Age.below30 ? Color(0xff3D4A5A) : null,
-  //           ),
-  //           AgeContainer(
-  //             ageRange: '31-40',
-  //             onPressed: () => vm.updateAgeValue(Age.below40),
-  //             color: vm.age == Age.below40 ? Color(0xff3D4A5A) : null,
-  //           ),
-  //           AgeContainer(
-  //             ageRange: '41-50',
-  //             onPressed: () => vm.updateAgeValue(Age.below50),
-  //             color: vm.age == Age.below50 ? Color(0xff3D4A5A) : null,
-  //           ),
-  //         ],
-  //       ),
-  //     ],
-  //   );
-  // }
-
   Widget _authFieldContainerBuilder(AuthVm vm) {
     return Column(
       children: <Widget>[

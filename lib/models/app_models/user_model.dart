@@ -11,6 +11,7 @@ class AppUser {
   final DocumentReference appUserRef;
   final bool admin;
   final int coins;
+  final String address;
 
   AppUser({
     this.uid,
@@ -22,6 +23,7 @@ class AppUser {
     this.admin,
     this.phone,
     this.coins,
+    this.address,
   });
 
   AppUser copyWith({
@@ -34,6 +36,7 @@ class AppUser {
     final DocumentReference appUserRef,
     final bool admin,
     final int coins,
+    final String address,
   }) {
     return AppUser(
       photoUrl: photoUrl ?? this.photoUrl,
@@ -45,6 +48,7 @@ class AppUser {
       appUserRef: appUserRef ?? this.appUserRef,
       admin: admin ?? this.admin,
       coins: coins ?? this.coins,
+      address: address ?? this.address,
     );
   }
 
@@ -55,6 +59,7 @@ class AppUser {
       'name': appUser.name,
       'email': appUser.email,
       'phone': appUser.phone,
+      'address': appUser.address,
     };
   }
 
@@ -81,6 +86,7 @@ class AppUser {
       appUserRef: _ref.collection('users').doc(data['uid']),
       admin: data['admin'] ?? false,
       coins: data['coins'] ?? 0,
+      address: data['address'] ?? '',
     );
   }
 

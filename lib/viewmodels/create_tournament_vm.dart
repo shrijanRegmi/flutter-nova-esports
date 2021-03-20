@@ -31,6 +31,7 @@ class CreateTournamentVm extends ChangeNotifier {
   bool _live2 = false;
   bool _live3 = false;
   bool _isLoading = false;
+  String _selectedState = 'Choose State';
 
   TextEditingController get titleController => _titleController;
   TextEditingController get entryController => _entryCostController;
@@ -47,6 +48,7 @@ class CreateTournamentVm extends ChangeNotifier {
   bool get live2 => _live2;
   bool get live3 => _live3;
   bool get isLoading => _isLoading;
+  String get selectedState => _selectedState;
 
   // init function
   onInit(final Tournament tournament, final List<VideoStream> videoStreams) {
@@ -79,6 +81,12 @@ class CreateTournamentVm extends ChangeNotifier {
   // update value of selectedTournament
   updateSelectedTournament(final TournamentType newVal) {
     _selectedTournament = newVal;
+    notifyListeners();
+  }
+
+  // update value of selectedState
+  updateSelectedState(final String newVal) {
+    _selectedState = newVal;
     notifyListeners();
   }
 
@@ -145,6 +153,7 @@ class CreateTournamentVm extends ChangeNotifier {
         entryCost: int.parse(_entryCostController.text.trim()),
         maxPlayers: int.parse(_maxPlayersController.text.trim()),
         updatedAt: DateTime.now().millisecondsSinceEpoch,
+        state: _selectedState == 'Choose State' ? null : _selectedState,
       );
 
       var _result;

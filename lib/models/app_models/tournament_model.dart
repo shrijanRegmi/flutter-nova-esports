@@ -16,6 +16,7 @@ class Tournament {
   final int updatedAt;
   final List<String> users;
   final bool isLive;
+  final String state;
 
   Tournament({
     this.id,
@@ -32,6 +33,7 @@ class Tournament {
     this.updatedAt,
     this.users,
     this.isLive,
+    this.state,
   });
 
   Tournament copyWith({
@@ -49,6 +51,7 @@ class Tournament {
     final int updatedAt,
     final List<String> users,
     final bool isLive,
+    final String state,
   }) {
     return Tournament(
       id: id ?? this.id,
@@ -65,6 +68,7 @@ class Tournament {
       updatedAt: updatedAt ?? this.updatedAt,
       users: users ?? this.users,
       isLive: isLive ?? this.isLive,
+      state: state ?? this.state,
     );
   }
 
@@ -84,6 +88,7 @@ class Tournament {
       updatedAt: data['updated_at'],
       users: data['users'] != null ? List<String>.from(data['users']) : [],
       isLive: data['is_live'] ?? false,
+      state: data['state'],
     );
   }
 
@@ -100,6 +105,7 @@ class Tournament {
       'max_players': maxPlayers,
       'joined_players': joinedPlayers,
       'updated_at': updatedAt,
+      'state': state,
     };
   }
 

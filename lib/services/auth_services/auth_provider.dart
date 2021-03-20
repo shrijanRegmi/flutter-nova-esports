@@ -18,6 +18,7 @@ class AuthProvider {
     final String name,
     final String email,
     final String password,
+    final String address,
   }) async {
     try {
       final _result = await _auth.createUserWithEmailAndPassword(
@@ -28,6 +29,7 @@ class AuthProvider {
         photoUrl: photoUrl,
         email: email,
         name: name,
+        address: address,
       );
 
       await AppUserProvider(user: _user).sendUserToFirestore();
@@ -61,8 +63,7 @@ class AuthProvider {
   }
 
   // login with google
-  Future loginWithGoogle(
-      final GlobalKey<ScaffoldState> scaffoldKey) async {
+  Future loginWithGoogle(final GlobalKey<ScaffoldState> scaffoldKey) async {
     try {
       final _account = await _googleSignIn.signIn();
       final _tokens = await _account.authentication;
@@ -92,8 +93,8 @@ class AuthProvider {
   }
 
   // sign up with google
-  Future signUpWithGoogle(final AppUser appUser,
-      final GlobalKey<ScaffoldState> scaffoldKey) async {
+  Future signUpWithGoogle(
+      final AppUser appUser, final GlobalKey<ScaffoldState> scaffoldKey) async {
     try {
       final _account = await _googleSignIn.signIn();
       final _tokens = await _account.authentication;

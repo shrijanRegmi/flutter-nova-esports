@@ -174,6 +174,31 @@ class CreateTournamentScreen extends StatelessWidget {
           ],
         ),
         /////////////////////////////////////// next
+        if (vm.selectedTournament == TournamentType.state)
+          Row(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Text(
+                      'Select state',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xff3D4A5A),
+                      ),
+                    ),
+                  ),
+                  _stateBuilder(vm),
+                ],
+              ),
+            ],
+          ),
+        /////////////////////////////////////// next
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Column(
@@ -285,6 +310,59 @@ class CreateTournamentScreen extends StatelessWidget {
         value: vm.selectedTournament,
         onChanged: (val) {
           vm.updateSelectedTournament(val);
+        },
+      ),
+    );
+  }
+
+  Widget _stateBuilder(final CreateTournamentVm vm) {
+    final _items = <String>[
+      'Choose State',
+      'Andhra Pradesh',
+      'Arunachal Pradesh',
+      'Assam',
+      'Bihar',
+      'Chhattisgarh',
+      'Goa',
+      'Gujarat',
+      'Haryana',
+      'Himachal Pradesh',
+      'Jharkhand',
+      'Karnataka',
+      'Kerala',
+      'Madhya Pradesh',
+      'Maharashtra',
+      'Manipur',
+      'Meghalaya',
+      'Mizoram',
+      'Odisha',
+      'Punjab',
+      'Rajasthan',
+      'Sikkim',
+      'Tamil Nadu',
+      'Telangana',
+      'Tripura',
+      'Uttar Pradesh',
+      'Uttarakhand',
+      'West Bengal',
+    ];
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: DropdownButton(
+        items: _items
+            .map(
+              (e) => DropdownMenuItem(
+                value: e,
+                child: Text(
+                  '$e',
+                ),
+              ),
+            )
+            .toList(),
+        underline: Container(),
+        value: vm.selectedState,
+        onChanged: (val) {
+          vm.updateSelectedState(val);
         },
       ),
     );

@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:geocoder/geocoder.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:peaman/enums/age.dart';
 import 'package:peaman/models/app_models/user_model.dart';
@@ -18,13 +20,13 @@ class AuthVm extends ChangeNotifier {
   TextEditingController _passController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
   bool _isLoading = false;
-  GlobalKey<ScaffoldState> _scaffoldKey =
-      GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   File _imgFile;
   bool _isNextPressed = false;
   Age _age;
   bool _keyboardVisibility = false;
   StreamSubscription _subscription;
+  String _address;
 
   TextEditingController get nameController => _nameController;
   TextEditingController get emailController => _emailController;
@@ -36,6 +38,7 @@ class AuthVm extends ChangeNotifier {
   bool get isNextPressed => _isNextPressed;
   Age get age => _age;
   bool get keyboardVisibility => _keyboardVisibility;
+  String get address => _address;
 
   // init function
   onInit() {
@@ -89,6 +92,7 @@ class AuthVm extends ChangeNotifier {
         name: _nameController.text.trim(),
         email: _emailController.text.trim(),
         password: _passController.text.trim(),
+        address: _address,
       );
     } else {
       _scaffoldKey.currentState.showSnackBar(SnackBar(
@@ -117,10 +121,14 @@ class AuthVm extends ChangeNotifier {
   }
 
   // on next btn pressed
-  onPressedNextBtn() {
+  onPressedNextBtn() async {
     if (_nameController.text.trim() != '' &&
         _phoneController.text.trim() != '') {
-      _updateIsNextBtnPressed(true);
+      final _addressFromPosition = await _getAddressFromLatLng();
+      if (_addressFromPosition != null) {
+        _updateIsNextBtnPressed(true);
+        _updateAddress(_addressFromPosition);
+      }
     } else {
       if (_nameController.text.trim() == '') {
         _scaffoldKey.currentState.showSnackBar(
@@ -183,11 +191,76 @@ class AuthVm extends ChangeNotifier {
       name: _nameController.text.trim(),
       phone: _phoneController.text.trim(),
       photoUrl: _imgUrl,
+      address: _address,
     );
     final _result =
         await AuthProvider().signUpWithGoogle(_appUser, _scaffoldKey);
     if (_result == null) {
       _updateLoader(false);
     }
+  }
+
+  // get current device postion on map
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.deniedForever) {
+        // Permissions are denied forever, handle appropriately.
+        return Future.error(
+            'Location permissions are permanently denied, we cannot request permissions.');
+      }
+
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    return await Geolocator.getCurrentPosition();
+  }
+
+  // get address from postion
+  Future<String> _getAddressFromLatLng() async {
+    try {
+      final _position = await _determinePosition();
+      final coordinates =
+          new Coordinates(_position.latitude, _position.longitude);
+      final _address =
+          await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      if (_address.isNotEmpty) {
+        return _address.first.addressLine;
+      }
+    } catch (e) {
+      print(e);
+      if (e?.message ==
+          "User denied permissions to access the device's location.") {
+        _scaffoldKey.currentState.showSnackBar(
+          SnackBar(
+            content:
+                Text('Please go to settings and turn on location permission !'),
+          ),
+        );
+      }
+      print('Error!!!: Getting user address');
+    }
+    return null;
+  }
+
+  // update value of address
+  _updateAddress(final String newVal) {
+    _address = newVal;
+    notifyListeners();
   }
 }

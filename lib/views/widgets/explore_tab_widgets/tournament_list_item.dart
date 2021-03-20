@@ -201,8 +201,19 @@ class TournamentListItem extends StatelessWidget {
                     ),
                   ],
                 ),
-                if (tournament.tournamentType == TournamentType.private)
-                  _privateBuilder(),
+                Row(
+                  children: [
+                    if (tournament.tournamentType == TournamentType.private)
+                      _privateBuilder(),
+                    if (tournament.tournamentType == TournamentType.private)
+                      SizedBox(
+                        width: 10.0,
+                      ),
+                    if (tournament.tournamentType == TournamentType.state &&
+                        tournament.state != null)
+                      _stateBuilder(),
+                  ],
+                ),
               ],
             ),
           ),
@@ -308,6 +319,25 @@ class TournamentListItem extends StatelessWidget {
           Icons.lock,
           color: Colors.white,
           size: 14.0,
+        ),
+      ),
+    );
+  }
+
+  Widget _stateBuilder() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20.0),
+        color: Colors.blue,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 8.0),
+        child: Text(
+          '${tournament.state}',
+          style: TextStyle(
+            fontSize: 10.0,
+            color: Colors.white,
+          ),
         ),
       ),
     );

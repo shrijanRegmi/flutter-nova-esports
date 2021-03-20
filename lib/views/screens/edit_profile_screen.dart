@@ -155,21 +155,49 @@ class EditProfileScreen extends StatelessWidget {
           'Enter Username',
           vm.nameController,
         ),
+        SizedBox(
+          height: 20.0,
+        ),
+        _inputFieldItem(
+          'Your Location',
+          vm.addressController.text.trim() == ''
+              ? 'Tap to add address'
+              : 'Address',
+          vm.addressController,
+          onTapped: vm.onPressedAddress,
+          isLoading: vm.isGettingAddress,
+        ),
       ],
     );
   }
 
   Widget _inputFieldItem(final String title, final String hintText,
-      final TextEditingController controller) {
+      final TextEditingController controller,
+      {final Function onTapped, final bool isLoading = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '$title',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Color(0xff3D4A5A),
-          ),
+        Row(
+          children: [
+            Text(
+              '$title',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Color(0xff3D4A5A),
+              ),
+            ),
+            SizedBox(
+              width: 10.0,
+            ),
+            if (isLoading)
+              Container(
+                width: 19.0,
+                height: 19.0,
+                child: CircularProgressIndicator(
+                  strokeWidth: 3.0,
+                ),
+              ),
+          ],
         ),
         SizedBox(
           height: 15.0,
@@ -178,6 +206,7 @@ class EditProfileScreen extends StatelessWidget {
           hintText: '$hintText',
           requiredCapitalization: false,
           controller: controller,
+          onTapped: onTapped,
         ),
       ],
     );
