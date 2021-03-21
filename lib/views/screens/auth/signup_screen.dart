@@ -145,17 +145,33 @@ class SignUpScreen extends StatelessWidget {
           height: 40.0,
         ),
         AuthField(
-          label: 'Username',
+          label: 'Full Name',
           type: TextInputType.text,
           controller: vm.nameController,
         ),
         SizedBox(
-          height: 30.0,
+          height: 20.0,
         ),
         AuthField(
           label: 'Phone',
           type: TextInputType.phone,
           controller: vm.phoneController,
+        ),
+        SizedBox(
+          height: 20.0,
+        ),
+        AuthField(
+          label: 'In-Game Name',
+          type: TextInputType.text,
+          controller: vm.inGameNameController,
+        ),
+        SizedBox(
+          height: 20.0,
+        ),
+        AuthField(
+          label: 'In-Game Id',
+          type: TextInputType.number,
+          controller: vm.inGameIdController,
         ),
         SizedBox(
           height: 50.0,

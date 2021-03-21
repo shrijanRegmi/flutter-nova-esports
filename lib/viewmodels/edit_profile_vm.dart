@@ -13,6 +13,8 @@ class EditProfileVm extends ChangeNotifier {
   EditProfileVm(this.context);
 
   TextEditingController _nameController = TextEditingController();
+  TextEditingController _inGameIdController = TextEditingController();
+  TextEditingController _inGameNameController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
   File _photo;
   bool _isLoading = false;
@@ -20,6 +22,8 @@ class EditProfileVm extends ChangeNotifier {
 
   TextEditingController get nameController => _nameController;
   TextEditingController get addressController => _addressController;
+  TextEditingController get inGameNameController => _inGameNameController;
+  TextEditingController get inGameIdController => _inGameIdController;
   File get photo => _photo;
   bool get isLoading => _isLoading;
   bool get isGettingAddress => _isGettingAddress;
@@ -50,11 +54,15 @@ class EditProfileVm extends ChangeNotifier {
     final _data = {
       'name': _nameController.text.trim(),
       'address': _addressController.text.trim(),
+      'in_game_id': _inGameIdController.text.trim(),
+      'in_game_name': _inGameNameController.text.trim(),
       'photoUrl': _photoUrl,
     };
 
     if (_nameController.text.trim() == '') _data.remove('name');
     if (_addressController.text.trim() == '') _data.remove('address');
+    if (_inGameIdController.text.trim() == '') _data.remove('in_game_id');
+    if (_inGameNameController.text.trim() == '') _data.remove('in_game_name');
 
     if (_photo == null)
       _data.remove('photoUrl');
@@ -162,6 +170,8 @@ class EditProfileVm extends ChangeNotifier {
   _initializeValues(final AppUser appUser) {
     _nameController.text = appUser.name;
     _addressController.text = appUser.address;
+    _inGameNameController.text = appUser.inGameName;
+    _inGameIdController.text = appUser.inGameId;
     if (appUser.photoUrl != null) _photo = File(appUser.photoUrl);
 
     notifyListeners();

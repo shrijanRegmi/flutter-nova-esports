@@ -159,6 +159,23 @@ class EditProfileScreen extends StatelessWidget {
           height: 20.0,
         ),
         _inputFieldItem(
+          'Your In-Game Name',
+          'Enter In-Game Name',
+          vm.inGameNameController,
+        ),
+        SizedBox(
+          height: 20.0,
+        ),
+        _inputFieldItem(
+          'Your In-Game Id',
+          'Enter In-Game Id',
+          vm.inGameIdController,
+          onTapped: () {},
+        ),
+        SizedBox(
+          height: 20.0,
+        ),
+        _inputFieldItem(
           'Your Location',
           vm.addressController.text.trim() == ''
               ? 'Tap to add address'
@@ -166,6 +183,9 @@ class EditProfileScreen extends StatelessWidget {
           vm.addressController,
           onTapped: vm.onPressedAddress,
           isLoading: vm.isGettingAddress,
+        ),
+        SizedBox(
+          height: 20.0,
         ),
       ],
     );

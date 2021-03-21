@@ -23,7 +23,9 @@ class NewTournamentField extends StatelessWidget {
     return GestureDetector(
       onTap: onTapped,
       child: Container(
-        color: Colors.transparent,
+        color: onTapped == null
+            ? Colors.transparent
+            : Colors.grey.withOpacity(0.2),
         child: TextFormField(
           onTap: onTapped,
           enabled: onTapped == null ? true : false,

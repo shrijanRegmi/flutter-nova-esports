@@ -12,6 +12,8 @@ class AppUser {
   final bool admin;
   final int coins;
   final String address;
+  final String inGameName;
+  final String inGameId;
 
   AppUser({
     this.uid,
@@ -24,6 +26,8 @@ class AppUser {
     this.phone,
     this.coins,
     this.address,
+    this.inGameName,
+    this.inGameId,
   });
 
   AppUser copyWith({
@@ -37,6 +41,8 @@ class AppUser {
     final bool admin,
     final int coins,
     final String address,
+    final String inGameName,
+    final String inGameId,
   }) {
     return AppUser(
       photoUrl: photoUrl ?? this.photoUrl,
@@ -49,6 +55,8 @@ class AppUser {
       admin: admin ?? this.admin,
       coins: coins ?? this.coins,
       address: address ?? this.address,
+      inGameName: inGameName ?? this.inGameName,
+      inGameId: inGameId ?? this.inGameId,
     );
   }
 
@@ -60,6 +68,8 @@ class AppUser {
       'email': appUser.email,
       'phone': appUser.phone,
       'address': appUser.address,
+      'in_game_name': appUser.inGameName,
+      'in_game_id': appUser.inGameId,
     };
   }
 
@@ -70,6 +80,8 @@ class AppUser {
       'name': name,
       'email': email,
       'phone': phone,
+      'in_game_name': inGameName,
+      'in_game_id': inGameId,
     };
   }
 
@@ -87,6 +99,8 @@ class AppUser {
       admin: data['admin'] ?? false,
       coins: data['coins'] ?? 0,
       address: data['address'] ?? '',
+      inGameId: data['in_game_id'],
+      inGameName: data['in_game_name'],
     );
   }
 

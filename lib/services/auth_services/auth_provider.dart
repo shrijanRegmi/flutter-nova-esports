@@ -3,43 +3,36 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:peaman/enums/age.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/services/database_services/user_provider.dart';
 
 class AuthProvider {
+  final AppUser appUser;
+  AuthProvider({this.appUser});
+
   final _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   // create account with email and password
   Future signUpWithEmailAndPassword({
-    final String photoUrl,
-    final Age age,
-    final String name,
-    final String email,
     final String password,
-    final String address,
   }) async {
     try {
       final _result = await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+          email: appUser.email, password: password);
 
-      final AppUser _user = AppUser(
+      final _appUser = appUser.copyWith(
         uid: _result.user.uid,
-        photoUrl: photoUrl,
-        email: email,
-        name: name,
-        address: address,
       );
 
-      await AppUserProvider(user: _user).sendUserToFirestore();
+      await AppUserProvider(user: _appUser).sendUserToFirestore();
 
       _userFromFirebase(_result.user);
-      print('Success: Creating user with name $name');
+      print('Success: Creating user with name ${appUser.name}');
       return _result;
     } catch (e) {
       print(e);
-      print('Error!!!: Creating user with name $name');
+      print('Error!!!: Creating user with name ${appUser.name}');
       return null;
     }
   }

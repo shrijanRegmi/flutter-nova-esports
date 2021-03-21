@@ -16,6 +16,8 @@ class AuthVm extends ChangeNotifier {
   AuthVm(this.context);
 
   TextEditingController _nameController = TextEditingController();
+  TextEditingController _inGameNameController = TextEditingController();
+  TextEditingController _inGameIdController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
@@ -29,6 +31,8 @@ class AuthVm extends ChangeNotifier {
   String _address;
 
   TextEditingController get nameController => _nameController;
+  TextEditingController get inGameNameController => _inGameNameController;
+  TextEditingController get inGameIdController => _inGameIdController;
   TextEditingController get emailController => _emailController;
   TextEditingController get passController => _passController;
   TextEditingController get phoneController => _phoneController;
@@ -86,14 +90,18 @@ class AuthVm extends ChangeNotifier {
         _result = await UserStorage().uploadUserImage(imgFile: imgFile);
       }
 
-      _result = await AuthProvider().signUpWithEmailAndPassword(
+      final _appUser = AppUser(
         photoUrl: _result,
-        age: _age,
         name: _nameController.text.trim(),
+        phone: _phoneController.text.trim(),
+        inGameName: _inGameNameController.text.trim(),
+        inGameId: _inGameIdController.text.trim(),
         email: _emailController.text.trim(),
-        password: _passController.text.trim(),
         address: _address,
       );
+
+      _result = await AuthProvider(appUser: _appUser)
+          .signUpWithEmailAndPassword(password: _passController.text.trim());
     } else {
       _scaffoldKey.currentState.showSnackBar(SnackBar(
         content: Text('Please fill up all fields'),
@@ -123,26 +131,22 @@ class AuthVm extends ChangeNotifier {
   // on next btn pressed
   onPressedNextBtn() async {
     if (_nameController.text.trim() != '' &&
-        _phoneController.text.trim() != '') {
+        _phoneController.text.trim() != '' &&
+        _inGameIdController.text.trim() != '' &&
+        _inGameNameController.text.trim() != '') {
+      _updateLoader(true);
       final _addressFromPosition = await _getAddressFromLatLng();
+      _updateLoader(false);
       if (_addressFromPosition != null) {
         _updateIsNextBtnPressed(true);
         _updateAddress(_addressFromPosition);
       }
     } else {
-      if (_nameController.text.trim() == '') {
-        _scaffoldKey.currentState.showSnackBar(
-          SnackBar(
-            content: Text('Please add your username !'),
-          ),
-        );
-      } else {
-        _scaffoldKey.currentState.showSnackBar(
-          SnackBar(
-            content: Text('Please add your phone number !'),
-          ),
-        );
-      }
+      _scaffoldKey.currentState.showSnackBar(
+        SnackBar(
+          content: Text('Please fill up all the fields !'),
+        ),
+      );
     }
   }
 
@@ -190,6 +194,8 @@ class AuthVm extends ChangeNotifier {
     final _appUser = AppUser(
       name: _nameController.text.trim(),
       phone: _phoneController.text.trim(),
+      inGameName: _inGameNameController.text.trim(),
+      inGameId: _inGameIdController.text.trim(),
       photoUrl: _imgUrl,
       address: _address,
     );
