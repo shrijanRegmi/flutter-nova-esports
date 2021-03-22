@@ -235,6 +235,7 @@ class TournamentProvider {
                   users: [...vm.thisTournament.users, appUser.uid],
                 );
                 vm.updateTournament(_tournament);
+                vm.updateIsShowingDetails(false);
                 vm.getTeam(tournament, appUser);
               }
               print('Sucess: Joining team');

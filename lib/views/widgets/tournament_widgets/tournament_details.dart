@@ -86,7 +86,7 @@ class TournamentDetails extends StatelessWidget {
                     height: 10.0,
                   ),
                   Text(
-                    'March 7, 2021 - March 9, 2021  Upto ${vm.thisTournament.time}',
+                    '${DateTimeHelper().getFormattedDate(DateTime.fromMillisecondsSinceEpoch(vm.thisTournament.registrationStart))} - ${DateTimeHelper().getFormattedDate(DateTime.fromMillisecondsSinceEpoch(vm.thisTournament.registrationEnd))}  Upto ${vm.thisTournament.registrationEndTime}',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 14.0,

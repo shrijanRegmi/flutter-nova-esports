@@ -34,6 +34,7 @@ class RegisterVm extends ChangeNotifier {
           users: [...vm.thisTournament.users, appUser.uid],
         );
         vm.updateTournament(_tournament);
+        vm.updateIsShowingDetails(false);
         vm.getTeam(tournament, appUser);
         Navigator.pop(context);
       } else {

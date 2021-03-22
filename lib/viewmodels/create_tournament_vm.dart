@@ -22,6 +22,9 @@ class CreateTournamentVm extends ChangeNotifier {
   TextEditingController _maxPlayersController = TextEditingController();
   DateTime _matchDate;
   TimeOfDay _matchTime;
+  DateTime _registrationStartDate;
+  DateTime _registrationEndDate;
+  TimeOfDay _registrationEndTime;
   bool _isEditing = false;
   String _tournamentId;
   TextEditingController _link1 = TextEditingController();
@@ -41,6 +44,9 @@ class CreateTournamentVm extends ChangeNotifier {
   TournamentType get selectedTournament => _selectedTournament;
   DateTime get matchDate => _matchDate;
   TimeOfDay get matchTime => _matchTime;
+  DateTime get registrationStartDate => _registrationStartDate;
+  DateTime get registrationEndDate => _registrationEndDate;
+  TimeOfDay get registrationEndTime => _registrationEndTime;
   TextEditingController get link1 => _link1;
   TextEditingController get link2 => _link2;
   TextEditingController get link3 => _link3;
@@ -122,13 +128,68 @@ class CreateTournamentVm extends ChangeNotifier {
     }
   }
 
+  // open registration start date picker
+  registrationStartPicker() async {
+    final _pickedDate = await showDatePicker(
+      context: context,
+      initialDate: _registrationStartDate ?? DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(
+        DateTime.now().year + 10,
+        DateTime.now().month,
+        DateTime.now().day,
+      ),
+    );
+
+    if (_pickedDate != null) {
+      _registrationStartDate = _pickedDate;
+      notifyListeners();
+    }
+  }
+
+  // open registration end date picker
+  registrationEndPicker() async {
+    final _pickedDate = await showDatePicker(
+      context: context,
+      initialDate: _registrationEndDate ?? DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(
+        DateTime.now().year + 10,
+        DateTime.now().month,
+        DateTime.now().day,
+      ),
+    );
+
+    if (_pickedDate != null) {
+      _registrationEndDate = _pickedDate;
+      notifyListeners();
+    }
+  }
+
+  // open registration end time picker
+  registrationEndTimePicker() async {
+    final _pickedTime = await showTimePicker(
+      context: context,
+      initialTime:
+          _registrationEndTime ?? TimeOfDay.fromDateTime(DateTime.now()),
+    );
+
+    if (_pickedTime != null) {
+      _registrationEndTime = _pickedTime;
+      notifyListeners();
+    }
+  }
+
   // create tournament
   createTournament() async {
     final _isFormComplete = _titleController.text.trim() != '' &&
         _entryCostController.text.trim() != '' &&
         _maxPlayersController.text.trim() != '' &&
         _matchDate != null &&
-        _matchTime != null;
+        _matchTime != null &&
+        _registrationStartDate != null &&
+        _registrationEndDate != null &&
+        _registrationEndTime != null;
     if (_isFormComplete) {
       updateIsLoading(true);
       String _imgUrl;
@@ -154,6 +215,10 @@ class CreateTournamentVm extends ChangeNotifier {
         maxPlayers: int.parse(_maxPlayersController.text.trim()),
         updatedAt: DateTime.now().millisecondsSinceEpoch,
         state: _selectedState == 'Choose State' ? null : _selectedState,
+        registrationStart: _registrationStartDate.millisecondsSinceEpoch,
+        registrationEnd: _registrationEndDate.millisecondsSinceEpoch,
+        registrationEndTime:
+            DateTimeHelper().getFormattedTime(_registrationEndTime),
       );
 
       var _result;

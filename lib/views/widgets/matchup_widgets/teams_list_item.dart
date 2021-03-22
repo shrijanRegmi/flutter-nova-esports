@@ -73,7 +73,7 @@ class TeamsListItem extends StatelessWidget {
                 width: 20.0,
               ),
               Text(
-                '${element.name}',
+                '${element.inGameName}',
                 style: TextStyle(
                   color: Color(0xff3D4A5A),
                 ),

@@ -256,6 +256,21 @@ class CreateTournamentScreen extends StatelessWidget {
                 height: 5.0,
               ),
               _addDateTimeBuilder(vm),
+              /////////////////////////////////////// next
+              SizedBox(
+                height: 20.0,
+              ),
+              Text(
+                'Add date and time of registration period',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xff3D4A5A),
+                ),
+              ),
+              SizedBox(
+                height: 5.0,
+              ),
+              _addRegistrationDateTimeBuilder(vm),
             ],
           ),
         ),
@@ -417,14 +432,18 @@ class CreateTournamentScreen extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            MaterialButton(
-              onPressed: vm.openDatePicker,
-              color: Colors.green,
-              child: Text(
-                vm.matchDate == null ? 'Select date' : 'Change date',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+            Expanded(
+              child: MaterialButton(
+                onPressed: vm.openDatePicker,
+                color: Colors.green,
+                child: Text(
+                  vm.matchDate == null
+                      ? 'Select tournament date'
+                      : 'Change tournament date',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
@@ -443,14 +462,18 @@ class CreateTournamentScreen extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            MaterialButton(
-              onPressed: vm.openTimePicker,
-              color: Colors.green,
-              child: Text(
-                vm.matchTime == null ? 'Select time' : 'Change time',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+            Expanded(
+              child: MaterialButton(
+                onPressed: vm.openTimePicker,
+                color: Colors.green,
+                child: Text(
+                  vm.matchTime == null
+                      ? 'Select tournament time'
+                      : 'Change tournament time',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
@@ -459,6 +482,98 @@ class CreateTournamentScreen extends StatelessWidget {
             ),
             if (vm.matchTime != null)
               Text(DateTimeHelper().getFormattedTime(vm.matchTime)),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _addRegistrationDateTimeBuilder(final CreateTournamentVm vm) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: MaterialButton(
+                onPressed: vm.registrationStartPicker,
+                color: Colors.green,
+                child: Text(
+                  vm.registrationStartDate == null
+                      ? 'Select registration start date'
+                      : 'Change registration start date',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 10.0,
+            ),
+            if (vm.registrationStartDate != null)
+              Text(
+                DateTimeHelper().getFormattedDate(vm.registrationStartDate),
+              ),
+          ],
+        ),
+        SizedBox(
+          height: 5.0,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: MaterialButton(
+                onPressed: vm.registrationEndPicker,
+                color: Colors.green,
+                child: Text(
+                  vm.registrationEndDate == null
+                      ? 'Select registration end date'
+                      : 'Change registration end date',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 10.0,
+            ),
+            if (vm.registrationEndDate != null)
+              Text(
+                DateTimeHelper().getFormattedDate(vm.registrationEndDate),
+              ),
+          ],
+        ),
+        SizedBox(
+          height: 5.0,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: MaterialButton(
+                onPressed: vm.registrationEndTimePicker,
+                color: Colors.green,
+                child: Text(
+                  vm.registrationEndTime == null
+                      ? 'Select registration end time'
+                      : 'Change registration end timed',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 10.0,
+            ),
+            if (vm.registrationEndTime != null)
+              Text(DateTimeHelper().getFormattedTime(vm.registrationEndTime)),
           ],
         ),
       ],

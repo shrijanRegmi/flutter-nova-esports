@@ -144,7 +144,9 @@ class TournamentViewScreen extends StatelessWidget {
                 if (vm.thisTournament.isLive)
                   _liveBuilder()
                 else if (appUser.admin)
-                  _startTournamentBtnBuilder(context, appUser, vm),
+                  _startTournamentBtnBuilder(context, appUser, vm)
+                else
+                  Center(),
                 SizedBox(
                   height: 20.0,
                 ),
