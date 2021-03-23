@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:peaman/models/app_models/team_model.dart';
+import 'package:peaman/models/app_models/tournament_model.dart';
 import 'package:peaman/views/screens/team_view_screen.dart';
 
 class LobbiesListItem extends StatelessWidget {
+  final Tournament tournament;
   final List<Team> teams;
   final int index;
   final Team myTeam;
-  LobbiesListItem(this.index, this.teams, this.myTeam);
+  LobbiesListItem({
+    this.tournament,
+    this.index,
+    this.teams,
+    this.myTeam,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,9 +26,10 @@ class LobbiesListItem extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (_) => TeamViewScreen(
-              'Lobby ${index + 1}',
-              teams,
-              myTeam,
+              tournament: tournament,
+              index: index + 1,
+              teams: teams,
+              myTeam: myTeam,
             ),
           ),
         );

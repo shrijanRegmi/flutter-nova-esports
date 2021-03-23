@@ -20,6 +20,7 @@ class Tournament {
   final int registrationStart;
   final int registrationEnd;
   final String registrationEndTime;
+  final Map<String, dynamic> roomKeys;
 
   Tournament({
     this.id,
@@ -40,6 +41,7 @@ class Tournament {
     this.registrationEnd,
     this.registrationStart,
     this.registrationEndTime,
+    this.roomKeys,
   });
 
   Tournament copyWith({
@@ -61,6 +63,7 @@ class Tournament {
     final int registrationStart,
     final int registrationEnd,
     final String registrationEndTime,
+    final Map<String, dynamic> roomKey,
   }) {
     return Tournament(
       id: id ?? this.id,
@@ -81,6 +84,7 @@ class Tournament {
       registrationStart: registrationStart ?? this.registrationStart,
       registrationEnd: registrationEnd ?? this.registrationEnd,
       registrationEndTime: registrationEndTime ?? this.registrationEndTime,
+      roomKeys: roomKeys ?? this.roomKeys,
     );
   }
 
@@ -104,6 +108,7 @@ class Tournament {
       registrationStart: data['registration_start'],
       registrationEnd: data['registration_end'],
       registrationEndTime: data['registration_end_time'],
+      roomKeys: data['room_keys'] ?? {},
     );
   }
 
@@ -152,5 +157,17 @@ class Tournament {
       default:
         return 'State';
     }
+  }
+
+  int getPlayersCount() {
+    switch (type) {
+      case MatchType.solo:
+        return 1;
+      case MatchType.duo:
+        return 2;
+      case MatchType.squad:
+        return 4;
+    }
+    return -1;
   }
 }

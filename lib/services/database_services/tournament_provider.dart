@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:peaman/enums/match_type.dart';
 import 'package:peaman/helpers/dialog_provider.dart';
 import 'package:peaman/models/app_models/team_model.dart';
 import 'package:peaman/models/app_models/tournament_model.dart';
@@ -193,13 +192,10 @@ class TournamentProvider {
       final _team = await getTeamById(teamCode);
 
       if (_team != null) {
-        final _teamFull = tournament.type == MatchType.duo
-            ? _team.users.length >= 2
-            : _team.users.length >= 4;
+        final _teamFull = _team.users.length >= tournament.getPlayersCount();
 
-        final _assignLobby = tournament.type == MatchType.duo
-            ? _team.users.length == 1
-            : _team.users.length == 3;
+        final _assignLobby =
+            _team.users.length == (tournament.getPlayersCount() - 1);
 
         if (!_teamFull) {
           final _tournamentRef =
@@ -282,6 +278,22 @@ class TournamentProvider {
     } catch (e) {
       print(e);
       print('Error!!!: Sending an update to team $teamId');
+      return null;
+    }
+  }
+
+  // release room key
+  Future releaseRoomKey() async {
+    try {
+      final _tournamentRef = _ref.collection('tournaments').doc(tournament.id);
+      await _tournamentRef.update({
+        'room_keys': tournament.roomKeys,
+      });
+      print('Success: Releasing room key');
+      return 'Success';
+    } catch (e) {
+      print(e);
+      print('Error!!!: Releasing room key');
       return null;
     }
   }

@@ -30,12 +30,13 @@ class LobbiesList extends StatelessWidget {
                     final _start = _teamsInALobby * index;
                     final _end = _teamsInALobby * (index + 1);
                     return LobbiesListItem(
-                        index,
-                        _teams.length < _end
-                            ? _teams.sublist(_start)
-                            : _teams.sublist(_start, _end),
-                        // _teams,
-                        team);
+                      tournament: tournament,
+                      index: index,
+                      teams: _teams.length < _end
+                          ? _teams.sublist(_start)
+                          : _teams.sublist(_start, _end),
+                      myTeam: team,
+                    );
                   },
                   separatorBuilder: (context, index) {
                     return Divider(

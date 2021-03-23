@@ -216,7 +216,8 @@ class TournamentViewScreen extends StatelessWidget {
                 ),
               );
             },
-            isEnabled: vm.team != null && vm.team.users.length > 1,
+            isEnabled: vm.team != null &&
+                vm.team.users.length == vm.thisTournament.getPlayersCount(),
           ),
           Container(
             height: 40.0,
