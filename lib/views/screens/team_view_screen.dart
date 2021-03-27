@@ -12,11 +12,13 @@ class TeamViewScreen extends StatelessWidget {
   final int index;
   final List<Team> teams;
   final Team myTeam;
+  final int round;
   TeamViewScreen({
     this.tournament,
     this.index,
     this.teams,
     this.myTeam,
+    this.round,
   });
 
   @override
@@ -58,14 +60,88 @@ class TeamViewScreen extends StatelessWidget {
                       SizedBox(
                         height: 10.0,
                       ),
-                    TeamsList(teams, myTeam),
+                    TeamsList(
+                      teams: teams,
+                      myTeam: myTeam,
+                      round: round,
+                    ),
                   ],
                 ),
               ),
             ),
           ),
+          floatingActionButton: !appUser.admin
+              ? null
+              : Padding(
+                  padding: const EdgeInsets.only(right: 10.0, bottom: 10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      if (vm.isCheckBox)
+                        _cancelBtnBuilder(context, appUser, vm),
+                      if (vm.isCheckBox)
+                        SizedBox(
+                          width: 10.0,
+                        ),
+                      _selectWinnersBtnBuilder(context, appUser, vm),
+                    ],
+                  ),
+                ),
         );
       },
+    );
+  }
+
+  Widget _selectWinnersBtnBuilder(
+      final BuildContext context, final AppUser appUser, final TeamViewVm vm) {
+    return Material(
+      borderRadius: BorderRadius.circular(100.0),
+      elevation: 2.0,
+      color: Colors.blue,
+      child: InkWell(
+          onTap: () {
+            if (!vm.isCheckBox)
+              vm.updateIsCheckBox(true);
+            else
+              vm.selectLobbyWinners(tournament);
+          },
+          borderRadius: BorderRadius.circular(100.0),
+          child: Container(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+            color: Colors.transparent,
+            child: Text(
+              vm.isCheckBox ? 'Done' : 'Select Winners',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          )),
+    );
+  }
+
+  Widget _cancelBtnBuilder(
+      final BuildContext context, final AppUser appUser, final TeamViewVm vm) {
+    return Material(
+      borderRadius: BorderRadius.circular(100.0),
+      elevation: 2.0,
+      color: Colors.blue,
+      child: InkWell(
+          onTap: () => vm.updateIsCheckBox(false),
+          borderRadius: BorderRadius.circular(100.0),
+          child: Container(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+            color: Colors.transparent,
+            child: Text(
+              'Cancel',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          )),
     );
   }
 

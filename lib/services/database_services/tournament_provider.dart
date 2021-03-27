@@ -14,6 +14,7 @@ class TournamentProvider {
   final VideoStream videoStream;
   final AppUser appUser;
   final Team team;
+  final int round;
 
   TournamentProvider({
     this.context,
@@ -21,6 +22,7 @@ class TournamentProvider {
     this.videoStream,
     this.appUser,
     this.team,
+    this.round = 1,
   });
 
   final _ref = FirebaseFirestore.instance;
@@ -298,6 +300,29 @@ class TournamentProvider {
     }
   }
 
+  // select winners
+  Future selectLobbyWinners(final List<Team> selectedWinners) async {
+    try {
+      final _tournamentRef = _ref.collection('tournaments').doc(tournament.id);
+      for (int i = 0; i < selectedWinners.length; i++) {
+        final _team = selectedWinners[i];
+        final _teamRef = _tournamentRef.collection('teams').doc(_team.id);
+        await _teamRef.update({
+          'rounds': FieldValue.arrayUnion([tournament.activeRound + 1]),
+        });
+        print(
+          'Success: Sending team ${_team.teamName} to round ${tournament.activeRound + 1}',
+        );
+      }
+      return 'Success';
+    } catch (e) {
+      print(e);
+      print(
+        'Error!!!: Sending teams to next round',
+      );
+    }
+  }
+
   // get list of tournaments from firestore
   List<Tournament> _tournamentsFromFirestore(final QuerySnapshot colSnap) {
     return colSnap.docs.map((e) => Tournament.fromJson(e.data())).toList();
@@ -355,6 +380,7 @@ class TournamentProvider {
         .doc(tournament.id)
         .collection('teams')
         .orderBy('team_completed_at')
+        .where('rounds', arrayContains: round)
         .snapshots()
         .map(_tournamentTeamsFromFirebase);
   }

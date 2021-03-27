@@ -5,7 +5,12 @@ import 'package:peaman/views/widgets/matchup_widgets/teams_list_item.dart';
 class TeamsList extends StatelessWidget {
   final List<Team> teams;
   final Team myTeam;
-  TeamsList(this.teams, this.myTeam);
+  final int round;
+  TeamsList({
+    this.teams,
+    this.myTeam,
+    this.round,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +24,7 @@ class TeamsList extends StatelessWidget {
               return TeamsListItem(
                 teams[index],
                 isMyTeam: myTeam.id == teams[index].id,
+                isWinner: teams[index].rounds.contains((round + 1)),
               );
             },
             separatorBuilder: (context, index) {

@@ -7,14 +7,20 @@ import 'package:peaman/views/widgets/matchup_widgets/lobbies_list_item.dart';
 class LobbiesList extends StatelessWidget {
   final Tournament tournament;
   final Team team;
-  LobbiesList(this.tournament, this.team);
+  final int round;
+  LobbiesList(
+    this.tournament,
+    this.team,
+    this.round,
+  );
 
   @override
   Widget build(BuildContext context) {
     final _teamsInALobby = 12;
 
     return StreamBuilder<List<Team>>(
-      stream: TournamentProvider(tournament: tournament).tournamentTeamsList,
+      stream: TournamentProvider(tournament: tournament, round: round)
+          .tournamentTeamsList,
       builder: (context, snap) {
         if (snap.hasData) {
           final _teams = snap.data ?? [];
@@ -36,6 +42,7 @@ class LobbiesList extends StatelessWidget {
                           ? _teams.sublist(_start)
                           : _teams.sublist(_start, _end),
                       myTeam: team,
+                      round: round,
                     );
                   },
                   separatorBuilder: (context, index) {

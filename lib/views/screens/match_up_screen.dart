@@ -4,11 +4,17 @@ import 'package:peaman/models/app_models/tournament_model.dart';
 import 'package:peaman/views/widgets/common_widgets/appbar.dart';
 import 'package:peaman/views/widgets/matchup_widgets/lobbies_list.dart';
 
-class MatchUpScreen extends StatelessWidget {
+class MatchUpScreen extends StatefulWidget {
   final Tournament tournament;
   final Team team;
   MatchUpScreen(this.tournament, this.team);
 
+  @override
+  _MatchUpScreenState createState() => _MatchUpScreenState();
+}
+
+class _MatchUpScreenState extends State<MatchUpScreen> {
+  int _selectedRound = 1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +37,11 @@ class MatchUpScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _roundSelectionBuilder(),
-              LobbiesList(tournament, team),
+              LobbiesList(
+                widget.tournament,
+                widget.team,
+                _selectedRound,
+              ),
             ],
           ),
         ),
@@ -55,8 +65,8 @@ class MatchUpScreen extends StatelessWidget {
             )
             .toList(),
         underline: Container(),
-        value: _items[0],
-        onChanged: (val) {},
+        value: _selectedRound,
+        onChanged: (val) => setState(() => _selectedRound = val),
       ),
     );
   }

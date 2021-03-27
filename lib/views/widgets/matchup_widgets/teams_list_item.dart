@@ -1,18 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:peaman/models/app_models/team_model.dart';
 import 'package:peaman/models/app_models/user_model.dart';
+import 'package:peaman/viewmodels/team_view_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
+import 'package:provider/provider.dart';
 
-class TeamsListItem extends StatelessWidget {
+class TeamsListItem extends StatefulWidget {
   final Team team;
   final bool isMyTeam;
+  final bool isWinner;
   TeamsListItem(
     this.team, {
     this.isMyTeam = false,
+    this.isWinner = false,
   });
 
   @override
+  _TeamsListItemState createState() => _TeamsListItemState();
+}
+
+class _TeamsListItemState extends State<TeamsListItem> {
+  bool _isChecked = false;
+
+  @override
   Widget build(BuildContext context) {
+    final _teamViewVm = Provider.of<TeamViewVm>(context);
+
     return ViewmodelProvider<TeamsListItemVm>(
       vm: TeamsListItemVm(),
       builder: (context, vm, appVm, appUser) {
@@ -26,22 +39,61 @@ class TeamsListItem extends StatelessWidget {
               ),
               leading: Icon(
                 Icons.sports_esports,
-                color: isMyTeam ? Colors.green : Color(0xff3D4A5A),
+                color: widget.isMyTeam ? Colors.green : Color(0xff3D4A5A),
               ),
               title: Text(
-                '${team.teamName}',
+                '${widget.team.teamName}',
                 style: TextStyle(
-                  color: isMyTeam ? Colors.green : Color(0xff3D4A5A),
-                  fontWeight: isMyTeam ? FontWeight.bold : FontWeight.normal,
+                  color: widget.isMyTeam ? Colors.green : Color(0xff3D4A5A),
+                  fontWeight:
+                      widget.isMyTeam ? FontWeight.bold : FontWeight.normal,
                 ),
               ),
-              trailing: Icon(
-                vm.isTapped
-                    ? Icons.keyboard_arrow_down
-                    : Icons.keyboard_arrow_right,
-                size: 20.0,
-                color: isMyTeam ? Colors.green : Color(0xff3D4A5A),
-              ),
+              trailing: !widget.isWinner && _teamViewVm.isCheckBox
+                  ? Checkbox(
+                      value: _isChecked,
+                      onChanged: (val) {
+                        setState(() => _isChecked = val);
+                        final _selectedWinners = _teamViewVm.selectedWinners;
+
+                        if (_isChecked) {
+                          _selectedWinners.add(widget.team);
+                          _teamViewVm.updateSelectedWinner(_selectedWinners);
+                        } else {
+                          _selectedWinners.remove(widget.team);
+                          _teamViewVm.updateSelectedWinner(_selectedWinners);
+                        }
+                      },
+                    )
+                  : Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        if (widget.isWinner)
+                          Text(
+                            'Winner',
+                            style: TextStyle(
+                              fontStyle: FontStyle.italic,
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xff3D4A5A),
+                            ),
+                          ),
+                        if (widget.isWinner)
+                          SizedBox(
+                            width: 10.0,
+                          ),
+                        Icon(
+                          vm.isTapped
+                              ? Icons.keyboard_arrow_down
+                              : Icons.keyboard_arrow_right,
+                          size: 20.0,
+                          color: widget.isMyTeam
+                              ? Colors.green
+                              : Color(0xff3D4A5A),
+                        ),
+                      ],
+                    ),
             ),
             if (vm.isTapped) ..._usersBuilder(appUser),
             if (vm.isTapped)
@@ -56,7 +108,7 @@ class TeamsListItem extends StatelessWidget {
 
   List<Widget> _usersBuilder(final AppUser appUser) {
     final _list = <Widget>[];
-    team.users.forEach((element) {
+    widget.team.users.forEach((element) {
       _list.add(
         Padding(
           padding: const EdgeInsets.all(10.0),

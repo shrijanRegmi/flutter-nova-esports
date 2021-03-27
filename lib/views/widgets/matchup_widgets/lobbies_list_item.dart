@@ -8,11 +8,13 @@ class LobbiesListItem extends StatelessWidget {
   final List<Team> teams;
   final int index;
   final Team myTeam;
+  final int round;
   LobbiesListItem({
     this.tournament,
     this.index,
     this.teams,
     this.myTeam,
+    this.round,
   });
 
   @override
@@ -30,6 +32,7 @@ class LobbiesListItem extends StatelessWidget {
               index: index + 1,
               teams: teams,
               myTeam: myTeam,
+              round: round,
             ),
           ),
         );
