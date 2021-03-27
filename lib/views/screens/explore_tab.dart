@@ -145,17 +145,32 @@ class ExploreTab extends HookWidget {
               ),
             ),
             floatingActionButton: appUser.admin
-                ? FloatingActionButton(
-                    backgroundColor: Colors.blue,
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => CreateTournamentScreen(),
-                        ),
-                      );
-                    },
-                    child: Icon(Icons.add),
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      FloatingActionButton(
+                        backgroundColor: Colors.blue,
+                        heroTag: 'create',
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => CreateTournamentScreen(),
+                            ),
+                          );
+                        },
+                        child: Icon(Icons.add),
+                      ),
+                      SizedBox(
+                        width: 10.0,
+                      ),
+                      FloatingActionButton(
+                        backgroundColor: Colors.blue,
+                        onPressed: vm.searchUser,
+                        heroTag: 'search',
+                        child: Icon(Icons.search),
+                      ),
+                    ],
                   )
                 : Container(),
           );

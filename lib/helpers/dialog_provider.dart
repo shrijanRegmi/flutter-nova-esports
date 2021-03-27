@@ -272,6 +272,69 @@ class DialogProvider {
     );
   }
 
+  // show this when admin wants to search user
+  showAdminSearchDialog(
+      final TextEditingController controller, final Function onPressed) async {
+    return await showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text('Search User'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              style: TextStyle(
+                fontSize: 14.0,
+              ),
+              controller: controller,
+              decoration: InputDecoration(
+                hintText: 'Type something...',
+              ),
+            ),
+            SizedBox(
+              height: 20.0,
+            ),
+            Text(
+              'You can search user using email, in-game-id or in-game-name.',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 12.0,
+                // fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            child: Text(
+              'Cancel',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          TextButton(
+            child: Text(
+              'Search',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              onPressed();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _addMomentBuilder() {
     return Container(
       color: Colors.transparent,

@@ -88,6 +88,57 @@ class AppUserProvider {
     return _appUser;
   }
 
+  // search user
+  Future<AppUser> searchedUser(
+      final TextEditingController searchController) async {
+    AppUser _appUser;
+    try {
+      final _text = searchController.text.trim();
+
+      final _usersRefByEmail =
+          _ref.collection('users').where('email', isEqualTo: _text).limit(1);
+      final _usersRefByInGameId = _ref
+          .collection('users')
+          .where('in_game_id', isEqualTo: _text)
+          .limit(1);
+      final _usersRefByInGameName = _ref
+          .collection('users')
+          .where('in_game_name', isEqualTo: _text)
+          .limit(1);
+
+      // email
+      var _usersRefSnap = await _usersRefByEmail.get();
+      if (_usersRefSnap.docs.isNotEmpty) {
+        final _userData = _usersRefSnap.docs.first.data();
+        if (_userData != null) {
+          _appUser = AppUser.fromJson(_userData);
+        }
+      } else {
+        // in game id
+        _usersRefSnap = await _usersRefByInGameId.get();
+        if (_usersRefSnap.docs.isNotEmpty) {
+          final _userData = _usersRefSnap.docs.first.data();
+          if (_userData != null) {
+            _appUser = AppUser.fromJson(_userData);
+          }
+        } else {
+          // in game name
+          _usersRefSnap = await _usersRefByInGameName.get();
+          if (_usersRefSnap.docs.isNotEmpty) {
+            final _userData = _usersRefSnap.docs.first.data();
+            if (_userData != null) {
+              _appUser = AppUser.fromJson(_userData);
+            }
+          }
+        }
+      }
+    } catch (e) {
+      print(e);
+      print('Error!!!: Searching for user');
+    }
+    return _appUser;
+  }
+
   // list of users;
   List<AppUser> _usersFromFirebase(QuerySnapshot snap) {
     return snap.docs.map((doc) {
