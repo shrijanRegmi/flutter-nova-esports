@@ -110,9 +110,9 @@ class TournamentProvider {
       );
       await _teamsRef.set(_team.toJson());
       await _tournamentRef.update({
-        'users': [
+        'users': FieldValue.arrayUnion([
           appUser.uid,
-        ],
+        ]),
       });
       await sendUpdate(
         _team.id,
