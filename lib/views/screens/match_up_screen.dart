@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:peaman/models/app_models/team_model.dart';
-import 'package:peaman/models/app_models/tournament_model.dart';
+import 'package:peaman/viewmodels/app_vm.dart';
 import 'package:peaman/viewmodels/match_up_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
 import 'package:peaman/views/widgets/common_widgets/appbar.dart';
 import 'package:peaman/views/widgets/matchup_widgets/lobbies_list.dart';
+import 'package:provider/provider.dart';
 
 class MatchUpScreen extends StatefulWidget {
-  final Tournament tournament;
   final Team team;
-  MatchUpScreen(this.tournament, this.team);
+  MatchUpScreen(this.team);
 
   @override
   _MatchUpScreenState createState() => _MatchUpScreenState();
@@ -21,16 +21,18 @@ class _MatchUpScreenState extends State<MatchUpScreen> {
   @override
   void initState() {
     super.initState();
+    final _appVm = Provider.of<AppVm>(context, listen: false);
     setState(() {
-      _selectedRound = widget.tournament.activeRound;
+      _selectedRound = _appVm.selectedTournament.activeRound;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final _appVm = Provider.of<AppVm>(context);
     return ViewmodelProvider<MatchUpVm>(
-      vm: MatchUpVm(),
-      onInit: (vm) => vm.onInit(widget.tournament),
+      vm: MatchUpVm(context),
+      onInit: (vm) => vm.onInit(_appVm.selectedTournament),
       builder: (context, vm, appVm, appUser) {
         return Scaffold(
           appBar: PreferredSize(

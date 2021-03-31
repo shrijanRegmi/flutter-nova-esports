@@ -12,11 +12,13 @@ class TeamViewVm extends ChangeNotifier {
   GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey<ScaffoldState>();
   bool _isCheckBox = false;
   List<Team> _selectedWinners = [];
+  List<Team> _checkedWinners = [];
 
   TextEditingController get roomKeyController => _roomKeyController;
   GlobalKey<ScaffoldState> get scaffoldkey => _scaffoldkey;
   bool get isCheckBox => _isCheckBox;
   List<Team> get selectedWinners => _selectedWinners;
+  List<Team> get checkedWinners => _checkedWinners;
 
   // init function
   onInit(final Tournament tournament, final int index) {
@@ -66,11 +68,17 @@ class TeamViewVm extends ChangeNotifier {
 
   // select winners for next round
   selectLobbyWinners(final Tournament tournament) async {
-    if (_selectedWinners.isNotEmpty) {
+    if (_checkedWinners.isNotEmpty) {
+      final _newWinners = _selectedWinners;
+      _checkedWinners.forEach((element) {
+        _newWinners.add(element);
+      });
+      updateSelectedWinner(_newWinners);
       final _result = await TournamentProvider(tournament: tournament)
-          .selectLobbyWinners(_selectedWinners);
+          .selectLobbyWinners(_checkedWinners);
       if (_result != null) {
         updateIsCheckBox(false);
+        updateCheckedWinner([]);
         _scaffoldkey.currentState.showSnackBar(
           SnackBar(
             content: Text(
@@ -97,6 +105,12 @@ class TeamViewVm extends ChangeNotifier {
   // update value of selected winner
   updateSelectedWinner(final List<Team> newVal) {
     _selectedWinners = newVal;
+    notifyListeners();
+  }
+
+  // update value of checked winner
+  updateCheckedWinner(final List<Team> newVal) {
+    _checkedWinners = newVal;
     notifyListeners();
   }
 }

@@ -26,6 +26,9 @@ class _TeamsListItemState extends State<TeamsListItem> {
   Widget build(BuildContext context) {
     final _teamViewVm = Provider.of<TeamViewVm>(context);
 
+    print(
+        'The selected winners are ${_teamViewVm.selectedWinners.map((e) => e.teamName)}');
+
     return ViewmodelProvider<TeamsListItemVm>(
       vm: TeamsListItemVm(),
       builder: (context, vm, appVm, appUser) {
@@ -49,19 +52,22 @@ class _TeamsListItemState extends State<TeamsListItem> {
                       widget.isMyTeam ? FontWeight.bold : FontWeight.normal,
                 ),
               ),
-              trailing: !widget.isWinner && _teamViewVm.isCheckBox
+              trailing: !widget.isWinner &&
+                      !_teamViewVm.selectedWinners.contains(widget.team) &&
+                      _teamViewVm.isCheckBox
                   ? Checkbox(
                       value: _isChecked,
                       onChanged: (val) {
                         setState(() => _isChecked = val);
-                        final _selectedWinners = _teamViewVm.selectedWinners;
+                        final _checkedWinners =
+                            _teamViewVm.checkedWinners ?? [];
 
                         if (_isChecked) {
-                          _selectedWinners.add(widget.team);
-                          _teamViewVm.updateSelectedWinner(_selectedWinners);
+                          _checkedWinners.add(widget.team);
+                          _teamViewVm.updateCheckedWinner(_checkedWinners);
                         } else {
-                          _selectedWinners.remove(widget.team);
-                          _teamViewVm.updateSelectedWinner(_selectedWinners);
+                          _checkedWinners.remove(widget.team);
+                          _teamViewVm.updateCheckedWinner(_checkedWinners);
                         }
                       },
                     )
@@ -69,7 +75,8 @@ class _TeamsListItemState extends State<TeamsListItem> {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        if (widget.isWinner)
+                        if (widget.isWinner ||
+                            _teamViewVm.selectedWinners.contains(widget.team))
                           Text(
                             'Winner',
                             style: TextStyle(
@@ -79,7 +86,8 @@ class _TeamsListItemState extends State<TeamsListItem> {
                               color: Color(0xff3D4A5A),
                             ),
                           ),
-                        if (widget.isWinner)
+                        if (widget.isWinner ||
+                            _teamViewVm.selectedWinners.contains(widget.team))
                           SizedBox(
                             width: 10.0,
                           ),

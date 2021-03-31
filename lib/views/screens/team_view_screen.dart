@@ -50,9 +50,10 @@ class TeamViewScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (appUser.admin ||
-                        (!appUser.admin &&
-                            vm.roomKeyController.text.trim() != ''))
+                    if (appVm.selectedTournament.activeRound == round &&
+                        (appUser.admin ||
+                            (!appUser.admin &&
+                                vm.roomKeyController.text.trim() != '')))
                       _roomKeyBuilder(appUser, vm),
                     if (appUser.admin ||
                         (!appUser.admin &&
