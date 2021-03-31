@@ -1,37 +1,91 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:peaman/enums/online_status.dart';
+import 'package:peaman/models/app_models/app_config.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/viewmodels/profile_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
 import 'package:peaman/views/widgets/profile_widgets/options_list.dart';
+import 'package:provider/provider.dart';
 
-class ProfileTab extends StatelessWidget {
+class ProfileTab extends StatefulWidget {
+  @override
+  _ProfileTabState createState() => _ProfileTabState();
+}
+
+class _ProfileTabState extends State<ProfileTab> {
+  BannerAd _bannerAd;
+  bool _isLoadedAd = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _handleBanner();
+  }
+
+  @override
+  void dispose() {
+    _bannerAd?.dispose();
+    super.dispose();
+  }
+
+  _handleBanner() async {
+    final _appConfig = Provider.of<AppConfig>(context, listen: false);
+    _bannerAd = BannerAd(
+      adUnitId: '${_appConfig?.bannerId}',
+      size: AdSize.banner,
+      request: AdRequest(),
+      listener: AdListener(
+        onAdLoaded: (ad) => setState(() => _isLoadedAd = true),
+      ),
+    )..load();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ViewmodelProvider<ProfileVm>(
-      vm: ProfileVm(),
-      builder: (context, vm, appVm, appUser) {
-        return SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(
-                height: 10.0,
-              ),
-              _headerBuilder(appUser),
-              SizedBox(
-                height: 20.0,
-              ),
-              _userDetailBuilder(context, appUser),
-              SizedBox(
-                height: 40.0,
-              ),
-              OptionsList(),
-            ],
-          ),
-        );
-      },
+    return Scaffold(
+      body: ViewmodelProvider<ProfileVm>(
+        vm: ProfileVm(),
+        onInit: (vm) => vm.onInit(),
+        builder: (context, vm, appVm, appUser) {
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 10.0,
+                ),
+                _headerBuilder(appUser),
+                SizedBox(
+                  height: 20.0,
+                ),
+                _userDetailBuilder(context, appUser),
+                SizedBox(
+                  height: 40.0,
+                ),
+                OptionsList(vm),
+              ],
+            ),
+          );
+        },
+      ),
+      bottomNavigationBar: Padding(
+        padding: MediaQuery.of(context).viewInsets,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Center(
+              child: _isLoadedAd
+                  ? Container(
+                      height: 60.0,
+                      child: AdWidget(ad: _bannerAd),
+                    )
+                  : Container(),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

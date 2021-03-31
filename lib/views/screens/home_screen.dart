@@ -7,9 +7,9 @@ import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/services/database_services/user_provider.dart';
 import 'package:peaman/viewmodels/home_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
-import 'package:peaman/views/screens/chat_list_tab.dart';
 import 'package:peaman/views/screens/explore_tab.dart';
 import 'package:peaman/views/screens/profile_tab.dart';
+import 'package:peaman/views/screens/watch_and_earn_tab.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -32,7 +32,6 @@ class _HomeScreenState extends State<HomeScreen>
       vsync: this,
       initialIndex: 1,
     );
-    // AuthProvider().logOut();
   }
 
   @override
@@ -127,10 +126,9 @@ class _HomeScreenState extends State<HomeScreen>
         controller: _tabController,
         physics: NeverScrollableScrollPhysics(),
         children: <Widget>[
-          ChatListTab(),
+          WatchAndEarn(),
           ExploreTab(_tabController),
           ProfileTab(),
-          // FriendProfileScreen(appUser),
         ],
       ),
     );

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:peaman/models/app_models/user_model.dart';
+import 'package:peaman/services/database_services/user_provider.dart';
 
 class UserViewVm extends ChangeNotifier {
   final BuildContext context;
@@ -14,6 +15,7 @@ class UserViewVm extends ChangeNotifier {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
   File _photo;
+  bool _isWorker = false;
 
   File get photo => _photo;
   TextEditingController get nameController => _nameController;
@@ -22,6 +24,7 @@ class UserViewVm extends ChangeNotifier {
   TextEditingController get inGameIdController => _inGameIdController;
   TextEditingController get emailController => _emailController;
   TextEditingController get phoneController => _phoneController;
+  bool get isWorker => _isWorker;
 
   // init function
   onInit(final AppUser appUser) {
@@ -39,7 +42,24 @@ class UserViewVm extends ChangeNotifier {
     _emailController.text = appUser.email ?? 'N/A';
     _phoneController.text = appUser.phone ?? 'N/A';
     if (appUser.photoUrl != null) _photo = File(appUser.photoUrl);
+    _isWorker = appUser.worker;
 
+    notifyListeners();
+  }
+
+  // make worker
+  makeWorker(final AppUser appUser) async {
+    _updateIsWorker(!_isWorker);
+    await AppUserProvider(uid: appUser.uid).updateUserDetail(
+      data: {
+        'worker': _isWorker,
+      },
+    );
+  }
+
+  // update value of worker
+  _updateIsWorker(final bool newVal) {
+    _isWorker = newVal;
     notifyListeners();
   }
 }

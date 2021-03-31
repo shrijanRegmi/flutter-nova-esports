@@ -24,7 +24,7 @@ class TournamentViewScreen extends StatelessWidget {
     final _appUser = Provider.of<AppUser>(context);
     return ViewmodelProvider<TournamentViewVm>(
       vm: TournamentViewVm(context),
-      onInit: (vm) => vm.onInit(tournament, _appUser),
+      onInit: (vm) => vm.onInit(tournament, _appUser, null),
       builder: (context, vm, appVm, appUser) {
         return Scaffold(
           body: vm.isLoading

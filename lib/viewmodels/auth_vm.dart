@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:peaman/enums/age.dart';
+import 'package:peaman/models/app_models/app_config.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/services/auth_services/auth_provider.dart';
 import 'package:peaman/services/storage_services/user_storage_service.dart';
@@ -29,6 +31,8 @@ class AuthVm extends ChangeNotifier {
   bool _keyboardVisibility = false;
   StreamSubscription _subscription;
   String _address;
+  InterstitialAd _interstitialAd;
+  AdListener _adListener;
 
   TextEditingController get nameController => _nameController;
   TextEditingController get inGameNameController => _inGameNameController;
@@ -45,17 +49,43 @@ class AuthVm extends ChangeNotifier {
   String get address => _address;
 
   // init function
-  onInit() {
+  onInit(final AppConfig appConfig) {
     _subscription = KeyboardVisibility.onChange.listen((event) {
       _keyboardVisibility = event;
       print(event);
       notifyListeners();
     });
+    if (appConfig != null) {
+      _handleInterstitialAd(appConfig);
+    }
   }
 
   // dispose function
   onDispose() {
     _subscription?.cancel();
+    _interstitialAd?.dispose();
+  }
+
+  // handle interstitial ad
+  _handleInterstitialAd(final AppConfig appConfig) {
+    _adListener = AdListener(
+      onAdLoaded: (Ad ad) => print('Ad loaded.'),
+      onAdFailedToLoad: (Ad ad, LoadAdError error) {
+        ad.dispose();
+        print('Ad failed to load: $error');
+      },
+      onAdOpened: (Ad ad) => print('Ad opened.'),
+      onAdClosed: (Ad ad) {
+        ad.dispose();
+        print('Ad closed.');
+      },
+      onApplicationExit: (Ad ad) => print('Left application.'),
+    );
+    _interstitialAd = InterstitialAd(
+      adUnitId: '${appConfig.interstitialId}',
+      listener: _adListener,
+      request: AdRequest(),
+    )..load();
   }
 
   // login user with email and password;
@@ -64,6 +94,7 @@ class AuthVm extends ChangeNotifier {
     _updateLoader(true);
     if (_emailController.text.trim() != '' &&
         _passController.text.trim() != '') {
+      _interstitialAd?.show();
       _result = await AuthProvider().loginWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passController.text.trim(),
@@ -86,6 +117,7 @@ class AuthVm extends ChangeNotifier {
     if (_nameController.text.trim() != '' &&
         _emailController.text.trim() != '' &&
         _passController.text.trim() != '') {
+      _interstitialAd?.show();
       if (imgFile != null) {
         _result = await UserStorage().uploadUserImage(imgFile: imgFile);
       }

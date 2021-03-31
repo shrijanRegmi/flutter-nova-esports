@@ -14,6 +14,7 @@ class AppUser {
   final String address;
   final String inGameName;
   final String inGameId;
+  final bool worker;
 
   AppUser({
     this.uid,
@@ -28,6 +29,7 @@ class AppUser {
     this.address,
     this.inGameName,
     this.inGameId,
+    this.worker,
   });
 
   AppUser copyWith({
@@ -43,6 +45,7 @@ class AppUser {
     final String address,
     final String inGameName,
     final String inGameId,
+    final bool worker,
   }) {
     return AppUser(
       photoUrl: photoUrl ?? this.photoUrl,
@@ -57,6 +60,7 @@ class AppUser {
       address: address ?? this.address,
       inGameName: inGameName ?? this.inGameName,
       inGameId: inGameId ?? this.inGameId,
+      worker: worker ?? this.worker,
     );
   }
 
@@ -70,6 +74,7 @@ class AppUser {
       'address': appUser.address,
       'in_game_name': appUser.inGameName,
       'in_game_id': appUser.inGameId,
+      'worker': appUser.worker,
     };
   }
 
@@ -101,6 +106,7 @@ class AppUser {
       address: data['address'] ?? '',
       inGameId: data['in_game_id'],
       inGameName: data['in_game_name'],
+      worker: data['worker'] ?? false,
     );
   }
 

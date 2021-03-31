@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:peaman/enums/tournament_type.dart';
 import 'package:peaman/helpers/dialog_provider.dart';
+import 'package:peaman/models/app_models/app_config.dart';
 import 'package:peaman/models/app_models/chat_model.dart';
 import 'package:peaman/models/app_models/team_model.dart';
 import 'package:peaman/models/app_models/tournament_model.dart';
@@ -20,6 +22,8 @@ class TournamentViewVm extends ChangeNotifier {
   Tournament _thisTournament;
   bool _isShowingDetails = false;
   TextEditingController _passController = TextEditingController();
+  InterstitialAd _interstitialAd;
+  AdListener _adListener;
 
   Team get team => _team;
   bool get isLoading => _isLoading;
@@ -28,7 +32,8 @@ class TournamentViewVm extends ChangeNotifier {
   bool get isShowingDetails => _isShowingDetails;
 
   // init function
-  onInit(final Tournament tournament, final AppUser appUser) async {
+  onInit(final Tournament tournament, final AppUser appUser,
+      final AppConfig appConfig) async {
     if (tournament != null) {
       updateTournament(tournament);
       _updateIsLoading(true);
@@ -41,6 +46,37 @@ class TournamentViewVm extends ChangeNotifier {
       }
       _updateIsLoading(false);
     }
+
+    if (appConfig != null) {
+      _handleInterstitialAd(appConfig);
+    }
+  }
+
+  // dispose function
+  onDis() {
+    _interstitialAd?.dispose();
+  }
+
+  // handle interstitial ad
+  _handleInterstitialAd(final AppConfig appConfig) {
+    _adListener = AdListener(
+      onAdLoaded: (Ad ad) => print('Ad loaded.'),
+      onAdFailedToLoad: (Ad ad, LoadAdError error) {
+        ad.dispose();
+        print('Ad failed to load: $error');
+      },
+      onAdOpened: (Ad ad) => print('Ad opened.'),
+      onAdClosed: (Ad ad) {
+        ad.dispose();
+        print('Ad closed.');
+      },
+      onApplicationExit: (Ad ad) => print('Left application.'),
+    );
+    _interstitialAd = InterstitialAd(
+      adUnitId: '${appConfig.interstitialId}',
+      listener: _adListener,
+      request: AdRequest(),
+    )..load();
   }
 
   // get team
@@ -63,6 +99,7 @@ class TournamentViewVm extends ChangeNotifier {
   joinTeam(final Tournament tournament, final AppUser appUser,
       final TournamentViewVm vm) async {
     if (_teamCodeController.text.trim() != '') {
+      _interstitialAd.show();
       _updateIsLoading(true);
       await Future.delayed(Duration(milliseconds: 1300));
       final _result = await TournamentProvider(

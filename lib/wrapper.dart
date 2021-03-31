@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:peaman/models/app_models/app_config.dart';
 import 'package:peaman/views/screens/auth/login_screen.dart';
 import 'package:peaman/views/screens/home_screen.dart';
 import 'package:peaman/views/screens/splash_screen.dart';
+import 'package:provider/provider.dart';
 import 'models/app_models/user_model.dart';
 
 class Wrapper extends StatefulWidget {
@@ -27,6 +29,8 @@ class _WrapperState extends State<Wrapper> {
 
   @override
   Widget build(BuildContext context) {
+    final _appConfig = Provider.of<AppConfig>(context);
+    print('App Config Loaded : ${_appConfig?.toJson()}');
     if (_isLoading) {
       return SplashScreen();
     } else {

@@ -40,11 +40,6 @@ final optionsList = <Option>[
       );
     },
   ),
-  Option(
-    iconData: Icons.video_library,
-    title: 'Watch and Earn',
-    onPressed: null,
-  ),
   // Option(
   //   iconData: Icons.bookmark,
   //   title: 'Saved Tournaments',
@@ -62,4 +57,18 @@ final optionsList = <Option>[
       );
     },
   ),
+  // Option(
+  //   iconData: Icons.video_library,
+  //   title: 'Watch and Earn',
+  //   onPressed: (final BuildContext context) async {
+  //     final _profileVm = Provider.of<ProfileVm>(context, listen: false);
+  //     await DialogProvider(context).showWarningDialog(
+  //       'Watch and Earn',
+  //       'Watch ads and earn coin which you can spend on joining tournaments !',
+  //       () {
+  //         _profileVm.showAd();
+  //       },
+  //     );
+  //   },
+  // ),
 ];

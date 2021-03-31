@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/views/widgets/common_widgets/avatar_builder.dart';
 
@@ -320,6 +321,62 @@ class DialogProvider {
           TextButton(
             child: Text(
               'Search',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              onPressed();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  // show this when user earns coins through video
+  showCoinsEarnDialog(final int coins, final Function onPressed) async {
+    return await showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text('Good Job !'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              // mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  'assets/images/svgs/coin.svg',
+                  width: 50.0,
+                  height: 50.0,
+                ),
+                SizedBox(
+                  width: 10.0,
+                ),
+                Text(
+                  '$coins Coins',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.0,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 20.0,
+            ),
+            Text(
+              'Congrats! You have earned $coins coins. You can also view this in your profile tab.',
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            child: Text(
+              'OK, Got it!',
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,

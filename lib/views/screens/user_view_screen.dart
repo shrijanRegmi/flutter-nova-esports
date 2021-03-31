@@ -5,17 +5,18 @@ import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/viewmodels/user_view_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
 import 'package:peaman/views/widgets/common_widgets/appbar.dart';
+import 'package:peaman/views/widgets/common_widgets/filled_btn.dart';
 import 'package:peaman/views/widgets/create_tournament_widgets/new_tournament_field.dart';
 
 class UserViewScreen extends StatelessWidget {
-  final AppUser appUser;
-  UserViewScreen(this.appUser);
+  final AppUser user;
+  UserViewScreen(this.user);
 
   @override
   Widget build(BuildContext context) {
     return ViewmodelProvider<UserViewVm>(
       vm: UserViewVm(context),
-      onInit: (vm) => vm.onInit(appUser),
+      onInit: (vm) => vm.onInit(user),
       builder: (context, vm, appVm, appUser) {
         return Scaffold(
           appBar: PreferredSize(
@@ -92,6 +93,15 @@ class UserViewScreen extends StatelessWidget {
                   color: Colors.grey,
                 )
               : Container(),
+        ),
+        SizedBox(
+          height: 20.0,
+        ),
+        FilledBtn(
+          title: !vm.isWorker ? 'Make Worker' : 'Remove From Worker',
+          minWidth: 120.0,
+          color: Color(0xff3D4A5A),
+          onPressed: () => vm.makeWorker(user),
         ),
       ],
     );

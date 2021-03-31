@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
+import 'package:peaman/models/app_models/app_config.dart';
 import 'package:peaman/models/app_models/tournament_model.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/viewmodels/register_vm.dart';
@@ -8,16 +10,52 @@ import 'package:peaman/viewmodels/tournament_view_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
 import 'package:peaman/views/widgets/common_widgets/appbar.dart';
 import 'package:peaman/views/widgets/create_tournament_widgets/new_tournament_field.dart';
+import 'package:provider/provider.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
   final TournamentViewVm tournamentViewVm;
   final Tournament tournament;
   RegisterScreen(this.tournament, this.tournamentViewVm);
 
   @override
+  _RegisterScreenState createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  BannerAd _bannerAd;
+  bool _isLoadedAd = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _handleBanner();
+  }
+
+  _handleBanner() async {
+    final _appConfig = Provider.of<AppConfig>(context, listen: false);
+    _bannerAd = BannerAd(
+      adUnitId: '${_appConfig?.bannerId}',
+      size: AdSize.banner,
+      request: AdRequest(),
+      listener: AdListener(
+        onAdLoaded: (ad) => setState(() => _isLoadedAd = true),
+      ),
+    )..load();
+  }
+
+  @override
+  void dispose() {
+    _bannerAd?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final _appConfig = Provider.of<AppConfig>(context);
     return ViewmodelProvider<RegisterVm>(
       vm: RegisterVm(context),
+      onInit: (vm) => vm.onInit(_appConfig),
+      onDispose: (vm) => vm.onDis(),
       builder: (context, vm, appVm, appUser) {
         return Scaffold(
           appBar: PreferredSize(
@@ -81,6 +119,22 @@ class RegisterScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+          bottomNavigationBar: Padding(
+            padding: MediaQuery.of(context).viewInsets,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Center(
+                  child: _isLoadedAd
+                      ? Container(
+                          height: 60.0,
+                          child: AdWidget(ad: _bannerAd),
+                        )
+                      : Container(),
+                ),
+              ],
+            ),
+          ),
         );
       },
     );
@@ -112,7 +166,8 @@ class RegisterScreen extends StatelessWidget {
   Widget _registerBtnBuilder(
       final BuildContext context, final RegisterVm vm, final AppUser appUser) {
     return MaterialButton(
-      onPressed: () => vm.registerTeam(tournament, appUser, tournamentViewVm),
+      onPressed: () =>
+          vm.registerTeam(widget.tournament, appUser, widget.tournamentViewVm),
       color: Color(0xffdc8843),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -140,7 +195,7 @@ class RegisterScreen extends StatelessWidget {
                   width: 5.0,
                 ),
                 Text(
-                  '${tournament.entryCost}',
+                  '${widget.tournament.entryCost}',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 14.0,

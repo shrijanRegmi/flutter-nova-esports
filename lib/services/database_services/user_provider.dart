@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:peaman/enums/online_status.dart';
+import 'package:peaman/models/app_models/app_config.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 
 class AppUserProvider {
@@ -53,7 +54,14 @@ class AppUserProvider {
   Future updateUserDetail({@required final Map<String, dynamic> data}) async {
     try {
       final _userRef = _ref.collection('users').doc(uid);
-      await _userRef.update(data);
+
+      if (data.keys.length == 1 && data.containsKey('coins')) {
+        await _userRef.update({
+          'coins': FieldValue.increment(data['coins']),
+        });
+      } else {
+        await _userRef.update(data);
+      }
 
       print('Success: Updating personal info of user $uid');
       return 'Success';
@@ -174,6 +182,25 @@ class AppUserProvider {
     return _searchResults;
   }
 
+  // update app config
+  Future updateAppConfig(final AppConfig appConfig) async {
+    try {
+      final _configRef = _ref.collection('configs').doc('shrijan_regmi');
+      await _configRef.update(appConfig.toJson());
+      print('Success: Updating app config');
+      return 'Success';
+    } catch (e) {
+      print(e);
+      print('Error!!!: Updating app config');
+      return null;
+    }
+  }
+
+  // app config from firebase
+  AppConfig _appConfigFromFirebase(final DocumentSnapshot snap) {
+    return AppConfig.fromJson(snap.data());
+  }
+
   // stream of appuser;
   Stream<AppUser> get appUser {
     return _ref
@@ -205,5 +232,14 @@ class AppUserProvider {
         .limit(10)
         .snapshots()
         .map(_usersFromFirebase);
+  }
+
+  // stream of app config from firebase
+  Stream<AppConfig> get appConfig {
+    return _ref
+        .collection('configs')
+        .doc('shrijan_regmi')
+        .snapshots()
+        .map(_appConfigFromFirebase);
   }
 }
