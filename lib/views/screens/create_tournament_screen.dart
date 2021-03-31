@@ -561,7 +561,7 @@ class CreateTournamentScreen extends StatelessWidget {
                 child: Text(
                   vm.registrationEndTime == null
                       ? 'Select registration end time'
-                      : 'Change registration end timed',
+                      : 'Change registration end time',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,

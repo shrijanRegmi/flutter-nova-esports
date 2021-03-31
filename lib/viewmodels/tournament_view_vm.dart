@@ -9,6 +9,7 @@ import 'package:peaman/models/app_models/tournament_model.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/services/database_services/tournament_provider.dart';
 import 'package:peaman/views/screens/chat_convo_screen.dart';
+import 'package:peaman/views/screens/match_up_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 
@@ -149,6 +150,24 @@ class TournamentViewVm extends ChangeNotifier {
     );
   }
 
+  // stop tournament
+  stopTournament() async {
+    await DialogProvider(context).showConfirmationDialog(
+      'Are you sure you want to stop the tournament ?',
+      () async {
+        await TournamentProvider(tournament: _thisTournament).updateTournament(
+          data: {
+            'is_live': false,
+          },
+        );
+        final _newTournament = _thisTournament.copyWith(
+          isLive: false,
+        );
+        updateTournament(_newTournament);
+      },
+    );
+  }
+
   // on pressed registered or team code
   onBtnPressed(final AppUser appUser,
       final Widget Function(Tournament, TournamentViewVm) screen) async {
@@ -157,6 +176,13 @@ class TournamentViewVm extends ChangeNotifier {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (_) => screen(_thisTournament, this)),
+        );
+      } else if (_thisTournament.isLive) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => MatchUpScreen(_team),
+          ),
         );
       }
     } else {

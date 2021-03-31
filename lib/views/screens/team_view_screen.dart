@@ -87,6 +87,7 @@ class _TeamViewScreenState extends State<TeamViewScreen> {
                   children: [
                     if (appVm.selectedTournament.activeRound == widget.round &&
                         (appUser.admin ||
+                            appUser.worker ||
                             (!appUser.admin &&
                                 vm.roomKeyController.text.trim() != '')))
                       _roomKeyBuilder(appUser, vm),
@@ -122,7 +123,7 @@ class _TeamViewScreenState extends State<TeamViewScreen> {
               ],
             ),
           ),
-          floatingActionButton: !appUser.admin
+          floatingActionButton: !appUser.admin && !appUser.worker
               ? null
               : Padding(
                   padding: const EdgeInsets.only(right: 10.0, bottom: 10.0),
@@ -221,7 +222,7 @@ class _TeamViewScreenState extends State<TeamViewScreen> {
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 6.5),
                   child: TextFormField(
-                    enabled: appUser.admin,
+                    enabled: appUser.admin || appUser.worker,
                     controller: vm.roomKeyController,
                     decoration: InputDecoration(
                       hintText: 'Room Key',
@@ -233,12 +234,12 @@ class _TeamViewScreenState extends State<TeamViewScreen> {
                 width: 10.0,
               ),
               MaterialButton(
-                onPressed: () => appUser.admin
+                onPressed: () => appUser.admin || appUser.worker
                     ? vm.saveRoomKey(widget.tournament, widget.index)
                     : vm.copyRoomKey(),
                 color: Color(0xff5C49E0),
                 child: Text(
-                  appUser.admin ? 'Save' : 'Copy',
+                  appUser.admin || appUser.worker ? 'Save' : 'Copy',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,

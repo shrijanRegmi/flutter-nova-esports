@@ -90,10 +90,11 @@ class TournamentViewScreen extends StatelessWidget {
                   padding: MediaQuery.of(context).viewInsets,
                   child: _playBtnBuilder(context, appUser, vm),
                 ),
-          floatingActionButton:
-              vm.isLoading || vm.thisTournament.users.contains(appUser.uid)
-                  ? null
-                  : _enterTeamCodeBtnBuilder(context, appUser, vm),
+          floatingActionButton: vm.isLoading ||
+                  vm.thisTournament.users.contains(appUser.uid) ||
+                  vm.thisTournament.isLive
+              ? null
+              : _enterTeamCodeBtnBuilder(context, appUser, vm),
         );
       },
     );
@@ -147,7 +148,7 @@ class TournamentViewScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if (vm.thisTournament.isLive)
-                  _liveBuilder()
+                  _liveBuilder(vm, appUser)
                 else if (appUser.admin)
                   _startTournamentBtnBuilder(context, appUser, vm)
                 else
@@ -221,8 +222,12 @@ class TournamentViewScreen extends StatelessWidget {
                 ),
               );
             },
-            isEnabled: vm.team != null &&
-                vm.team.users.length == vm.thisTournament.getPlayersCount(),
+            isEnabled: appUser.admin ||
+                appUser.worker ||
+                (vm.thisTournament.isLive &&
+                    vm.team != null &&
+                    vm.team.users.length ==
+                        vm.thisTournament.getPlayersCount()),
           ),
           Container(
             height: 40.0,
@@ -275,36 +280,51 @@ class TournamentViewScreen extends StatelessWidget {
     );
   }
 
-  Widget _liveBuilder() {
+  Widget _liveBuilder(final TournamentViewVm vm, final AppUser appUser) {
     return Center(
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.red,
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.circle,
-                color: Colors.white,
-                size: 10.0,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.circle,
+                    color: Colors.white,
+                    size: 10.0,
+                  ),
+                  SizedBox(
+                    width: 5.0,
+                  ),
+                  Text(
+                    'Live',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(
-                width: 5.0,
-              ),
-              Text(
-                'Live',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+          if (appUser.admin)
+            IconButton(
+              iconSize: 30.0,
+              icon: Icon(
+                Icons.cancel,
+              ),
+              color: Colors.red,
+              onPressed: vm.stopTournament,
+            ),
+        ],
       ),
     );
   }
@@ -314,10 +334,15 @@ class TournamentViewScreen extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: MaterialButton(
-        onPressed: () => vm.onBtnPressed(
-          appUser,
-          (a, b) => RegisterScreen(a, b),
-        ),
+        onPressed: (vm.thisTournament.users.contains(appUser.uid) &&
+                    !vm.thisTournament.isLive) ||
+                (!vm.thisTournament.users.contains(appUser.uid) &&
+                    vm.thisTournament.isLive)
+            ? null
+            : () => vm.onBtnPressed(
+                  appUser,
+                  (a, b) => RegisterScreen(a, b),
+                ),
         color: Color(0xffdc8843),
         disabledColor: Colors.grey,
         disabledTextColor: Colors.white,

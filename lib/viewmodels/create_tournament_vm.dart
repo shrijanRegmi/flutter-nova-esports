@@ -98,10 +98,11 @@ class CreateTournamentVm extends ChangeNotifier {
 
   // open date picker
   openDatePicker() async {
+    final _currentDate = DateTime.now();
     final _pickedDate = await showDatePicker(
       context: context,
       initialDate: _matchDate ?? DateTime.now(),
-      firstDate: DateTime.now(),
+      firstDate: _currentDate.isAfter(_matchDate) ? _matchDate : _currentDate,
       lastDate: DateTime(
         DateTime.now().year + 10,
         DateTime.now().month,
@@ -130,10 +131,13 @@ class CreateTournamentVm extends ChangeNotifier {
 
   // open registration start date picker
   registrationStartPicker() async {
+    final _currentDate = DateTime.now();
     final _pickedDate = await showDatePicker(
       context: context,
       initialDate: _registrationStartDate ?? DateTime.now(),
-      firstDate: DateTime.now(),
+      firstDate: _currentDate.isAfter(_registrationStartDate)
+          ? _registrationStartDate
+          : _currentDate,
       lastDate: DateTime(
         DateTime.now().year + 10,
         DateTime.now().month,
@@ -149,10 +153,13 @@ class CreateTournamentVm extends ChangeNotifier {
 
   // open registration end date picker
   registrationEndPicker() async {
+    final _currentDate = DateTime.now();
     final _pickedDate = await showDatePicker(
       context: context,
       initialDate: _registrationEndDate ?? DateTime.now(),
-      firstDate: DateTime.now(),
+      firstDate: _currentDate.isAfter(_registrationEndDate)
+          ? _registrationEndDate
+          : _currentDate,
       lastDate: DateTime(
         DateTime.now().year + 10,
         DateTime.now().month,
@@ -295,6 +302,14 @@ class CreateTournamentVm extends ChangeNotifier {
     _matchTime = TimeOfDay(
       hour: int.parse(tournament.time.substring(0, 2)),
       minute: int.parse(tournament.time.substring(5, 7)),
+    );
+    _registrationStartDate =
+        DateTime.fromMillisecondsSinceEpoch(tournament.registrationStart);
+    _registrationEndDate =
+        DateTime.fromMillisecondsSinceEpoch(tournament.registrationEnd);
+    _registrationEndTime = TimeOfDay(
+      hour: int.parse(tournament.registrationEndTime.substring(0, 2)),
+      minute: int.parse(tournament.registrationEndTime.substring(5, 7)),
     );
     _dp = File(tournament.imgUrl);
 
