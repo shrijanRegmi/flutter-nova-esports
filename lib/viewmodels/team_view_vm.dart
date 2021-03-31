@@ -35,21 +35,19 @@ class TeamViewVm extends ChangeNotifier {
 
   // save room key
   saveRoomKey(final Tournament tournament, final int index) async {
-    if (_roomKeyController.text.trim() != '') {
-      FocusScope.of(context).unfocus();
-      final _roomKeys = tournament.roomKeys;
-      _roomKeys['$index'] = _roomKeyController.text.trim();
+    FocusScope.of(context).unfocus();
+    final _roomKeys = tournament.roomKeys;
+    _roomKeys['$index'] = _roomKeyController.text.trim();
 
-      final _tournament = tournament.copyWith(
-        roomKey: _roomKeys,
-      );
-      await TournamentProvider(tournament: _tournament).releaseRoomKey();
-      _scaffoldkey.currentState.showSnackBar(
-        SnackBar(
-          content: Text('Successfully saved room key.'),
-        ),
-      );
-    }
+    final _tournament = tournament.copyWith(
+      roomKey: _roomKeys,
+    );
+    await TournamentProvider(tournament: _tournament).releaseRoomKey();
+    _scaffoldkey.currentState.showSnackBar(
+      SnackBar(
+        content: Text('Successfully saved room key.'),
+      ),
+    );
   }
 
   // copy room key
