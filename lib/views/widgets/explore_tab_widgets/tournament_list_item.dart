@@ -295,7 +295,7 @@ class TournamentListItem extends StatelessWidget {
               width: 5.0,
             ),
             Text(
-              '${tournament.joinedPlayers} / ${tournament.maxPlayers}',
+              '${tournament.users.length} / ${tournament.maxPlayers}',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 10.0,

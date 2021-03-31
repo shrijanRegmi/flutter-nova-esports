@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:peaman/enums/tournament_type.dart';
 import 'package:peaman/helpers/date_time_helper.dart';
+import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/viewmodels/tournament_view_vm.dart';
+import 'package:peaman/views/widgets/tournament_widgets/private_tournament_password.dart';
+import 'package:provider/provider.dart';
 
 class TournamentDetails extends StatelessWidget {
   final TournamentViewVm vm;
@@ -8,6 +12,7 @@ class TournamentDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _appUser = Provider.of<AppUser>(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Column(
@@ -17,6 +22,14 @@ class TournamentDetails extends StatelessWidget {
           SizedBox(
             height: vm.team == null ? 20.0 : 10.0,
           ),
+          if (_appUser.admin &&
+              vm.thisTournament.tournamentType == TournamentType.private)
+            PrivateTournamentPass(vm),
+          if (_appUser.admin &&
+              vm.thisTournament.tournamentType == TournamentType.private)
+            SizedBox(
+              height: 20.0,
+            ),
           _registrationTimeBuilder(),
           SizedBox(
             height: 20.0,

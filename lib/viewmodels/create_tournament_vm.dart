@@ -102,7 +102,9 @@ class CreateTournamentVm extends ChangeNotifier {
     final _pickedDate = await showDatePicker(
       context: context,
       initialDate: _matchDate ?? DateTime.now(),
-      firstDate: _currentDate.isAfter(_matchDate) ? _matchDate : _currentDate,
+      firstDate: _matchDate != null && _currentDate.isAfter(_matchDate)
+          ? _matchDate
+          : _currentDate,
       lastDate: DateTime(
         DateTime.now().year + 10,
         DateTime.now().month,
@@ -135,7 +137,8 @@ class CreateTournamentVm extends ChangeNotifier {
     final _pickedDate = await showDatePicker(
       context: context,
       initialDate: _registrationStartDate ?? DateTime.now(),
-      firstDate: _currentDate.isAfter(_registrationStartDate)
+      firstDate: _registrationStartDate != null &&
+              _currentDate.isAfter(_registrationStartDate)
           ? _registrationStartDate
           : _currentDate,
       lastDate: DateTime(
@@ -157,7 +160,8 @@ class CreateTournamentVm extends ChangeNotifier {
     final _pickedDate = await showDatePicker(
       context: context,
       initialDate: _registrationEndDate ?? DateTime.now(),
-      firstDate: _currentDate.isAfter(_registrationEndDate)
+      firstDate: _registrationEndDate != null &&
+              _currentDate.isAfter(_registrationEndDate)
           ? _registrationEndDate
           : _currentDate,
       lastDate: DateTime(

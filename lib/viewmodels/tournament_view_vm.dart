@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:peaman/enums/tournament_type.dart';
 import 'package:peaman/helpers/dialog_provider.dart';
@@ -25,12 +26,14 @@ class TournamentViewVm extends ChangeNotifier {
   TextEditingController _passController = TextEditingController();
   InterstitialAd _interstitialAd;
   AdListener _adListener;
+  bool _isCopied = false;
 
   Team get team => _team;
   bool get isLoading => _isLoading;
   TextEditingController get teamCodeController => _teamCodeController;
   Tournament get thisTournament => _thisTournament;
   bool get isShowingDetails => _isShowingDetails;
+  bool get isCopied => _isCopied;
 
   // init function
   onInit(final Tournament tournament, final AppUser appUser,
@@ -94,6 +97,13 @@ class TournamentViewVm extends ChangeNotifier {
       '${_team.id}',
       subject: 'Here is our team code. Join my team in NOVA ESPORTS.',
     );
+  }
+
+  // copy password
+  copyPassword() async {
+    await Clipboard.setData(ClipboardData(text: '${_thisTournament.id}'));
+    _isCopied = true;
+    notifyListeners();
   }
 
   // join team
