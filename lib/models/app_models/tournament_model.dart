@@ -134,7 +134,7 @@ class Tournament {
       'registration_start': registrationStart,
       'registration_end': registrationEnd,
       'registration_end_time': registrationEndTime,
-      'active_round': 1,
+      'active_round': activeRound ?? 1,
     };
   }
 

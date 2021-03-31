@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:peaman/models/app_models/team_model.dart';
 import 'package:peaman/models/app_models/tournament_model.dart';
+import 'package:peaman/viewmodels/match_up_vm.dart';
+import 'package:peaman/viewmodels/viewmodel_builder.dart';
 import 'package:peaman/views/widgets/common_widgets/appbar.dart';
 import 'package:peaman/views/widgets/matchup_widgets/lobbies_list.dart';
 
@@ -15,37 +17,53 @@ class MatchUpScreen extends StatefulWidget {
 
 class _MatchUpScreenState extends State<MatchUpScreen> {
   int _selectedRound = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _selectedRound = widget.tournament.activeRound;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60.0),
-        child: CommonAppbar(
-          title: Text(
-            'Match Ups',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20.0,
-              color: Color(0xff3D4A5A),
+    return ViewmodelProvider<MatchUpVm>(
+      vm: MatchUpVm(),
+      onInit: (vm) => vm.onInit(widget.tournament),
+      builder: (context, vm, appVm, appUser) {
+        return Scaffold(
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(60.0),
+            child: CommonAppbar(
+              title: Text(
+                'Match Ups',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.0,
+                  color: Color(0xff3D4A5A),
+                ),
+              ),
             ),
           ),
-        ),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _roundSelectionBuilder(),
-              LobbiesList(
-                widget.tournament,
-                widget.team,
-                _selectedRound,
+          body: SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _roundSelectionBuilder(),
+                  LobbiesList(
+                    vm,
+                    vm.thisTournament,
+                    widget.team,
+                    _selectedRound,
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

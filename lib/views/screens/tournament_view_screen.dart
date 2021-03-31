@@ -5,6 +5,7 @@ import 'package:lottie/lottie.dart';
 import 'package:peaman/helpers/date_time_helper.dart';
 import 'package:peaman/models/app_models/tournament_model.dart';
 import 'package:peaman/models/app_models/user_model.dart';
+import 'package:peaman/viewmodels/app_vm.dart';
 import 'package:peaman/viewmodels/tournament_view_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
 import 'package:peaman/views/screens/enter_team_code_screen.dart';
@@ -22,9 +23,13 @@ class TournamentViewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _appUser = Provider.of<AppUser>(context);
+    final _appVm = Provider.of<AppVm>(context);
     return ViewmodelProvider<TournamentViewVm>(
       vm: TournamentViewVm(context),
-      onInit: (vm) => vm.onInit(tournament, _appUser, null),
+      onInit: (vm) {
+        _appVm.updateSelectedTournament(tournament);
+        vm.onInit(tournament, _appUser, null);
+      },
       builder: (context, vm, appVm, appUser) {
         return Scaffold(
           body: vm.isLoading
