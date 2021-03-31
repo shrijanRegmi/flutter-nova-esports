@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:peaman/models/app_models/app_config.dart';
+import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
 import 'package:peaman/viewmodels/watch_and_earn_vm.dart';
 import 'package:peaman/views/widgets/common_widgets/filled_btn.dart';
@@ -10,11 +11,12 @@ class WatchAndEarn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _appConfig = Provider.of<AppConfig>(context);
+    final _appUser = Provider.of<AppUser>(context);
     return _appConfig == null
         ? Scaffold()
         : ViewmodelProvider<WatchAndEarnVm>(
             vm: WatchAndEarnVm(context),
-            onInit: (vm) => vm.onInit(_appConfig),
+            onInit: (vm) => vm.onInit(_appConfig, _appUser),
             builder: (context, vm, appVm, appUser) {
               return Scaffold(
                 key: vm.scaffoldKey,

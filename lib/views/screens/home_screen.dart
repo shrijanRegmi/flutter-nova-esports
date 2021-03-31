@@ -95,12 +95,31 @@ class _HomeScreenState extends State<HomeScreen>
             vm: HomeVm(
               context: context,
             ),
-            onInit: (vm) {
+            onInit: (vm) async {
               AppUserProvider(uid: _appUser.uid)
                   .setUserActiveStatus(onlineStatus: OnlineStatus.active);
               _tabController.addListener(() {
                 setState(() {});
               });
+
+              final _lastTaskDoneAt = DateTime.fromMillisecondsSinceEpoch(
+                  _appUser.lastTaskDoneAt ??
+                      DateTime.now().millisecondsSinceEpoch);
+              final _nextDay = DateTime(
+                _lastTaskDoneAt.add(Duration(days: 1)).year,
+                _lastTaskDoneAt.add(Duration(days: 1)).month,
+                _lastTaskDoneAt.add(Duration(days: 1)).day,
+              );
+              final _currentDay = DateTime(DateTime.now().year,
+                  DateTime.now().month, DateTime.now().day);
+              if (_currentDay.isAtSameMomentAs(_nextDay) ||
+                  _currentDay.isAfter(_nextDay)) {
+                await AppUserProvider(uid: _appUser.uid).updateUserDetail(
+                  data: {
+                    'completed_tasks': 0,
+                  },
+                );
+              }
             },
             builder: (context, vm, appVm, appUser) {
               return Scaffold(

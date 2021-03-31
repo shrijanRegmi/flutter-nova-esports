@@ -43,10 +43,10 @@ class WatchAndEarnVm extends ChangeNotifier {
   RewardedAd get rewardedAd => _rewardedAd;
 
   // init function
-  onInit(final AppConfig config) async {
-    if (config != null) {
+  onInit(final AppConfig config, final AppUser appUser) async {
+    if (config != null && appUser != null) {
       _updateCounter(config.adShowTimer ?? 5);
-      _initializeValues(config);
+      _initializeValues(config, appUser);
       _handleRewarded(config);
     }
   }
@@ -58,13 +58,14 @@ class WatchAndEarnVm extends ChangeNotifier {
   }
 
   // initialize values
-  _initializeValues(final AppConfig config) {
+  _initializeValues(final AppConfig config, final AppUser appUser) {
     _maxViewsController.text = '${config.maxAdViews}' ?? '5';
     _timerController.text = '${config.adShowTimer}' ?? '5';
     _rewardCoinsController.text = '${config.rewardCoins}' ?? '5';
     _bannerController.text = '${config.bannerId}';
     _interstitialController.text = '${config.interstitialId}';
     _rewardedController.text = '${config.rewardId}';
+    _rewardedCount = appUser.completedTasks;
 
     notifyListeners();
   }
@@ -109,6 +110,12 @@ class WatchAndEarnVm extends ChangeNotifier {
     _updateRewardedCount(_rewardedCount + 1);
     await _rewardedAd.load();
     notifyListeners();
+    await AppUserProvider(uid: _appUser.uid).updateUserDetail(
+      data: {
+        'completed_tasks': _rewardedCount,
+        'last_task_done_at': DateTime.now().millisecondsSinceEpoch,
+      },
+    );
     if (_rewardedCount >= int.parse(_maxViewsController.text.trim())) {
       DialogProvider(context).showCoinsEarnDialog(
         int.parse(_rewardCoinsController.text.trim()),
