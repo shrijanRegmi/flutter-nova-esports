@@ -199,8 +199,11 @@ class _HomeScreenState extends State<HomeScreen>
           clipBehavior: Clip.none,
           children: [
             SvgPicture.asset(
-              'assets/images/svgs/chat_tab.svg',
-              color: _tabController.index == 0 ? Colors.blue : null,
+              'assets/images/svgs/watch_n_earn_tab.svg',
+              color:
+                  _tabController.index == 0 ? Colors.blue : Color(0xffD2DAF3),
+              width: 27.0,
+              height: 27.0,
             ),
             if (_chatCount > 0) _countBuilder(_chatCount)
           ],

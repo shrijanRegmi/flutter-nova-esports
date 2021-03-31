@@ -55,13 +55,7 @@ class AppUserProvider {
     try {
       final _userRef = _ref.collection('users').doc(uid);
 
-      if (data.keys.length == 1 && data.containsKey('coins')) {
-        await _userRef.update({
-          'coins': FieldValue.increment(data['coins']),
-        });
-      } else {
-        await _userRef.update(data);
-      }
+      await _userRef.update(data);
 
       print('Success: Updating personal info of user $uid');
       return 'Success';

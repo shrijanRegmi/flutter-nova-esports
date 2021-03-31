@@ -123,7 +123,8 @@ class WatchAndEarnVm extends ChangeNotifier {
       );
       await AppUserProvider(uid: _appUser.uid).updateUserDetail(
         data: {
-          'coins': int.parse(_rewardCoinsController.text.trim()),
+          'coins':
+              _appUser.coins + int.parse(_rewardCoinsController.text.trim()),
         },
       );
     }

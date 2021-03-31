@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:peaman/helpers/dialog_provider.dart';
 import 'package:peaman/models/app_models/app_config.dart';
 import 'package:peaman/models/app_models/team_model.dart';
 import 'package:peaman/models/app_models/tournament_model.dart';
@@ -56,28 +57,36 @@ class RegisterVm extends ChangeNotifier {
   registerTeam(final Tournament tournament, final AppUser appUser,
       final TournamentViewVm vm) async {
     if (_teamNameController.text.trim() != '') {
-      _interstitialAd.show();
-      _updateIsLoading(true);
-      final _team = Team(
-        users: [appUser],
-        userIds: [appUser.uid],
-        teamName: _teamNameController.text.trim(),
-      );
-      final _result = await TournamentProvider(
-        tournament: tournament,
-        appUser: appUser,
-        team: _team,
-      ).register();
-      if (_result != null) {
-        final _tournament = vm.thisTournament.copyWith(
-          users: [...vm.thisTournament.users, appUser.uid],
+      if (appUser.coins >= tournament.entryCost) {
+        _interstitialAd.show();
+        _updateIsLoading(true);
+        final _team = Team(
+          users: [appUser],
+          userIds: [appUser.uid],
+          teamName: _teamNameController.text.trim(),
         );
-        vm.updateTournament(_tournament);
-        vm.updateIsShowingDetails(false);
-        vm.getTeam(tournament, appUser);
-        Navigator.pop(context);
+        final _result = await TournamentProvider(
+          tournament: tournament,
+          appUser: appUser,
+          team: _team,
+        ).register();
+        if (_result != null) {
+          final _tournament = vm.thisTournament.copyWith(
+            users: [...vm.thisTournament.users, appUser.uid],
+          );
+          vm.updateTournament(_tournament);
+          vm.updateIsShowingDetails(false);
+          vm.getTeam(tournament, appUser);
+          Navigator.pop(context);
+        } else {
+          _updateIsLoading(false);
+        }
       } else {
-        _updateIsLoading(false);
+        await DialogProvider(context).showWarningDialog(
+          'Insufficient Coins',
+          "You don't have enough coins to register in this tournament. Please check our watch and earn tab to watch videos and earn coins.",
+          () {},
+        );
       }
     }
   }

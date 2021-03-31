@@ -6,6 +6,7 @@ import 'package:peaman/models/app_models/tournament_model.dart';
 import 'package:peaman/models/app_models/tournament_update_model.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/models/app_models/video_stream_model.dart';
+import 'package:peaman/services/database_services/user_provider.dart';
 import 'package:peaman/viewmodels/tournament_view_vm.dart';
 
 class TournamentProvider {
@@ -118,6 +119,11 @@ class TournamentProvider {
         _team.id,
         '${appUser.name} registered the team in the tournament.',
       );
+      await AppUserProvider(uid: appUser.uid).updateUserDetail(
+        data: {
+          'coins': appUser.coins - tournament.entryCost,
+        },
+      );
       print('Success: Registering user in tournament ${tournament.id}');
       return _teamsRef;
     } catch (e) {
@@ -227,6 +233,12 @@ class TournamentProvider {
                 await sendUpdate(
                   _team.id,
                   '${appUser.name} just joined the party.',
+                );
+
+                await AppUserProvider(uid: appUser.uid).updateUserDetail(
+                  data: {
+                    'coins': appUser.coins - tournament.entryCost,
+                  },
                 );
 
                 final _tournament = vm.thisTournament.copyWith(

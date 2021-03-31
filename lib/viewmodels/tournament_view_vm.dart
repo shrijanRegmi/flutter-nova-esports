@@ -100,16 +100,24 @@ class TournamentViewVm extends ChangeNotifier {
   joinTeam(final Tournament tournament, final AppUser appUser,
       final TournamentViewVm vm) async {
     if (_teamCodeController.text.trim() != '') {
-      _interstitialAd.show();
-      _updateIsLoading(true);
-      await Future.delayed(Duration(milliseconds: 1300));
-      final _result = await TournamentProvider(
-        context: context,
-        appUser: appUser,
-        tournament: tournament,
-      ).joinTournament(_teamCodeController.text.trim(), vm);
-      if (_result == null) {
-        _updateIsLoading(false);
+      if (appUser.coins >= tournament.entryCost) {
+        _interstitialAd.show();
+        _updateIsLoading(true);
+        await Future.delayed(Duration(milliseconds: 1300));
+        final _result = await TournamentProvider(
+          context: context,
+          appUser: appUser,
+          tournament: tournament,
+        ).joinTournament(_teamCodeController.text.trim(), vm);
+        if (_result == null) {
+          _updateIsLoading(false);
+        }
+      } else {
+        await DialogProvider(context).showWarningDialog(
+          'Insufficient Coins',
+          "You don't have enough coins to join team in this tournament. Please check our watch and earn tab to watch videos and earn coins.",
+          () {},
+        );
       }
     }
   }
