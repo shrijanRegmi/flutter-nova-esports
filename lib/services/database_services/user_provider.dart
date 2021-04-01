@@ -236,4 +236,22 @@ class AppUserProvider {
         .snapshots()
         .map(_appConfigFromFirebase);
   }
+
+  // stream of active users
+  Stream<List<AppUser>> get activeUsers {
+    return _ref
+        .collection('users')
+        .where('active_status', isEqualTo: 1)
+        .snapshots()
+        .map(_usersFromFirebase);
+  }
+
+  // stream of workers
+  Stream<List<AppUser>> get workerUsers {
+    return _ref
+        .collection('users')
+        .where('worker', isEqualTo: true)
+        .snapshots()
+        .map(_usersFromFirebase);
+  }
 }

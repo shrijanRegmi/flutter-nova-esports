@@ -7,6 +7,7 @@ import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/viewmodels/app_vm.dart';
 import 'package:peaman/viewmodels/explore_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
+import 'package:peaman/views/screens/active_and_woker_users_view_screen.dart';
 import 'package:peaman/views/widgets/explore_tab_widgets/live_tournament_list.dart';
 import 'package:peaman/views/widgets/explore_tab_widgets/tournament_list.dart';
 import 'package:peaman/views/widgets/explore_tab_widgets/video_carousel.dart';
@@ -240,11 +241,24 @@ class _ExploreTabState extends State<ExploreTab> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(bottom: 5.0, right: 10.0),
-            child: SvgPicture.asset(
-              'assets/images/svgs/home_tab.svg',
-              color: Color(0xff3D4A5A),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ActiveAndWorkerViewScreen(),
+                ),
+              );
+            },
+            child: Container(
+              color: Colors.transparent,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 5.0, right: 10.0),
+                child: SvgPicture.asset(
+                  'assets/images/svgs/home_tab.svg',
+                  color: Color(0xff3D4A5A),
+                ),
+              ),
             ),
           ),
           // messages text
