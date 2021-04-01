@@ -38,6 +38,7 @@ class _ProfileTabState extends State<ProfileTab> {
       size: AdSize.banner,
       request: AdRequest(),
       listener: AdListener(
+        onAdFailedToLoad: (ad, error) => print('AD FAILED TO LOAD : $error'),
         onAdLoaded: (ad) => setState(() => _isLoadedAd = true),
       ),
     )..load();
