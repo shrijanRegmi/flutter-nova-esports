@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:peaman/enums/online_status.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/services/database_services/user_provider.dart';
 
@@ -121,7 +122,10 @@ class AuthProvider {
   Future logOut() async {
     print('Success: Logging out user');
     await _googleSignIn.signOut();
-    return await _auth.signOut();
+    await _auth.signOut();
+    await AppUserProvider(uid: appUser.uid).setUserActiveStatus(
+      onlineStatus: OnlineStatus.away,
+    );
   }
 
   // user from firebase
