@@ -218,7 +218,9 @@ class CreateTournamentVm extends ChangeNotifier {
         imgUrl: _imgUrl ??
             'https://play-lh.googleusercontent.com/KxIKOXKi9bJukZCQyzilpDqHL6f7WTcXgMQFo1IaJOhd6rrTdYONMvdewqnvivauTSGL',
         title: _titleController.text.trim(),
-        type: _selectedMatchType,
+        type: _selectedTournament == TournamentType.clashSquad
+            ? MatchType.squad
+            : _selectedMatchType,
         tournamentType: _selectedTournament,
         date: _matchDate.millisecondsSinceEpoch,
         time: DateTimeHelper().getFormattedTime(_matchTime),

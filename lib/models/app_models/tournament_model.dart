@@ -140,16 +140,19 @@ class Tournament {
 
   String getMatchTypeTitle({final MatchType matchType}) {
     final _type = matchType ?? type;
-    switch (_type) {
-      case MatchType.solo:
-        return 'Solo';
-        break;
-      case MatchType.duo:
-        return 'Duo';
-        break;
-      default:
-        return 'Squad';
-    }
+    if (tournamentType == TournamentType.clashSquad)
+      return 'Clash Squad';
+    else
+      switch (_type) {
+        case MatchType.solo:
+          return 'Solo';
+          break;
+        case MatchType.duo:
+          return 'Duo';
+          break;
+        default:
+          return 'Squad';
+      }
   }
 
   String getTournamentTypeTitle(final TournamentType type) {
@@ -160,8 +163,14 @@ class Tournament {
       case TournamentType.private:
         return 'Private';
         break;
-      default:
+      case TournamentType.state:
         return 'State';
+        break;
+      case TournamentType.clashSquad:
+        return 'Clash Squad';
+        break;
+      default:
+        return 'Normal';
     }
   }
 
@@ -174,6 +183,6 @@ class Tournament {
       case MatchType.squad:
         return 4;
     }
-    return -1;
+    return 4;
   }
 }

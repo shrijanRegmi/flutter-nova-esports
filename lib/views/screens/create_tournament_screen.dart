@@ -147,20 +147,6 @@ class CreateTournamentScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Text(
-                    'Select type of match',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xff3D4A5A),
-                    ),
-                  ),
-                ),
-                _matchTypeBuilder(vm),
-                SizedBox(
-                  height: 10.0,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Text(
                     'Select type of tournament',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -169,6 +155,23 @@ class CreateTournamentScreen extends StatelessWidget {
                   ),
                 ),
                 _tournamentTypeBuilder(vm),
+                if (vm.selectedTournament != TournamentType.clashSquad)
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                if (vm.selectedTournament != TournamentType.clashSquad)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Text(
+                      'Select type of match',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xff3D4A5A),
+                      ),
+                    ),
+                  ),
+                if (vm.selectedTournament != TournamentType.clashSquad)
+                  _matchTypeBuilder(vm),
               ],
             ),
           ],
@@ -306,7 +309,8 @@ class CreateTournamentScreen extends StatelessWidget {
     final _items = <TournamentType>[
       TournamentType.normal,
       TournamentType.private,
-      TournamentType.state
+      TournamentType.state,
+      TournamentType.clashSquad,
     ];
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),

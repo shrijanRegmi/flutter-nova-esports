@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:peaman/enums/tournament_type.dart';
 import 'package:peaman/models/app_models/team_model.dart';
 import 'package:peaman/models/app_models/tournament_model.dart';
 import 'package:peaman/models/app_models/user_model.dart';
@@ -22,7 +23,10 @@ class LobbiesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _teamsInALobby = 12;
+    final _teamsInALobby =
+        tournament.tournamentType == TournamentType.clashSquad
+            ? 2
+            : 48 ~/ tournament.getPlayersCount();
     final _appUser = Provider.of<AppUser>(context);
 
     return Column(
