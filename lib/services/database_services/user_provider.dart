@@ -92,11 +92,15 @@ class AppUserProvider {
 
   // search user
   Future<AppUser> searchedUser(
-      final TextEditingController searchController) async {
+    final TextEditingController searchController, {
+    final bool onlyNameSearch = false,
+  }) async {
     AppUser _appUser;
     try {
       final _text = searchController.text.trim();
 
+      final _usersRefByName =
+          _ref.collection('users').where('name', isEqualTo: _text).limit(1);
       final _usersRefByEmail =
           _ref.collection('users').where('email', isEqualTo: _text).limit(1);
       final _usersRefByInGameId = _ref
@@ -108,28 +112,37 @@ class AppUserProvider {
           .where('in_game_name', isEqualTo: _text)
           .limit(1);
 
-      // email
-      var _usersRefSnap = await _usersRefByEmail.get();
+      // name
+      var _usersRefSnap = await _usersRefByName.get();
       if (_usersRefSnap.docs.isNotEmpty) {
         final _userData = _usersRefSnap.docs.first.data();
         if (_userData != null) {
           _appUser = AppUser.fromJson(_userData);
         }
-      } else {
-        // in game id
-        _usersRefSnap = await _usersRefByInGameId.get();
+      } else if (!onlyNameSearch) {
+        // email
+        var _usersRefSnap = await _usersRefByEmail.get();
         if (_usersRefSnap.docs.isNotEmpty) {
           final _userData = _usersRefSnap.docs.first.data();
           if (_userData != null) {
             _appUser = AppUser.fromJson(_userData);
           }
         } else {
-          // in game name
-          _usersRefSnap = await _usersRefByInGameName.get();
+          // in game id
+          _usersRefSnap = await _usersRefByInGameId.get();
           if (_usersRefSnap.docs.isNotEmpty) {
             final _userData = _usersRefSnap.docs.first.data();
             if (_userData != null) {
               _appUser = AppUser.fromJson(_userData);
+            }
+          } else {
+            // in game name
+            _usersRefSnap = await _usersRefByInGameName.get();
+            if (_usersRefSnap.docs.isNotEmpty) {
+              final _userData = _usersRefSnap.docs.first.data();
+              if (_userData != null) {
+                _appUser = AppUser.fromJson(_userData);
+              }
             }
           }
         }

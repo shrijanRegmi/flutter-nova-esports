@@ -204,7 +204,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           height: 40.0,
         ),
         AuthField(
-          label: 'Full Name',
+          label: 'Username',
           type: TextInputType.text,
           controller: vm.nameController,
         ),

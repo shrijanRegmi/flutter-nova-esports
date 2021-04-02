@@ -8,9 +8,11 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:peaman/enums/age.dart';
+import 'package:peaman/helpers/dialog_provider.dart';
 import 'package:peaman/models/app_models/app_config.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/services/auth_services/auth_provider.dart';
+import 'package:peaman/services/database_services/user_provider.dart';
 import 'package:peaman/services/storage_services/user_storage_service.dart';
 
 class AuthVm extends ChangeNotifier {
@@ -167,11 +169,25 @@ class AuthVm extends ChangeNotifier {
         _inGameIdController.text.trim() != '' &&
         _inGameNameController.text.trim() != '') {
       _updateLoader(true);
-      final _addressFromPosition = await _getAddressFromLatLng();
-      _updateLoader(false);
-      if (_addressFromPosition != null) {
-        _updateIsNextBtnPressed(true);
-        _updateAddress(_addressFromPosition);
+      final _searchedUser = await AppUserProvider().searchedUser(
+        _nameController,
+        onlyNameSearch: true,
+      );
+
+      if (_searchedUser == null) {
+        final _addressFromPosition = await _getAddressFromLatLng();
+        _updateLoader(false);
+        if (_addressFromPosition != null) {
+          _updateIsNextBtnPressed(true);
+          _updateAddress(_addressFromPosition);
+        }
+      } else {
+        _updateLoader(false);
+        await DialogProvider(context).showWarningDialog(
+          'Username already taken',
+          'The username you have entered is already taken. Please use a different one !',
+          () {},
+        );
       }
     } else {
       _scaffoldKey.currentState.showSnackBar(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:peaman/helpers/date_time_helper.dart';
+import 'package:peaman/helpers/dialog_provider.dart';
 import 'package:peaman/models/app_models/tournament_model.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/viewmodels/app_vm.dart';
@@ -215,11 +216,56 @@ class TournamentViewScreen extends StatelessWidget {
             Icons.mediation,
             'Match-ups',
             () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => MatchUpScreen(vm.team),
-                ),
+              var _warningTitle = '';
+              var _warningDes = '';
+              final _tournamentDate = DateTimeHelper().getFormattedDate(
+                  DateTime.fromMillisecondsSinceEpoch(tournament.date));
+
+              if (appUser.admin ||
+                  appUser.worker ||
+                  (vm.thisTournament.isLive &&
+                      vm.team != null &&
+                      vm.team.users.length ==
+                          vm.thisTournament.getPlayersCount()))
+                return Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => MatchUpScreen(vm.team),
+                  ),
+                );
+              if (!vm.thisTournament.isLive) {
+                _warningTitle = "Tournament hasn't started yet";
+                _warningDes =
+                    "The tournament hasn't started. It will start on $_tournamentDate at ${tournament.time}. Please wait for the tournament to start.";
+              }
+
+              if (vm.team != null &&
+                  vm.team.users.length != vm.thisTournament.getPlayersCount()) {
+                _warningTitle = "Team not completed";
+                _warningDes =
+                    "Your team must contain ${tournament.getPlayersCount() - vm.team.users.length} more players. Please share the team code and invite friends to join your team.";
+              }
+
+              if (vm.team == null) {
+                _warningTitle = "Not registered in tournament";
+                _warningDes =
+                    "You are not registered in this tournament. Please register your team or enter team code to join a team.";
+              }
+
+              if ((vm.team == null ||
+                      (vm.team != null &&
+                          vm.team.users.length <
+                              tournament.getPlayersCount())) &&
+                  vm.thisTournament.isLive) {
+                _warningTitle = "Registration period has ended";
+                _warningDes =
+                    "You can no longer take part in this tournament. The registration period has ended for this tournament.";
+              }
+
+              DialogProvider(context).showWarningDialog(
+                _warningTitle,
+                _warningDes,
+                () {},
               );
             },
             isEnabled: appUser.admin ||
@@ -238,7 +284,8 @@ class TournamentViewScreen extends StatelessWidget {
             Icons.chat,
             'Chat',
             () {
-              vm.navigateToChats(appUser);
+              if (vm.team != null && vm.team.users.length > 1)
+                vm.navigateToChats(appUser);
             },
             isEnabled: vm.team != null && vm.team.users.length > 1,
           ),
@@ -251,7 +298,7 @@ class TournamentViewScreen extends StatelessWidget {
       final IconData icon, final String title, final Function onPressed,
       {final bool isEnabled = true}) {
     return GestureDetector(
-      onTap: isEnabled ? onPressed : () {},
+      onTap: onPressed,
       child: Container(
         color: Colors.white,
         child: Padding(
@@ -333,61 +380,84 @@ class TournamentViewScreen extends StatelessWidget {
       final TournamentViewVm vm) {
     return Padding(
       padding: const EdgeInsets.all(20),
-      child: MaterialButton(
-        onPressed: (vm.thisTournament.users.contains(appUser.uid) &&
-                    !vm.thisTournament.isLive) ||
-                (!vm.thisTournament.users.contains(appUser.uid) &&
-                    vm.thisTournament.isLive)
-            ? null
-            : () => vm.onBtnPressed(
-                  appUser,
-                  (a, b) => RegisterScreen(a, b),
+      child: GestureDetector(
+        onTap: ((vm.team == null ||
+                    (vm.team != null &&
+                        vm.team.users.length < tournament.getPlayersCount())) &&
+                vm.thisTournament.isLive)
+            ? () {
+                final _warningTitle = "Registration period has ended";
+                final _warningDes =
+                    "You can no longer take part in this tournament. The registration period has ended for this tournament.";
+
+                DialogProvider(context).showWarningDialog(
+                  _warningTitle,
+                  _warningDes,
+                  () {},
+                );
+              }
+            : null,
+        child: MaterialButton(
+          onPressed: (vm.thisTournament.users.contains(appUser.uid) &&
+                      !vm.thisTournament.isLive) ||
+                  (!vm.thisTournament.users.contains(appUser.uid) &&
+                      vm.thisTournament.isLive) ||
+                  (vm.thisTournament.users.contains(appUser.uid) &&
+                      (vm.team == null ||
+                          (vm.team != null &&
+                              vm.team.users.length <
+                                  vm.thisTournament.getPlayersCount())))
+              ? null
+              : () => vm.onBtnPressed(
+                    appUser,
+                    (a, b) => RegisterScreen(a, b),
+                  ),
+          color: Color(0xffdc8843),
+          disabledColor: Colors.grey,
+          disabledTextColor: Colors.white,
+          child: Padding(
+            padding: EdgeInsets.all(
+                vm.thisTournament.users.contains(appUser.uid) ? 23.0 : 20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  vm.thisTournament.users.contains(appUser.uid)
+                      ? 'PLAY'
+                      : 'REGISTER',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
-        color: Color(0xffdc8843),
-        disabledColor: Colors.grey,
-        disabledTextColor: Colors.white,
-        child: Padding(
-          padding: EdgeInsets.all(
-              vm.thisTournament.users.contains(appUser.uid) ? 23.0 : 20.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                vm.thisTournament.users.contains(appUser.uid)
-                    ? 'PLAY'
-                    : 'REGISTER',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              if (!vm.thisTournament.users.contains(appUser.uid))
-                SizedBox(
-                  width: 30.0,
-                ),
-              if (!vm.thisTournament.users.contains(appUser.uid))
-                Row(
-                  children: [
-                    SvgPicture.asset(
-                      'assets/images/svgs/coin.svg',
-                      width: 30.0,
-                      height: 30.0,
-                    ),
-                    SizedBox(
-                      width: 5.0,
-                    ),
-                    Text(
-                      '${vm.thisTournament.entryCost}',
-                      style: TextStyle(
-                        // color: Color(0xffdc8843),
-                        color: Colors.white,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.bold,
+                if (!vm.thisTournament.users.contains(appUser.uid))
+                  SizedBox(
+                    width: 30.0,
+                  ),
+                if (!vm.thisTournament.users.contains(appUser.uid))
+                  Row(
+                    children: [
+                      SvgPicture.asset(
+                        'assets/images/svgs/coin.svg',
+                        width: 30.0,
+                        height: 30.0,
                       ),
-                    ),
-                  ],
-                )
-            ],
+                      SizedBox(
+                        width: 5.0,
+                      ),
+                      Text(
+                        '${vm.thisTournament.entryCost}',
+                        style: TextStyle(
+                          // color: Color(0xffdc8843),
+                          color: Colors.white,
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  )
+              ],
+            ),
           ),
         ),
       ),
