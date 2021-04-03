@@ -1,3 +1,4 @@
+import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -35,6 +36,9 @@ class PeamanApp extends StatelessWidget {
               ),
               StreamProvider<AppConfig>.value(
                 value: AppUserProvider().appConfig,
+              ),
+              StreamProvider<DataConnectionStatus>.value(
+                value: AuthProvider().internetConnection,
               ),
             ],
             child: WrapperBuilder(
