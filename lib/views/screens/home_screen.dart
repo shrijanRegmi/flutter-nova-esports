@@ -5,6 +5,7 @@ import 'package:peaman/enums/online_status.dart';
 import 'package:peaman/models/app_models/chat_model.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/services/database_services/user_provider.dart';
+import 'package:peaman/services/messaging_services/firebase_messaging_provider.dart';
 import 'package:peaman/viewmodels/home_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
 import 'package:peaman/views/screens/explore_tab.dart';
@@ -96,6 +97,8 @@ class _HomeScreenState extends State<HomeScreen>
               context: context,
             ),
             onInit: (vm) async {
+              FirebaseMessagingProvider(context: context, uid: _appUser.uid)
+                  .saveDevice();
               AppUserProvider(uid: _appUser.uid)
                   .setUserActiveStatus(onlineStatus: OnlineStatus.active);
               _tabController.addListener(() {
