@@ -17,6 +17,7 @@ class AppUser {
   final bool worker;
   final int completedTasks;
   final int lastTaskDoneAt;
+  final bool newNotif;
 
   AppUser({
     this.uid,
@@ -34,6 +35,7 @@ class AppUser {
     this.worker,
     this.completedTasks,
     this.lastTaskDoneAt,
+    this.newNotif,
   });
 
   AppUser copyWith({
@@ -52,6 +54,7 @@ class AppUser {
     final bool worker,
     final int completedTasks,
     final int lastTaskDoneAt,
+    final bool newNotif,
   }) {
     return AppUser(
       photoUrl: photoUrl ?? this.photoUrl,
@@ -69,6 +72,7 @@ class AppUser {
       worker: worker ?? this.worker,
       completedTasks: completedTasks ?? this.completedTasks,
       lastTaskDoneAt: lastTaskDoneAt ?? this.lastTaskDoneAt,
+      newNotif: newNotif ?? this.newNotif,
     );
   }
 
@@ -117,6 +121,7 @@ class AppUser {
       worker: data['worker'] ?? false,
       completedTasks: data['completed_tasks'] ?? 0,
       lastTaskDoneAt: data['last_task_done_at'],
+      newNotif: data['new_notif'] ?? false,
     );
   }
 

@@ -1,53 +1,56 @@
-import 'package:peaman/enums/notification_type.dart';
-import 'package:peaman/models/app_models/user_model.dart';
-
 class Notifications {
   final String id;
-  final AppUser sender;
-  final List<AppUser> reactedBy;
-  final List<AppUser> commentedBy;
-  final NotificationType type;
+  final String notifTitle;
+  final String notifBody;
   final int updatedAt;
-  final bool isAccepted;
+  final String extraId;
   final bool isRead;
 
   Notifications({
     this.id,
-    this.sender,
-    this.type,
+    this.notifTitle,
+    this.notifBody,
+    this.extraId,
     this.updatedAt,
-    this.isAccepted,
-    this.reactedBy,
-    this.commentedBy,
     this.isRead,
   });
 
+  Notifications copyWith({
+    final String id,
+    final String notifTitle,
+    final String notifBody,
+    final int updatedAt,
+    final String extraId,
+    final bool isRead,
+  }) {
+    return Notifications(
+      id: id ?? this.id,
+      notifTitle: notifTitle ?? this.notifTitle,
+      notifBody: notifBody ?? this.notifBody,
+      extraId: extraId ?? this.extraId,
+      updatedAt: updatedAt ?? this.updatedAt,
+      isRead: isRead ?? this.isRead,
+    );
+  }
+
   static Notifications fromJson(
       final Map<String, dynamic> data, final String id) {
-    final _type = data['type'];
-    if (_type == 1) {
-      // final _reactedBy = List<AppUser>.from(
-      //   List<Map>.from(data['reacted_by']).map((e) => AppUser.fromJson(e)),
-      // );
-      // return ReactNotification(
-      //   id: id,
-      //   reactedBy: List<AppUser>.from(_reactedBy.reversed),
-      //   updatedAt: data['updated_at'],
-      //   isRead: data['is_read'] ?? false,
-      // );
-    }
-    if (_type == 2) {
-      // final _commentedBy = List<AppUser>.from(
-      //   List<Map>.from(data['commented_by']).map((e) => AppUser.fromJson(e)),
-      // );
+    return Notifications(
+      id: data['id'],
+      notifTitle: data['notif_title'] ?? '',
+      notifBody: data['notif_body'] ?? '',
+      updatedAt: data['updated_at'],
+      extraId: data['extra_id'],
+      isRead: data['is_read'] ?? false,
+    );
+  }
 
-      // return CommentNotification(
-      //   id: id,
-      //   commentedBy: List<AppUser>.from(_commentedBy.reversed),
-      //   updatedAt: data['updated_at'],
-      //   isRead: data['is_read'] ?? false,
-      // );
-    }
-    return null;
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'notif_title': notifTitle,
+      'notif_body': notifBody,
+      'updated_at': updatedAt,
+    };
   }
 }

@@ -8,7 +8,7 @@ class NotificationsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return ListView.separated(
       itemCount: notifications.length,
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
@@ -16,6 +16,11 @@ class NotificationsList extends StatelessWidget {
         final _notification = notifications[index];
 
         return NotificationsListItem(_notification);
+      },
+      separatorBuilder: (context, index) {
+        return Divider(
+          height: 1.0,
+        );
       },
     );
   }

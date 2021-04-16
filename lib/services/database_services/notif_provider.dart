@@ -2,7 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:peaman/models/app_models/notification_model.dart';
+import 'package:peaman/models/app_models/tournament_model.dart';
 import 'package:peaman/models/app_models/user_model.dart';
+import 'package:peaman/views/screens/tournament_view_screen.dart';
+import 'package:provider/provider.dart';
 
 class NotificationProvider {
   final BuildContext context;
@@ -32,71 +35,46 @@ class NotificationProvider {
     }
   }
 
-  // navigate to feed
-  void navigateToFeed() async {
-    // try {
-    //   final _appVm = Provider.of<AppVm>(context, listen: false);
-    //   final _existingFeedsList = _appVm.myFeeds ?? [];
+  // navigate to tournament view screen
+  void navigateToTournamentView(final String tournamentId) async {
+    try {
+      if (tournamentId != null) {
+        final _tournaments =
+            Provider.of<List<Tournament>>(context, listen: false);
+        if (_tournaments != null) {
+          final _index =
+              _tournaments.indexWhere((element) => element.id == tournamentId);
+          if (_index != -1) {
+            final _tournament = _tournaments[_index];
 
-    //   final _feed = _existingFeedsList.firstWhere(
-    //       (element) => element.id == notification.feed.id,
-    //       orElse: () => null);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => TournamentViewScreen(_tournament),
+              ),
+            );
+          }
+        }
+      }
+    } catch (e) {
+      print(e);
+      print('Error!!!: Navigating to feed $tournamentId');
+    }
+  }
 
-    //   if (_feed != null) {
-    //     Feed _thisFeed = _feed;
-
-    //     if (notification.type == NotificationType.reaction) {
-    //       _thisFeed = _feed.copyWith(
-    //         reactionCount: notification.reactedBy.length == _feed.reactionCount
-    //             ? _feed.reactionCount
-    //             : (_feed.reactionCount ?? 0) + 1,
-    //         reactorsPhoto: notification.reactedBy.length == _feed.reactionCount
-    //             ? _feed.reactorsPhoto
-    //             : [..._feed.reactorsPhoto, notification.reactedBy[0].photoUrl],
-    //       );
-
-    //       // Navigator.push(
-    //       //   context,
-    //       //   MaterialPageRoute(
-    //       //     builder: (_) => ViewFeedScreen('View Post', _thisFeed),
-    //       //   ),
-    //       // );
-    //     } else {
-    //       // Navigator.push(
-    //       //   context,
-    //       //   MaterialPageRoute(
-    //       //     builder: (_) => FeedCommentScreen(_thisFeed),
-    //       //   ),
-    //       // );
-    //     }
-    //   } else {
-    //     if (notification.type == NotificationType.reaction) {
-    //       // Navigator.push(
-    //       //   context,
-    //       //   MaterialPageRoute(
-    //       //     builder: (_) => ViewFeedScreen(
-    //       //       'View Post',
-    //       //       _feed,
-    //       //       feedId: notification.feed.id,
-    //       //     ),
-    //       //   ),
-    //       // );
-    //     } else {
-    //       // Navigator.push(
-    //       //   context,
-    //       //   MaterialPageRoute(
-    //       //     builder: (_) => FeedCommentScreen(
-    //       //       _feed,
-    //       //       feedId: notification.feed.id,
-    //       //     ),
-    //       //   ),
-    //       // );
-    //     }
-    //   }
-    // } catch (e) {
-    //   print(e);
-    //   print('Error!!!: Navigating to feed ${notification.feed.id}');
-    // }
+  // send custom notif
+  Future sendCustomNotif() async {
+    try {
+      final _notifRef = _ref.collection('custom_notifs').doc();
+      final _notification = notification.copyWith(
+        id: _notifRef.id,
+      );
+      await _notifRef.set(_notification.toJson());
+      return 'Success';
+    } catch (e) {
+      print(e);
+      return null;
+    }
   }
 
   // get notification from firebase

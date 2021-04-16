@@ -9,6 +9,7 @@ import 'package:peaman/services/messaging_services/firebase_messaging_provider.d
 import 'package:peaman/viewmodels/home_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
 import 'package:peaman/views/screens/explore_tab.dart';
+import 'package:peaman/views/screens/notif_tab.dart';
 import 'package:peaman/views/screens/profile_tab.dart';
 import 'package:peaman/views/screens/watch_and_earn_tab.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _tabController = TabController(
-      length: 3,
+      length: 4,
       vsync: this,
       initialIndex: 1,
     );
@@ -150,6 +151,7 @@ class _HomeScreenState extends State<HomeScreen>
         children: <Widget>[
           WatchAndEarn(),
           ExploreTab(_tabController),
+          NotificationTab(),
           ProfileTab(),
         ],
       ),
@@ -172,6 +174,13 @@ class _HomeScreenState extends State<HomeScreen>
         controller: _tabController,
         indicatorColor: Colors.transparent,
         tabs: _getTab(appUser),
+        onTap: (index) {
+          if (index == 2) {
+            AppUserProvider(uid: appUser.uid).updateUserDetail(data: {
+              'new_notif': false,
+            });
+          }
+        },
       ),
     );
   }
@@ -218,21 +227,29 @@ class _HomeScreenState extends State<HomeScreen>
           color: _tabController.index == 1 ? Colors.blue : null,
         ),
       ),
-      // Tab(
-      //   child: Stack(
-      //     overflow: Overflow.visible,
-      //     children: [
-      //       SvgPicture.asset(
-      //         'assets/images/svgs/notification_tab.svg',
-      //         color: _tabController.index == 2 ? Colors.blue : null,
-      //       ),
-      //     ],
-      //   ),
-      // ),
+      Tab(
+        child: Stack(
+          overflow: Overflow.visible,
+          children: [
+            SvgPicture.asset(
+              'assets/images/svgs/notification_tab.svg',
+              color: _tabController.index == 2 ? Colors.blue : null,
+            ),
+            if (appUser.newNotif)
+              Positioned(
+                right: 0.0,
+                child: CircleAvatar(
+                  backgroundColor: Colors.red,
+                  radius: 4.0,
+                ),
+              ),
+          ],
+        ),
+      ),
       Tab(
         child: SvgPicture.asset(
           'assets/images/svgs/profile_tab.svg',
-          color: _tabController.index == 2 ? Colors.blue : null,
+          color: _tabController.index == 3 ? Colors.blue : null,
         ),
       ),
     ];
