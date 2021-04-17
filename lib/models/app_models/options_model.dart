@@ -55,7 +55,7 @@ final optionsList = <Option>[
 
       if (_appConfig != null) {
         await Share.share(
-          '${_appConfig.appLink}',
+          'Download the best freefire tournament app from: ${_appConfig.appLink} and start joining tournaments with your friends.',
           subject: 'Download the best freefire tournament app.',
         );
       }
