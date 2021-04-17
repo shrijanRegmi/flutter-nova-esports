@@ -23,7 +23,7 @@ class TeamsList extends StatelessWidget {
             itemBuilder: (context, index) {
               return TeamsListItem(
                 teams[index],
-                isMyTeam: myTeam.id == teams[index].id,
+                isMyTeam: myTeam?.id == teams[index].id,
                 isWinner: teams[index].rounds.contains((round + 1)),
               );
             },

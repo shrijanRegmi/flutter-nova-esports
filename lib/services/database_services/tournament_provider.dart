@@ -101,6 +101,40 @@ class TournamentProvider {
     }
   }
 
+  // add wildcard
+  Future addWildCardTeam(final List<AppUser> users) async {
+    try {
+      final _tournamentRef = _ref.collection('tournaments').doc(tournament.id);
+      final _allUserIds = users.map((e) => e.uid).toList();
+      final _teamsRef = _tournamentRef.collection('teams').doc();
+      final _team = team.copyWith(
+        id: _teamsRef.id,
+        userIds: _allUserIds,
+        users: users,
+        rounds: [
+          tournament.activeRound,
+        ],
+      );
+      await _teamsRef.set({
+        ..._team.toJson(),
+        'team_completed_at': DateTime.now().millisecondsSinceEpoch,
+      });
+      await _tournamentRef.update({
+        'users': FieldValue.arrayUnion(_allUserIds),
+        'teams_count': FieldValue.increment(1),
+      });
+      await sendUpdate(
+        _team.id,
+        'Admin registered the team in the tournament.',
+      );
+      return 'Success';
+    } catch (e) {
+      print(e);
+      print('Error!!!: Adding wildcard team');
+      return null;
+    }
+  }
+
   // register in a tournament
   Future register() async {
     try {

@@ -111,7 +111,7 @@ class TournamentViewVm extends ChangeNotifier {
       final TournamentViewVm vm) async {
     if (_teamCodeController.text.trim() != '') {
       if (appUser.coins >= tournament.entryCost) {
-        _interstitialAd.show();
+        if (await _interstitialAd.isLoaded()) _interstitialAd.show();
         _updateIsLoading(true);
         await Future.delayed(Duration(milliseconds: 1300));
         final _result = await TournamentProvider(

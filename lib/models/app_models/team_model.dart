@@ -50,7 +50,7 @@ class Team {
       'team_name': teamName,
       'users': users.map((e) => e.toShortJson()).toList(),
       'user_ids': userIds,
-      'rounds': [1],
+      'rounds': rounds ?? [1],
     };
   }
 

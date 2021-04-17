@@ -19,7 +19,7 @@ class LobbiesListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _isMyLobby = teams.firstWhere((element) => element.id == myTeam.id,
+    final _isMyLobby = teams.firstWhere((element) => element.id == myTeam?.id,
             orElse: () => null) !=
         null;
     return ListTile(
