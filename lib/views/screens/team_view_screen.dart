@@ -89,11 +89,11 @@ class _TeamViewScreenState extends State<TeamViewScreen> {
                         (appUser.admin ||
                             appUser.worker ||
                             (!appUser.admin &&
-                                vm.roomKeyController.text.trim() != '')))
+                                vm.roomIdController.text.trim() != '')))
                       _roomKeyBuilder(appUser, vm),
                     if (appUser.admin ||
                         (!appUser.admin &&
-                            vm.roomKeyController.text.trim() != ''))
+                            vm.roomIdController.text.trim() != ''))
                       SizedBox(
                         height: 10.0,
                       ),
@@ -201,55 +201,68 @@ class _TeamViewScreenState extends State<TeamViewScreen> {
   Widget _roomKeyBuilder(final AppUser appUser, final TeamViewVm vm) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          SizedBox(
-            height: 10.0,
-          ),
-          Text(
-            'Your Room Key'.toUpperCase(),
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Color(0xff3D4A5A),
-              fontSize: 14.0,
-            ),
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Expanded(
-                child: Padding(
+          Expanded(
+            child: Column(
+              children: [
+                Padding(
                   padding: const EdgeInsets.only(bottom: 6.5),
                   child: TextFormField(
                     enabled: appUser.admin || appUser.worker,
-                    controller: vm.roomKeyController,
+                    controller: vm.roomIdController,
                     decoration: InputDecoration(
-                      hintText: 'Room Key',
+                      hintText: 'Room ID',
                     ),
                   ),
                 ),
-              ),
-              SizedBox(
-                width: 10.0,
-              ),
-              MaterialButton(
-                onPressed: () => appUser.admin || appUser.worker
-                    ? vm.saveRoomKey(widget.tournament, widget.index)
-                    : vm.copyRoomKey(),
-                color: Color(0xff5C49E0),
-                child: Text(
-                  appUser.admin || appUser.worker ? 'Save' : 'Copy',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 6.5),
+                  child: TextFormField(
+                    enabled: appUser.admin || appUser.worker,
+                    controller: vm.roomPasswordController,
+                    decoration: InputDecoration(
+                      hintText: 'Room Password',
+                    ),
                   ),
                 ),
-              ),
-            ],
+                SizedBox(
+                  height: 10.0,
+                ),
+                MaterialButton(
+                  onPressed: () => appUser.admin || appUser.worker
+                      ? vm.saveRoomKey(
+                          widget.tournament,
+                          widget.index,
+                          getUsersFromLobby(),
+                        )
+                      : vm.copyRoomKey(),
+                  color: Color(0xff5C49E0),
+                  child: Text(
+                    appUser.admin || appUser.worker ? 'Save' : 'Copy',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
     );
+  }
+
+  List<String> getUsersFromLobby() {
+    final _list = <String>[];
+
+    widget.teams.forEach((element) {
+      element.userIds.forEach((element) {
+        _list.add(element);
+      });
+    });
+
+    return _list;
   }
 }

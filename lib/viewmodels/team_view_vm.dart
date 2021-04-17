@@ -8,13 +8,15 @@ class TeamViewVm extends ChangeNotifier {
   final BuildContext context;
   TeamViewVm(this.context);
 
-  TextEditingController _roomKeyController = TextEditingController();
+  TextEditingController _roomIdController = TextEditingController();
+  TextEditingController _roomPasswordController = TextEditingController();
   GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey<ScaffoldState>();
   bool _isCheckBox = false;
   List<Team> _selectedWinners = [];
   List<Team> _checkedWinners = [];
 
-  TextEditingController get roomKeyController => _roomKeyController;
+  TextEditingController get roomIdController => _roomIdController;
+  TextEditingController get roomPasswordController => _roomPasswordController;
   GlobalKey<ScaffoldState> get scaffoldkey => _scaffoldkey;
   bool get isCheckBox => _isCheckBox;
   List<Team> get selectedWinners => _selectedWinners;
@@ -28,21 +30,30 @@ class TeamViewVm extends ChangeNotifier {
   // initialize values
   _initializeValues(final Tournament tournament, final int index) {
     final _roomKeys = tournament.roomKeys;
-    _roomKeyController.text = _roomKeys['$index'];
+
+    if (_roomKeys != null && _roomKeys.containsKey('$index')) {
+      _roomIdController.text = _roomKeys['$index']['room_id'];
+      _roomPasswordController.text = _roomKeys['$index']['room_password'];
+    }
 
     notifyListeners();
   }
 
   // save room key
-  saveRoomKey(final Tournament tournament, final int index) async {
+  saveRoomKey(final Tournament tournament, final int index,
+      final List<String> users) async {
     FocusScope.of(context).unfocus();
     final _roomKeys = tournament.roomKeys;
-    _roomKeys['$index'] = _roomKeyController.text.trim();
+    _roomKeys['$index'] = {
+      'room_id': _roomIdController.text.trim(),
+      'room_password': _roomPasswordController.text.trim(),
+    };
 
     final _tournament = tournament.copyWith(
       roomKey: _roomKeys,
     );
-    await TournamentProvider(tournament: _tournament).releaseRoomKey();
+    await TournamentProvider(tournament: _tournament)
+        .releaseRoomKey(users, index);
     _scaffoldkey.currentState.showSnackBar(
       SnackBar(
         content: Text('Successfully saved room key.'),
@@ -54,7 +65,7 @@ class TeamViewVm extends ChangeNotifier {
   copyRoomKey() async {
     await Clipboard.setData(
       ClipboardData(
-        text: _roomKeyController.text.trim(),
+        text: _roomIdController.text.trim(),
       ),
     );
     _scaffoldkey.currentState.showSnackBar(
