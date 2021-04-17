@@ -122,6 +122,7 @@ class AppUser {
       completedTasks: data['completed_tasks'] ?? 0,
       lastTaskDoneAt: data['last_task_done_at'],
       newNotif: data['new_notif'] ?? false,
+      phone: data['phone'] ?? 'N/A',
     );
   }
 

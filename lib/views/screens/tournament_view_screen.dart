@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
+import 'package:peaman/enums/match_type.dart';
 import 'package:peaman/helpers/date_time_helper.dart';
 import 'package:peaman/helpers/dialog_provider.dart';
 import 'package:peaman/models/app_models/tournament_model.dart';
@@ -93,7 +94,8 @@ class TournamentViewScreen extends StatelessWidget {
                 ),
           floatingActionButton: vm.isLoading ||
                   vm.thisTournament.users.contains(appUser.uid) ||
-                  vm.thisTournament.isLive
+                  vm.thisTournament.isLive ||
+                  vm.thisTournament.type == MatchType.solo
               ? null
               : _enterTeamCodeBtnBuilder(context, appUser, vm),
         );
