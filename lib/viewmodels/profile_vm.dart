@@ -1,15 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:peaman/models/app_models/app_config.dart';
 
 class ProfileVm extends ChangeNotifier {
   RewardedAd _rewardedAd;
   AdListener _listener;
 
   RewardedAd get rewardedAd => _rewardedAd;
+  TextEditingController _appLinkController = TextEditingController();
+  TextEditingController get appLinkController => _appLinkController;
 
   // init function
-  onInit() async {
+  onInit(final AppConfig appConfig) async {
     _handleRewarded();
+    if (appConfig != null) {
+      _initializeValues(appConfig);
+    }
+  }
+
+  // initialize values
+  _initializeValues(final AppConfig appConfig) {
+    _appLinkController.text = appConfig.appLink;
   }
 
   // initialize rewarded

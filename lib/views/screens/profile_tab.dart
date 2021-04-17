@@ -46,10 +46,12 @@ class _ProfileTabState extends State<ProfileTab> {
 
   @override
   Widget build(BuildContext context) {
+    final _appConfig = Provider.of<AppConfig>(context);
+
     return Scaffold(
       body: ViewmodelProvider<ProfileVm>(
         vm: ProfileVm(),
-        onInit: (vm) => vm.onInit(),
+        onInit: (vm) => vm.onInit(_appConfig),
         builder: (context, vm, appVm, appUser) {
           return SingleChildScrollView(
             child: Column(

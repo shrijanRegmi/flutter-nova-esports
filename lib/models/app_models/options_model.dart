@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:peaman/helpers/dialog_provider.dart';
+import 'package:peaman/models/app_models/app_config.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/services/auth_services/auth_provider.dart';
 import 'package:peaman/services/messaging_services/firebase_messaging_provider.dart';
 import 'package:peaman/views/screens/edit_profile_screen.dart';
 import 'package:peaman/views/screens/registered_tournaments_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:share/share.dart';
 
 class Option {
   final IconData iconData;
@@ -43,11 +45,20 @@ final optionsList = <Option>[
       );
     },
   ),
-  // Option(
-  //   iconData: Icons.bookmark,
-  //   title: 'Saved Tournaments',
-  //   onPressed: null,
-  // ),
+  Option(
+    iconData: Icons.share,
+    title: 'Share App',
+    onPressed: (final BuildContext context) async {
+      final _appConfig = Provider.of<AppConfig>(context, listen: false);
+
+      if (_appConfig != null) {
+        await Share.share(
+          '${_appConfig.appLink}',
+          subject: 'Download the best freefire tournament app.',
+        );
+      }
+    },
+  ),
   Option(
     iconData: Icons.logout,
     title: 'Log Out',
