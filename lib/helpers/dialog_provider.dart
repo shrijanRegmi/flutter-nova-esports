@@ -392,6 +392,91 @@ class DialogProvider {
     );
   }
 
+  // show this when admin wants to add something about the app
+  showEditAboutDialog(
+    final TextEditingController aboutController,
+    final TextEditingController appLinkController,
+    final Function onPressed,
+  ) async {
+    return await showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text('About the app'),
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              height: 200.0,
+              child: TextFormField(
+                style: TextStyle(
+                  fontSize: 14.0,
+                ),
+                minLines: 10,
+                maxLines: 10,
+                controller: aboutController,
+                decoration: InputDecoration(
+                  hintText: 'About Novaesports',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 20.0,
+            ),
+            Text(
+              'App Link',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 12.0,
+              ),
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            TextFormField(
+              style: TextStyle(
+                fontSize: 14.0,
+              ),
+              controller: appLinkController,
+              decoration: InputDecoration(
+                hintText: 'App Link',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            child: Text(
+              'Cancel',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          TextButton(
+            child: Text(
+              'Done',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              onPressed();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _addMomentBuilder() {
     return Container(
       color: Colors.transparent,

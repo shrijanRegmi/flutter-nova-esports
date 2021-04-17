@@ -6,6 +6,7 @@ class AppConfig {
   final String interstitialId;
   final String rewardId;
   final String appLink;
+  final String aboutApp;
   AppConfig({
     this.maxAdViews,
     this.adShowTimer,
@@ -14,6 +15,7 @@ class AppConfig {
     this.interstitialId,
     this.rewardId,
     this.appLink,
+    this.aboutApp,
   });
 
   AppConfig copyWith({
@@ -24,6 +26,7 @@ class AppConfig {
     final String interstitialId,
     final String rewardId,
     final String appLink,
+    final String aboutApp,
   }) {
     return AppConfig(
       maxAdViews: maxAdViews ?? this.maxAdViews,
@@ -33,6 +36,7 @@ class AppConfig {
       interstitialId: interstitialId ?? this.interstitialId,
       rewardId: rewardId ?? this.rewardId,
       appLink: appLink ?? this.appLink,
+      aboutApp: aboutApp ?? this.aboutApp,
     );
   }
 
@@ -45,6 +49,7 @@ class AppConfig {
       'interstitial_id': interstitialId,
       'reward_id': rewardId,
       'app_link': appLink,
+      'about_app': aboutApp,
     };
   }
 
@@ -57,7 +62,8 @@ class AppConfig {
       interstitialId:
           data['interstitial_id'] ?? 'ca-app-pub-3940256099942544/1033173712',
       rewardId: data['reward_id'] ?? 'ca-app-pub-3940256099942544/5224354917',
-      appLink: data['app_link'],
+      appLink: data['app_link'] ?? '',
+      aboutApp: data['about_app'] ?? '',
     );
   }
 }

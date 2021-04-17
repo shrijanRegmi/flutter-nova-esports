@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:peaman/models/app_models/app_config.dart';
 import 'package:peaman/models/app_models/options_model.dart';
+import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/viewmodels/profile_vm.dart';
 import 'package:peaman/views/widgets/profile_widgets/options_list_item.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +13,8 @@ class OptionsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _appConfig = Provider.of<AppConfig>(context);
+    final _appUser = Provider.of<AppUser>(context);
+
     return ListView.builder(
       itemCount: optionsList.length,
       shrinkWrap: true,
@@ -20,6 +23,8 @@ class OptionsList extends StatelessWidget {
         final _option = optionsList[index];
         final _isWatchAndEarn = _option.title == 'Watch and Earn';
         final _isShareApp = _option.title == 'Share App';
+        final _isAboutApp = _option.title == 'About App';
+
         if (_isWatchAndEarn) {
           return FutureBuilder<bool>(
             future: vm.rewardedAd.isLoaded(),
@@ -33,7 +38,11 @@ class OptionsList extends StatelessWidget {
           );
         }
 
-        if (_isShareApp && _appConfig.appLink == null) {
+        if (_isShareApp && _appConfig.appLink == '') {
+          return Container();
+        }
+
+        if (_isAboutApp && _appConfig.aboutApp == '' && !_appUser.admin) {
           return Container();
         }
 
