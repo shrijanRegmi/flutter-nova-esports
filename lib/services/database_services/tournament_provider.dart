@@ -114,6 +114,7 @@ class TournamentProvider {
         'users': FieldValue.arrayUnion([
           appUser.uid,
         ]),
+        'teams_count': FieldValue.increment(1),
       });
       await sendUpdate(
         _team.id,

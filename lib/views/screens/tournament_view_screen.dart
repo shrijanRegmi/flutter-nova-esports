@@ -73,10 +73,12 @@ class TournamentViewScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 if (vm.thisTournament.users
-                                    .contains(appUser.uid))
+                                        .contains(appUser.uid) &&
+                                    vm.thisTournament.type != MatchType.solo)
                                   JoinTeam(vm.thisTournament, vm),
                                 if (vm.thisTournament.users
-                                    .contains(appUser.uid))
+                                        .contains(appUser.uid) &&
+                                    vm.thisTournament.type != MatchType.solo)
                                   SizedBox(
                                     height: 20.0,
                                   ),

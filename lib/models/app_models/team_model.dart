@@ -53,4 +53,26 @@ class Team {
       'rounds': [1],
     };
   }
+
+  List<String> getTeamIdList(final List<Team> teams) {
+    final _list = <String>[];
+
+    teams.forEach((element) {
+      _list.add(element.id);
+    });
+
+    return _list;
+  }
+
+  List<String> getUsersIdList(final List<Team> teams) {
+    final _list = <String>[];
+
+    teams.forEach((element) {
+      element.userIds.forEach((element) {
+        _list.add(element);
+      });
+    });
+
+    return _list;
+  }
 }

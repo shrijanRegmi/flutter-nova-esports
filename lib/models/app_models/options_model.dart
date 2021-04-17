@@ -6,6 +6,7 @@ import 'package:peaman/services/auth_services/auth_provider.dart';
 import 'package:peaman/services/messaging_services/firebase_messaging_provider.dart';
 import 'package:peaman/views/screens/about_app_screen.dart';
 import 'package:peaman/views/screens/edit_profile_screen.dart';
+import 'package:peaman/views/screens/help_and_support.dart';
 import 'package:peaman/views/screens/registered_tournaments_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
@@ -68,6 +69,18 @@ final optionsList = <Option>[
         context,
         MaterialPageRoute(
           builder: (_) => AboutAppScreen(),
+        ),
+      );
+    },
+  ),
+  Option(
+    iconData: Icons.help,
+    title: 'Help And Support',
+    onPressed: (final BuildContext context) async {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => HelpAndSupportScreen(),
         ),
       );
     },

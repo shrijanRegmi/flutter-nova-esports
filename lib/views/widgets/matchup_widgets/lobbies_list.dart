@@ -31,8 +31,6 @@ class LobbiesList extends StatelessWidget {
 
     return Column(
       children: [
-        if (_appUser.admin && tournament.activeRound != round)
-          _startRoundBuilder(),
         StreamBuilder<List<Team>>(
           stream: TournamentProvider(tournament: tournament, round: round)
               .tournamentTeamsList,
@@ -42,30 +40,37 @@ class LobbiesList extends StatelessWidget {
               return _appUser.admin
                   ? _teams.isEmpty
                       ? _emptyUpdatesBuilder()
-                      : ListView.separated(
-                          itemCount: _teams.length % _teamsInALobby == 0
-                              ? _teams.length ~/ _teamsInALobby
-                              : (_teams.length ~/ _teamsInALobby) + 1,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            final _start = _teamsInALobby * index;
-                            final _end = _teamsInALobby * (index + 1);
-                            return LobbiesListItem(
-                              tournament: tournament,
-                              index: index,
-                              teams: _teams.length < _end
-                                  ? _teams.sublist(_start)
-                                  : _teams.sublist(_start, _end),
-                              myTeam: team,
-                              round: round,
-                            );
-                          },
-                          separatorBuilder: (context, index) {
-                            return Divider(
-                              height: 1.0,
-                            );
-                          },
+                      : Column(
+                          children: [
+                            if (_appUser.admin &&
+                                tournament.activeRound != round)
+                              _startRoundBuilder(_teams),
+                            ListView.separated(
+                              itemCount: _teams.length % _teamsInALobby == 0
+                                  ? _teams.length ~/ _teamsInALobby
+                                  : (_teams.length ~/ _teamsInALobby) + 1,
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                final _start = _teamsInALobby * index;
+                                final _end = _teamsInALobby * (index + 1);
+                                return LobbiesListItem(
+                                  tournament: tournament,
+                                  index: index,
+                                  teams: _teams.length < _end
+                                      ? _teams.sublist(_start)
+                                      : _teams.sublist(_start, _end),
+                                  myTeam: team,
+                                  round: round,
+                                );
+                              },
+                              separatorBuilder: (context, index) {
+                                return Divider(
+                                  height: 1.0,
+                                );
+                              },
+                            ),
+                          ],
                         )
                   : _teams.isEmpty || tournament.activeRound < round
                       ? _emptyUpdatesBuilder()
@@ -111,7 +116,7 @@ class LobbiesList extends StatelessWidget {
     );
   }
 
-  Widget _startRoundBuilder() {
+  Widget _startRoundBuilder(final List<Team> teams) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -123,7 +128,11 @@ class LobbiesList extends StatelessWidget {
           FilledBtn(
             color: Colors.blue,
             title: 'Start Round $round',
-            onPressed: () => vm.startRound(round),
+            onPressed: () => vm.startRound(
+              round,
+              Team().getUsersIdList(teams),
+              Team().getTeamIdList(teams),
+            ),
           ),
         ],
       ),

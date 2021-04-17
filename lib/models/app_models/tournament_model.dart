@@ -22,6 +22,7 @@ class Tournament {
   final String registrationEndTime;
   final Map<String, dynamic> roomKeys;
   final int activeRound;
+  final int teamsCount;
 
   Tournament({
     this.id,
@@ -44,6 +45,7 @@ class Tournament {
     this.registrationEndTime,
     this.roomKeys,
     this.activeRound,
+    this.teamsCount,
   });
 
   Tournament copyWith({
@@ -67,6 +69,7 @@ class Tournament {
     final String registrationEndTime,
     final Map<String, dynamic> roomKey,
     final int activeRound,
+    final int teamsCount,
   }) {
     return Tournament(
       id: id ?? this.id,
@@ -89,6 +92,7 @@ class Tournament {
       registrationEndTime: registrationEndTime ?? this.registrationEndTime,
       roomKeys: roomKeys ?? this.roomKeys,
       activeRound: activeRound ?? this.activeRound,
+      teamsCount: teamsCount ?? this.teamsCount,
     );
   }
 
@@ -114,6 +118,7 @@ class Tournament {
       registrationEndTime: data['registration_end_time'],
       roomKeys: data['room_keys'] ?? {},
       activeRound: data['active_round'] ?? 1,
+      teamsCount: data['teams_count'] ?? 0,
     );
   }
 
@@ -135,6 +140,7 @@ class Tournament {
       'registration_end': registrationEnd,
       'registration_end_time': registrationEndTime,
       'active_round': activeRound ?? 1,
+      'teams_count': teamsCount,
     };
   }
 

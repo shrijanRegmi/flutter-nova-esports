@@ -24,6 +24,7 @@ class OptionsList extends StatelessWidget {
         final _isWatchAndEarn = _option.title == 'Watch and Earn';
         final _isShareApp = _option.title == 'Share App';
         final _isAboutApp = _option.title == 'About App';
+        final _isHelpAndSupport = _option.title == 'Help And Support';
 
         if (_isWatchAndEarn) {
           return FutureBuilder<bool>(
@@ -46,6 +47,11 @@ class OptionsList extends StatelessWidget {
           return Container();
         }
 
+        if (_isHelpAndSupport &&
+            _appConfig.supportEmail == '' &&
+            !_appUser.admin) {
+          return Container();
+        }
         return OptionsListItem(_option);
       },
     );

@@ -477,6 +477,61 @@ class DialogProvider {
     );
   }
 
+  // show this when admin wants to add support email
+  showSupportEmailDialog(
+    final TextEditingController supportEmailController,
+    final Function onPressed,
+  ) async {
+    return await showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text('Enter Support Email'),
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              style: TextStyle(
+                fontSize: 14.0,
+              ),
+              controller: supportEmailController,
+              decoration: InputDecoration(
+                hintText: 'Support Email',
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            child: Text(
+              'Cancel',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          TextButton(
+            child: Text(
+              'Done',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              onPressed();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _addMomentBuilder() {
     return Container(
       color: Colors.transparent,

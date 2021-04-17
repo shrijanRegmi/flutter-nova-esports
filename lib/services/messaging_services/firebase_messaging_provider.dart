@@ -14,41 +14,11 @@ class FirebaseMessagingProvider {
   Future configureMessaging() async {
     _firebaseMessaging.configure(
       onLaunch: (message) {
-        // final _data = message['data'] ?? {};
-        // final _screen = _data['screen'] ?? '';
-        // final _id = _data['id'] ?? '';
-
-        // switch (_screen) {
-        //   case 'booking-received-screen':
-        //     return _openBookingScreen(_id);
-        //     break;
-        //   case 'booking-accept-decline-screen':
-        //     return _openBookingAcceptDeclineScreen(_id);
-        //     break;
-        //   case 'payment-screenshot-received-screen':
-        //     return _openPaymentScreenshotScreen(_id);
-        //     break;
-        //   default:
-        // }
+        print('ON LAUNCH: $message');
         return null;
       },
       onResume: (message) {
-        // final _data = message['data'] ?? {};
-        // final _screen = _data['screen'] ?? '';
-        // final _id = _data['id'] ?? '';
-
-        // switch (_screen) {
-        //   case 'booking-received-screen':
-        //     return _openBookingScreen(_id);
-        //     break;
-        //   case 'booking-accept-decline-screen':
-        //     return _openBookingAcceptDeclineScreen(_id);
-        //     break;
-        //   case 'payment-screenshot-received-screen':
-        //     return _openPaymentScreenshotScreen(_id);
-        //     break;
-        //   default:
-        // }
+        print('ON RESUME: $message');
         return null;
       },
     );
