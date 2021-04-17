@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:peaman/models/app_models/team_model.dart';
@@ -14,6 +15,7 @@ class TeamViewVm extends ChangeNotifier {
   bool _isCheckBox = false;
   List<Team> _selectedWinners = [];
   List<Team> _checkedWinners = [];
+  final _ref = FirebaseFirestore.instance;
 
   TextEditingController get roomIdController => _roomIdController;
   TextEditingController get roomPasswordController => _roomPasswordController;
@@ -40,8 +42,12 @@ class TeamViewVm extends ChangeNotifier {
   }
 
   // save room key
-  saveRoomKey(final Tournament tournament, final int index,
-      final List<String> users) async {
+  saveRoomKey(
+    final Tournament tournament,
+    final int index,
+    final List<String> users,
+    final List<String> teamIds,
+  ) async {
     FocusScope.of(context).unfocus();
     final _roomKeys = tournament.roomKeys;
     _roomKeys['$index'] = {
@@ -52,13 +58,39 @@ class TeamViewVm extends ChangeNotifier {
     final _tournament = tournament.copyWith(
       roomKey: _roomKeys,
     );
-    await TournamentProvider(tournament: _tournament)
+    final _result = await TournamentProvider(tournament: _tournament)
         .releaseRoomKey(users, index);
     _scaffoldkey.currentState.showSnackBar(
       SnackBar(
         content: Text('Successfully saved room key.'),
       ),
     );
+
+    if (_result != null) {
+      if (_roomIdController.text.trim() != '' &&
+          _roomPasswordController.text.trim() != '') {
+        final _triggerRef = _ref.collection('room_key_triggers').doc();
+
+        await TournamentProvider(tournament: _tournament).trigger(
+          _triggerRef,
+          {
+            'id': _triggerRef.id,
+            'tournament_id': _tournament.id,
+            'tournament_title': _tournament.title,
+            'room_keys': _tournament.roomKeys,
+            'lobby': index,
+            'users': users,
+          },
+        );
+
+        for (final teamId in teamIds) {
+          await TournamentProvider(tournament: _tournament).sendUpdate(
+            teamId,
+            'The Room ID is: ${_roomIdController.text.trim()}\nThe Room Password is: ${_roomPasswordController.text.trim()}',
+          );
+        }
+      }
+    }
   }
 
   // copy room key

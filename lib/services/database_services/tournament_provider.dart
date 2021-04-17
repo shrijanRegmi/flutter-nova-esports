@@ -300,21 +300,9 @@ class TournamentProvider {
   Future releaseRoomKey(final List<String> users, final int lobby) async {
     try {
       final _tournamentRef = _ref.collection('tournaments').doc(tournament.id);
-      final _triggerRef = _ref.collection('room_key_triggers').doc();
       await _tournamentRef.update({
         'room_keys': tournament.roomKeys,
       });
-      await trigger(
-        _triggerRef,
-        {
-          'id': _triggerRef.id,
-          'tournament_id': tournament.id,
-          'tournament_title': tournament.title,
-          'room_keys': tournament.roomKeys,
-          'lobby': lobby,
-          'users': users,
-        },
-      );
       print('Success: Releasing room key');
       return 'Success';
     } catch (e) {

@@ -235,6 +235,7 @@ class _TeamViewScreenState extends State<TeamViewScreen> {
                           widget.tournament,
                           widget.index,
                           getUsersFromLobby(),
+                          getTeamIdsFromLobby(),
                         )
                       : vm.copyRoomKey(),
                   color: Color(0xff5C49E0),
@@ -261,6 +262,16 @@ class _TeamViewScreenState extends State<TeamViewScreen> {
       element.userIds.forEach((element) {
         _list.add(element);
       });
+    });
+
+    return _list;
+  }
+
+  List<String> getTeamIdsFromLobby() {
+    final _list = <String>[];
+
+    widget.teams.forEach((element) {
+      _list.add(element.id);
     });
 
     return _list;
