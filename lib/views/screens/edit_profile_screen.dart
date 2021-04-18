@@ -151,17 +151,18 @@ class EditProfileScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _inputFieldItem(
-          'Your Username',
-          'Enter Username',
-          vm.nameController,
+          'Your In-Game Name',
+          'Enter In-Game Name',
+          vm.inGameNameController,
         ),
         SizedBox(
           height: 20.0,
         ),
         _inputFieldItem(
-          'Your In-Game Name',
-          'Enter In-Game Name',
-          vm.inGameNameController,
+          'Your Username',
+          'Enter Username',
+          vm.nameController,
+          onTapped: () {},
         ),
         SizedBox(
           height: 20.0,
