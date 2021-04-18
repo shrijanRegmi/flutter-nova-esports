@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:peaman/models/app_models/app_config.dart';
+import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/viewmodels/about_app_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
 import 'package:peaman/views/widgets/common_widgets/appbar.dart';
@@ -40,17 +41,51 @@ class AboutAppScreen extends StatelessWidget {
           ),
           floatingActionButton: !appUser.admin
               ? null
-              : Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: FloatingActionButton(
-                    backgroundColor: Colors.blue,
-                    heroTag: 'about',
-                    onPressed: () => vm.saveAboutApp(_appConfig),
-                    child: Icon(Icons.edit),
-                  ),
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    _addSocialLinks(context, appUser, vm, _appConfig),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: FloatingActionButton(
+                        backgroundColor: Colors.blue,
+                        heroTag: 'about',
+                        onPressed: () => vm.saveAboutApp(_appConfig),
+                        child: Icon(Icons.edit),
+                      ),
+                    ),
+                  ],
                 ),
         );
       },
+    );
+  }
+
+  Widget _addSocialLinks(
+    final BuildContext context,
+    final AppUser appUser,
+    final AboutAppVm vm,
+    final AppConfig appConfig,
+  ) {
+    return Material(
+      borderRadius: BorderRadius.circular(100.0),
+      elevation: 2.0,
+      color: Colors.blue,
+      child: InkWell(
+        onTap: () => vm.saveSocialLink(appConfig),
+        borderRadius: BorderRadius.circular(100.0),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+          color: Colors.transparent,
+          child: Text(
+            'Add Social Links',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -1,3 +1,5 @@
+import 'package:peaman/models/app_models/social_links_model.dart';
+
 class AppConfig {
   final int maxAdViews;
   final int adShowTimer;
@@ -8,6 +10,7 @@ class AppConfig {
   final String appLink;
   final String aboutApp;
   final String supportEmail;
+  final List<SocialLink> socialLinks;
 
   AppConfig({
     this.maxAdViews,
@@ -19,6 +22,7 @@ class AppConfig {
     this.appLink,
     this.aboutApp,
     this.supportEmail,
+    this.socialLinks,
   });
 
   AppConfig copyWith({
@@ -31,6 +35,7 @@ class AppConfig {
     final String appLink,
     final String aboutApp,
     final String supportEmail,
+    final List<SocialLink> socialLinks,
   }) {
     return AppConfig(
       maxAdViews: maxAdViews ?? this.maxAdViews,
@@ -42,6 +47,7 @@ class AppConfig {
       appLink: appLink ?? this.appLink,
       aboutApp: aboutApp ?? this.aboutApp,
       supportEmail: supportEmail ?? this.supportEmail,
+      socialLinks: socialLinks ?? this.socialLinks,
     );
   }
 
@@ -56,6 +62,7 @@ class AppConfig {
       'app_link': appLink,
       'about_app': aboutApp,
       'support_email': supportEmail,
+      'social_links': socialLinks.map((e) => e.toJson()).toList(),
     };
   }
 
@@ -71,6 +78,12 @@ class AppConfig {
       appLink: data['app_link'] ?? '',
       aboutApp: data['about_app'] ?? '',
       supportEmail: data['support_email'] ?? '',
+      socialLinks: data['social_links'] != null
+          ? List<SocialLink>.from(data['social_links'].map(
+                (e) => SocialLink.fromJson(e),
+              )) ??
+              []
+          : [],
     );
   }
 }

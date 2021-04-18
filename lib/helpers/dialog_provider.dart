@@ -532,6 +532,74 @@ class DialogProvider {
     );
   }
 
+  // show this when admin wants to add support email
+  showAddSocialLinksDialog(
+    final TextEditingController linkController,
+    final TextEditingController imgUrlController,
+    final Function onPressed,
+  ) async {
+    return await showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text('Enter social link and image url'),
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              style: TextStyle(
+                fontSize: 14.0,
+              ),
+              controller: linkController,
+              decoration: InputDecoration(
+                hintText: 'Enter Social Link',
+              ),
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            TextFormField(
+              style: TextStyle(
+                fontSize: 14.0,
+              ),
+              controller: imgUrlController,
+              decoration: InputDecoration(
+                hintText: 'Enter Image Url',
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            child: Text(
+              'Cancel',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          TextButton(
+            child: Text(
+              'Done',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              onPressed();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _addMomentBuilder() {
     return Container(
       color: Colors.transparent,

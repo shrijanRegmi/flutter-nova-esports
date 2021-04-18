@@ -8,6 +8,7 @@ import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/viewmodels/profile_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
 import 'package:peaman/views/widgets/profile_widgets/options_list.dart';
+import 'package:peaman/views/widgets/profile_widgets/social_links_list.dart';
 import 'package:provider/provider.dart';
 
 class ProfileTab extends StatefulWidget {
@@ -68,6 +69,8 @@ class _ProfileTabState extends State<ProfileTab> {
                   height: 40.0,
                 ),
                 OptionsList(vm),
+                if (_appConfig != null && _appConfig.socialLinks.isNotEmpty)
+                  SocialLinkList(_appConfig.socialLinks),
               ],
             ),
           );
