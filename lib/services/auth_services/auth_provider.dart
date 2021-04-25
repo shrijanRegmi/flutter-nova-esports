@@ -80,10 +80,13 @@ class AuthProvider {
       final _userSnap = await _userRef.get();
 
       if (!_userSnap.exists) {
-        scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text(
-              'User with that email does not exist! Please create an account first.'),
-        ));
+        DialogProvider(context).showWarningDialog(
+          'Oops !',
+          'User with that email does not exist! Please create an account first.',
+          () {},
+        );
+        logOut();
+        return null;
       } else {
         _userFromFirebase(_user);
         print('Success: Logging in user with name ${_user.displayName}');
@@ -117,9 +120,13 @@ class AuthProvider {
         _userFromFirebase(_user);
         print('Success: Signing up user with name ${_user.displayName}');
       } else {
-        scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text('User with that email already exist! Please login.'),
-        ));
+        DialogProvider(context).showWarningDialog(
+          'Oops !',
+          'User with that email already exist! Please login.',
+          () {},
+        );
+        logOut();
+        return null;
       }
       return _user;
     } catch (e) {
@@ -174,7 +181,7 @@ class AuthProvider {
     print('Success: Logging out user');
     await _googleSignIn.signOut();
     await _auth.signOut();
-    await AppUserProvider(uid: appUser.uid).setUserActiveStatus(
+    await AppUserProvider(uid: appUser?.uid).setUserActiveStatus(
       onlineStatus: OnlineStatus.away,
     );
   }
