@@ -82,7 +82,7 @@ class _ExploreTabState extends State<ExploreTab> {
                             SizedBox(
                               height: 15.0,
                             ),
-                            _topSectionBuilder(context),
+                            _topSectionBuilder(context, appUser),
                             SizedBox(
                               height: 5.0,
                             ),
@@ -235,7 +235,7 @@ class _ExploreTabState extends State<ExploreTab> {
     );
   }
 
-  Widget _topSectionBuilder(BuildContext context) {
+  Widget _topSectionBuilder(BuildContext context, final AppUser appUser) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Row(
@@ -243,12 +243,14 @@ class _ExploreTabState extends State<ExploreTab> {
         children: <Widget>[
           GestureDetector(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => ActiveAndWorkerViewScreen(),
-                ),
-              );
+              if (appUser.admin) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ActiveAndWorkerViewScreen(),
+                  ),
+                );
+              }
             },
             child: Container(
               color: Colors.transparent,

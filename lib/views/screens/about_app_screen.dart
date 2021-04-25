@@ -16,6 +16,7 @@ class AboutAppScreen extends StatelessWidget {
       onInit: (vm) => vm.onInit(_appConfig),
       builder: (context, vm, appVm, appUser) {
         return Scaffold(
+          key: vm.scaffoldKey,
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(60.0),
             child: CommonAppbar(

@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/views/widgets/common_widgets/avatar_builder.dart';
 
@@ -533,69 +536,103 @@ class DialogProvider {
   }
 
   // show this when admin wants to add support email
-  showAddSocialLinksDialog(
+  showAddSocialLinksDialog({
     final TextEditingController linkController,
-    final TextEditingController imgUrlController,
-    final Function onPressed,
-  ) async {
+    final Function(File) onPressed,
+    final Function onSelectImage,
+  }) async {
+    File _socialImg;
     return await showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        title: Text('Enter social link and image url'),
-        content: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextFormField(
-              style: TextStyle(
-                fontSize: 14.0,
-              ),
-              controller: linkController,
-              decoration: InputDecoration(
-                hintText: 'Enter Social Link',
+      builder: (_) => StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: Text('Enter social link and image url'),
+            content: Container(
+              height: 160.0,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _socialImg != null
+                        ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.file(
+                                _socialImg,
+                                width: 100.0,
+                                height: 100.0,
+                              ),
+                          ],
+                        )
+                        : MaterialButton(
+                            onPressed: () async {
+                              final _pickedImg = await ImagePicker().getImage(
+                                source: ImageSource.gallery,
+                              );
+                              if (_pickedImg != null) {
+                                setState(() {
+                                  _socialImg = File(_pickedImg.path);
+                                });
+                              }
+                            },
+                            color: Colors.blue,
+                            textColor: Colors.white,
+                            child: Text('Add Image'),
+                          ),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    TextFormField(
+                      style: TextStyle(
+                        fontSize: 14.0,
+                      ),
+                      controller: linkController,
+                      decoration: InputDecoration(
+                        hintText: 'Enter Social Link',
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-            SizedBox(
-              height: 10.0,
-            ),
-            TextFormField(
-              style: TextStyle(
-                fontSize: 14.0,
+            actions: [
+              TextButton(
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                onPressed: () {
+                  setState(() {
+                    _socialImg = null;
+                  });
+                  Navigator.pop(context);
+                },
               ),
-              controller: imgUrlController,
-              decoration: InputDecoration(
-                hintText: 'Enter Image Url',
+              TextButton(
+                child: Text(
+                  'Done',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                onPressed: () {
+                  final _newImg = _socialImg;
+                  setState(() {
+                    _socialImg = null;
+                  });
+                  Navigator.pop(context);
+                  onPressed(_newImg);
+                },
               ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            child: Text(
-              'Cancel',
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          TextButton(
-            child: Text(
-              'Done',
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-              onPressed();
-            },
-          ),
-        ],
+            ],
+          );
+        },
       ),
     );
   }

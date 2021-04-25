@@ -25,7 +25,7 @@ class ActiveAndWorkerViewScreen extends StatelessWidget {
         child: Column(
           children: [
             _streamBuilder(
-              'Active Users',
+              'Active Workers',
               AppUserProvider().activeUsers,
               Axis.horizontal,
             ),

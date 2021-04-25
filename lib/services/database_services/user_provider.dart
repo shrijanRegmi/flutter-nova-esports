@@ -255,6 +255,7 @@ class AppUserProvider {
     return _ref
         .collection('users')
         .where('active_status', isEqualTo: 1)
+        .where('worker', isEqualTo: true)
         .snapshots()
         .map(_usersFromFirebase);
   }
