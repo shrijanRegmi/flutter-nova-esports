@@ -96,8 +96,10 @@ class AuthVm extends ChangeNotifier {
     _updateLoader(true);
     if (_emailController.text.trim() != '' &&
         _passController.text.trim() != '') {
-      _interstitialAd?.show();
-      _result = await AuthProvider().loginWithEmailAndPassword(
+      if (await _interstitialAd.isLoaded()) {
+        _interstitialAd.show();
+      }
+      _result = await AuthProvider(context: context).loginWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passController.text.trim(),
       );
@@ -119,11 +121,12 @@ class AuthVm extends ChangeNotifier {
     if (_nameController.text.trim() != '' &&
         _emailController.text.trim() != '' &&
         _passController.text.trim() != '') {
-      _interstitialAd?.show();
+      if (await _interstitialAd.isLoaded()) {
+        _interstitialAd.show();
+      }
       if (imgFile != null) {
         _result = await UserStorage().uploadUserImage(imgFile: imgFile);
       }
-
       final _appUser = AppUser(
         photoUrl: _result,
         name: _nameController.text.trim(),
@@ -134,7 +137,7 @@ class AuthVm extends ChangeNotifier {
         address: _address,
       );
 
-      _result = await AuthProvider(appUser: _appUser)
+      _result = await AuthProvider(appUser: _appUser, context: context)
           .signUpWithEmailAndPassword(password: _passController.text.trim());
     } else {
       _scaffoldKey.currentState.showSnackBar(SnackBar(
@@ -226,7 +229,8 @@ class AuthVm extends ChangeNotifier {
   // log in using google
   logInWithGoogle() async {
     _updateLoader(true);
-    final _result = await AuthProvider().loginWithGoogle(_scaffoldKey);
+    final _result =
+        await AuthProvider(context: context).loginWithGoogle(_scaffoldKey);
     if (_result == null) {
       _updateLoader(false);
     }
@@ -247,8 +251,8 @@ class AuthVm extends ChangeNotifier {
       photoUrl: _imgUrl,
       address: _address,
     );
-    final _result =
-        await AuthProvider().signUpWithGoogle(_appUser, _scaffoldKey);
+    final _result = await AuthProvider(context: context)
+        .signUpWithGoogle(_appUser, _scaffoldKey);
     if (_result == null) {
       _updateLoader(false);
     }

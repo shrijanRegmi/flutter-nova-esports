@@ -7,12 +7,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:peaman/enums/online_status.dart';
+import 'package:peaman/helpers/dialog_provider.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/services/database_services/user_provider.dart';
 
 class AuthProvider {
   final AppUser appUser;
-  AuthProvider({this.appUser});
+  final BuildContext context;
+  AuthProvider({
+    this.appUser,
+    this.context,
+  });
 
   final _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -36,6 +41,7 @@ class AuthProvider {
       return _result;
     } catch (e) {
       print(e);
+      _handleErrors(e);
       print('Error!!!: Creating user with name ${appUser.name}');
       return null;
     }
@@ -54,6 +60,7 @@ class AuthProvider {
       return _result;
     } catch (e) {
       print(e);
+      _handleErrors(e);
       print('Error!!!: Logging in user with email $email');
       return null;
     }
@@ -84,6 +91,7 @@ class AuthProvider {
       return _user;
     } catch (e) {
       print(e);
+      _handleErrors(e);
       print('Error!!!: Signing up with google');
       return null;
     }
@@ -118,6 +126,46 @@ class AuthProvider {
       print(e);
       print('Error!!!: Signing up with google');
       return null;
+    }
+  }
+
+  // handle error message
+  void _handleErrors(dynamic e) {
+    switch (e?.message) {
+      case "The email address is badly formatted.":
+        DialogProvider(context).showWarningDialog(
+          'Oops !',
+          'Please enter a valid email.',
+          () {},
+        );
+        break;
+      case "The password is invalid or the user does not have a password.":
+        DialogProvider(context).showWarningDialog(
+          'Oops !',
+          'The password you have entered is incorrect.',
+          () {},
+        );
+        break;
+      case "The email address is already in use by another account.":
+        DialogProvider(context).showWarningDialog(
+          'Oops !',
+          'The email address is already in use by another account. Please use a different one.',
+          () {},
+        );
+        break;
+      case "Password should be at least 6 characters":
+        DialogProvider(context).showWarningDialog(
+          'Oops !',
+          'Password should be at least 6 characters long.',
+          () {},
+        );
+        break;
+      default:
+        DialogProvider(context).showWarningDialog(
+          'Oops !',
+          'Unexpected error occurred! Please try again later.',
+          () {},
+        );
     }
   }
 
