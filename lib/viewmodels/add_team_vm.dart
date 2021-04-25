@@ -46,22 +46,24 @@ class AddTeamVm extends ChangeNotifier {
 
   // add team
   addTeam(final Tournament tournament) async {
-    _isLoading = true;
-    notifyListeners();
-
-    final _team = Team(
-      users: _players,
-      userIds: _players.map((e) => e.uid).toList(),
-      teamName: _teamNameController.text.trim(),
-    );
-    final _result =
-        await TournamentProvider(tournament: tournament, team: _team)
-            .addWildCardTeam(_players);
-    if (_result == null) {
-      _isLoading = false;
+    if (_players.isNotEmpty && _teamNameController.text.trim() != '') {
+      _isLoading = true;
       notifyListeners();
-    } else {
-      Navigator.pop(context);
+
+      final _team = Team(
+        users: _players,
+        userIds: _players.map((e) => e.uid).toList(),
+        teamName: _teamNameController.text.trim(),
+      );
+      final _result =
+          await TournamentProvider(tournament: tournament, team: _team)
+              .addWildCardTeam(_players);
+      if (_result == null) {
+        _isLoading = false;
+        notifyListeners();
+      } else {
+        Navigator.pop(context);
+      }
     }
   }
 }
