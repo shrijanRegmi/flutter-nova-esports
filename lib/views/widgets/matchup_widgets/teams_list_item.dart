@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:peaman/models/app_models/team_model.dart';
 import 'package:peaman/models/app_models/user_model.dart';
+import 'package:peaman/services/database_services/user_provider.dart';
 import 'package:peaman/viewmodels/team_view_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
+import 'package:peaman/views/screens/user_view_screen.dart';
 import 'package:provider/provider.dart';
 
 class TeamsListItem extends StatefulWidget {
@@ -21,6 +23,7 @@ class TeamsListItem extends StatefulWidget {
 
 class _TeamsListItemState extends State<TeamsListItem> {
   bool _isChecked = false;
+  bool _isLoadingProfile = false;
 
   @override
   Widget build(BuildContext context) {
@@ -118,27 +121,61 @@ class _TeamsListItemState extends State<TeamsListItem> {
     final _list = <Widget>[];
     widget.team.users.forEach((element) {
       _list.add(
-        Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Row(
-            children: [
-              SizedBox(
-                width: 60.0,
+        GestureDetector(
+          onTap: () async {
+            if (appUser.admin) {
+              setState(() {
+                _isLoadingProfile = true;
+              });
+              final _user =
+                  await AppUserProvider(uid: element.uid).getUserById();
+              setState(() {
+                _isLoadingProfile = false;
+              });
+
+              if (_user != null) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => UserViewScreen(_user),
+                  ),
+                );
+              }
+            }
+          },
+          child: Container(
+            color: Colors.transparent,
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 60.0,
+                  ),
+                  _isLoadingProfile
+                      ? Container(
+                          width: 20.0,
+                          height: 20.0,
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        )
+                      : Icon(
+                          Icons.person,
+                          color: Color(0xff3D4A5A),
+                        ),
+                  SizedBox(
+                    width: 20.0,
+                  ),
+                  Text(
+                    '${element.inGameName}',
+                    style: TextStyle(
+                      color: Color(0xff3D4A5A),
+                    ),
+                  ),
+                ],
               ),
-              Icon(
-                Icons.person,
-                color: Color(0xff3D4A5A),
-              ),
-              SizedBox(
-                width: 20.0,
-              ),
-              Text(
-                '${element.inGameName}',
-                style: TextStyle(
-                  color: Color(0xff3D4A5A),
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       );
