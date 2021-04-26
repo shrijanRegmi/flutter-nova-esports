@@ -18,9 +18,33 @@ import 'package:peaman/views/widgets/tournament_widgets/tournament_details.dart'
 import 'package:peaman/views/widgets/tournament_widgets/updates_list.dart';
 import 'package:provider/provider.dart';
 
-class TournamentViewScreen extends StatelessWidget {
+class TournamentViewScreen extends StatefulWidget {
   final Tournament tournament;
   TournamentViewScreen(this.tournament);
+
+  @override
+  _TournamentViewScreenState createState() => _TournamentViewScreenState();
+}
+
+class _TournamentViewScreenState extends State<TournamentViewScreen>
+    with SingleTickerProviderStateMixin {
+  Animation _slideAnimation;
+  AnimationController _slideAnimationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _slideAnimationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 500),
+    );
+    _slideAnimation = Tween<Offset>(begin: Offset(0.65, 0), end: Offset(0, 0))
+        .animate(_slideAnimationController);
+
+    _slideAnimationController.addListener(() {
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +53,8 @@ class TournamentViewScreen extends StatelessWidget {
     return ViewmodelProvider<TournamentViewVm>(
       vm: TournamentViewVm(context),
       onInit: (vm) {
-        _appVm.updateSelectedTournament(tournament);
-        vm.onInit(tournament, _appUser, null);
+        _appVm.updateSelectedTournament(widget.tournament);
+        vm.onInit(widget.tournament, _appUser, null);
       },
       builder: (context, vm, appVm, appUser) {
         return Scaffold(
@@ -60,33 +84,54 @@ class TournamentViewScreen extends StatelessWidget {
                     ],
                   ),
                 )
-              : SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      _headerBuilder(context, vm, appUser),
-                      SizedBox(
-                        height: 50.0,
-                      ),
-                      vm.isShowingDetails
-                          ? TournamentDetails(vm)
-                          : Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (vm.thisTournament.users
-                                        .contains(appUser.uid) &&
-                                    vm.thisTournament.type != MatchType.solo)
-                                  JoinTeam(vm.thisTournament, vm),
-                                if (vm.thisTournament.users
-                                        .contains(appUser.uid) &&
-                                    vm.thisTournament.type != MatchType.solo)
-                                  SizedBox(
-                                    height: 20.0,
-                                  ),
-                                UpdatesList(vm.team),
-                              ],
+              : Stack(
+                  children: [
+                    Container(
+                      height: MediaQuery.of(context).size.height,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            _headerBuilder(context, vm, appUser),
+                            SizedBox(
+                              height: 20.0,
                             ),
-                    ],
-                  ),
+                            vm.isShowingDetails
+                                ? TournamentDetails(vm)
+                                : Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      if (vm.thisTournament.users
+                                              .contains(appUser.uid) &&
+                                          vm.thisTournament.type !=
+                                              MatchType.solo)
+                                        JoinTeam(vm.thisTournament, vm),
+                                      if (vm.thisTournament.users
+                                              .contains(appUser.uid) &&
+                                          vm.thisTournament.type !=
+                                              MatchType.solo)
+                                        SizedBox(
+                                          height: 20.0,
+                                        ),
+                                      UpdatesList(vm.team),
+                                    ],
+                                  ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: SlideTransition(
+                        position: _slideAnimation,
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.only(top: 70.0, right: 10.0),
+                          child: _actionBtnBuilder(context, vm, appUser),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
           bottomNavigationBar: vm.isLoading
               ? null
@@ -114,17 +159,17 @@ class TournamentViewScreen extends StatelessWidget {
       clipBehavior: Clip.none,
       children: [
         _imgBuilder(vm, context, appUser),
-        Positioned(
-          bottom: -33.0,
-          left: 0.0,
-          right: 0.0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _actionBtnBuilder(context, vm, appUser),
-            ],
-          ),
-        ),
+        // Positioned(
+        //   bottom: -33.0,
+        //   left: 0.0,
+        //   right: 0.0,
+        //   child: Row(
+        //     mainAxisAlignment: MainAxisAlignment.center,
+        //     children: [
+        //       _actionBtnBuilder(context, vm, appUser),
+        //     ],
+        //   ),
+        // ),
       ],
     );
   }
@@ -191,110 +236,146 @@ class TournamentViewScreen extends StatelessWidget {
     final TournamentViewVm vm,
     final AppUser appUser,
   ) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey[300],
-            offset: Offset(0.0, 3.0),
-            blurRadius: 10.0,
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        FloatingActionButton(
+          heroTag: 'arrow',
+          child: Padding(
+            padding: EdgeInsets.only(
+                left: _slideAnimationController.isCompleted ? 0.0 : 5.0),
+            child: Icon(
+              _slideAnimationController.isCompleted
+                  ? Icons.arrow_forward_ios
+                  : Icons.arrow_back_ios,
+            ),
           ),
-        ],
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-      child: Row(
-        children: [
-          _btnBuilder(Icons.assignment, 'Details', () {
-            if (vm.team != null) {
-              vm.updateIsShowingDetails(!vm.isShowingDetails);
+          onPressed: () {
+            if (_slideAnimationController.isCompleted) {
+              _slideAnimationController.reverse();
+            } else {
+              _slideAnimationController.reset();
+              _slideAnimationController.forward();
             }
-          }),
-          Container(
-            height: 40.0,
-            width: 2.0,
-            color: Colors.grey[300],
+          },
+        ),
+        SizedBox(
+          width: 10.0,
+        ),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey[300],
+                offset: Offset(0.0, 3.0),
+                blurRadius: 10.0,
+              ),
+            ],
           ),
-          _btnBuilder(
-            Icons.mediation,
-            'Match-ups',
-            () {
-              var _warningTitle = '';
-              var _warningDes = '';
-              final _tournamentDate = DateTimeHelper().getFormattedDate(
-                  DateTime.fromMillisecondsSinceEpoch(tournament.date));
+          padding: const EdgeInsets.symmetric(vertical: 20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _btnBuilder(Icons.assignment, 'Details', () {
+                _slideAnimationController.reverse();
+                if (vm.team != null) {
+                  vm.updateIsShowingDetails(!vm.isShowingDetails);
+                }
+              }),
+              Container(
+                height: 40.0,
+                width: 2.0,
+                color: Colors.grey[300],
+              ),
+              _btnBuilder(
+                Icons.mediation,
+                'Match-ups',
+                () {
+                  var _warningTitle = '';
+                  var _warningDes = '';
+                  final _tournamentDate = DateTimeHelper().getFormattedDate(
+                      DateTime.fromMillisecondsSinceEpoch(
+                          widget.tournament.date));
 
-              if (appUser.admin ||
-                  appUser.worker ||
-                  (vm.thisTournament.isLive &&
-                      vm.team != null &&
-                      vm.team.users.length ==
-                          vm.thisTournament.getPlayersCount()))
-                return Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => MatchUpScreen(vm.team),
-                  ),
-                );
-              if (!vm.thisTournament.isLive) {
-                _warningTitle = "Tournament hasn't started yet";
-                _warningDes =
-                    "The tournament hasn't started. It will start on $_tournamentDate at ${tournament.time}. Please wait for the tournament to start.";
-              }
+                  if (appUser.admin ||
+                      appUser.worker ||
+                      (vm.thisTournament.isLive &&
+                          vm.team != null &&
+                          vm.team.users.length ==
+                              vm.thisTournament.getPlayersCount())) {
+                    _slideAnimationController.reverse();
+                    return Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => MatchUpScreen(vm.team),
+                      ),
+                    );
+                  }
+                  if (!vm.thisTournament.isLive) {
+                    _warningTitle = "Tournament hasn't started yet";
+                    _warningDes =
+                        "The tournament hasn't started. It will start on $_tournamentDate at ${widget.tournament.time}. Please wait for the tournament to start.";
+                  }
 
-              if (vm.team != null &&
-                  vm.team.users.length != vm.thisTournament.getPlayersCount()) {
-                _warningTitle = "Team not completed";
-                _warningDes =
-                    "Your team must contain ${tournament.getPlayersCount() - vm.team.users.length} more players. Please share the team code and invite friends to join your team.";
-              }
+                  if (vm.team != null &&
+                      vm.team.users.length !=
+                          vm.thisTournament.getPlayersCount()) {
+                    _warningTitle = "Team not completed";
+                    _warningDes =
+                        "Your team must contain ${widget.tournament.getPlayersCount() - vm.team.users.length} more players. Please share the team code and invite friends to join your team.";
+                  }
 
-              if (vm.team == null) {
-                _warningTitle = "Not registered in tournament";
-                _warningDes =
-                    "You are not registered in this tournament. Please register your team or enter team code to join a team.";
-              }
+                  if (vm.team == null) {
+                    _warningTitle = "Not registered in tournament";
+                    _warningDes =
+                        "You are not registered in this tournament. Please register your team or enter team code to join a team.";
+                  }
 
-              if ((vm.team == null ||
-                      (vm.team != null &&
-                          vm.team.users.length <
-                              tournament.getPlayersCount())) &&
-                  vm.thisTournament.isLive) {
-                _warningTitle = "Registration period has ended";
-                _warningDes =
-                    "You can no longer take part in this tournament. The registration period has ended for this tournament.";
-              }
+                  if ((vm.team == null ||
+                          (vm.team != null &&
+                              vm.team.users.length <
+                                  widget.tournament.getPlayersCount())) &&
+                      vm.thisTournament.isLive) {
+                    _warningTitle = "Registration period has ended";
+                    _warningDes =
+                        "You can no longer take part in this tournament. The registration period has ended for this tournament.";
+                  }
 
-              DialogProvider(context).showWarningDialog(
-                _warningTitle,
-                _warningDes,
-                () {},
-              );
-            },
-            isEnabled: appUser.admin ||
-                appUser.worker ||
-                (vm.thisTournament.isLive &&
-                    vm.team != null &&
-                    vm.team.users.length ==
-                        vm.thisTournament.getPlayersCount()),
+                  DialogProvider(context).showWarningDialog(
+                    _warningTitle,
+                    _warningDes,
+                    () {},
+                  );
+                },
+                isEnabled: appUser.admin ||
+                    appUser.worker ||
+                    (vm.thisTournament.isLive &&
+                        vm.team != null &&
+                        vm.team.users.length ==
+                            vm.thisTournament.getPlayersCount()),
+              ),
+              Container(
+                height: 40.0,
+                width: 2.0,
+                color: Colors.grey[300],
+              ),
+              _btnBuilder(
+                Icons.chat,
+                'Chat',
+                () {
+                  if (vm.team != null && vm.team.users.length > 1) {
+                    _slideAnimationController.reverse();
+                    vm.navigateToChats(appUser);
+                  }
+                },
+                isEnabled: vm.team != null && vm.team.users.length > 1,
+              ),
+            ],
           ),
-          Container(
-            height: 40.0,
-            width: 2.0,
-            color: Colors.grey[300],
-          ),
-          _btnBuilder(
-            Icons.chat,
-            'Chat',
-            () {
-              if (vm.team != null && vm.team.users.length > 1)
-                vm.navigateToChats(appUser);
-            },
-            isEnabled: vm.team != null && vm.team.users.length > 1,
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -302,11 +383,13 @@ class TournamentViewScreen extends StatelessWidget {
       final IconData icon, final String title, final Function onPressed,
       {final bool isEnabled = true}) {
     return GestureDetector(
-      onTap: onPressed,
+      onTap: () {
+        onPressed();
+      },
       child: Container(
         color: Colors.white,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
           child: Column(
             children: [
               Icon(
@@ -387,7 +470,8 @@ class TournamentViewScreen extends StatelessWidget {
       child: GestureDetector(
         onTap: ((vm.team == null ||
                     (vm.team != null &&
-                        vm.team.users.length < tournament.getPlayersCount())) &&
+                        vm.team.users.length <
+                            widget.tournament.getPlayersCount())) &&
                 vm.thisTournament.isLive)
             ? () {
                 final _warningTitle = "Registration period has ended";
