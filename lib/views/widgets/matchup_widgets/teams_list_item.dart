@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:peaman/helpers/dialog_provider.dart';
 import 'package:peaman/models/app_models/team_model.dart';
 import 'package:peaman/models/app_models/user_model.dart';
-import 'package:peaman/services/database_services/user_provider.dart';
 import 'package:peaman/viewmodels/team_view_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
-import 'package:peaman/views/screens/user_view_screen.dart';
 import 'package:provider/provider.dart';
 
 class TeamsListItem extends StatefulWidget {
@@ -124,23 +123,28 @@ class _TeamsListItemState extends State<TeamsListItem> {
         GestureDetector(
           onTap: () async {
             if (appUser.admin) {
-              setState(() {
-                _isLoadingProfile = true;
-              });
-              final _user =
-                  await AppUserProvider(uid: element.uid).getUserById();
-              setState(() {
-                _isLoadingProfile = false;
-              });
+              //   setState(() {
+              //     _isLoadingProfile = true;
+              //   });
+              //   final _user =
+              //       await AppUserProvider(uid: element.uid).getUserById();
+              //   setState(() {
+              //     _isLoadingProfile = false;
+              //   });
 
-              if (_user != null) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => UserViewScreen(_user),
-                  ),
-                );
-              }
+              //   if (_user != null) {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //         builder: (_) => UserViewScreen(_user),
+              //       ),
+              //     );
+              //   }
+              DialogProvider(context).showWarningDialog(
+                'User Details',
+                'In-game name: ${element.inGameName}\nIn-game id: ${element.inGameId}',
+                () {},
+              );
             }
           },
           child: Container(
