@@ -172,17 +172,27 @@ class AuthVm extends ChangeNotifier {
         _inGameIdController.text.trim() != '' &&
         _inGameNameController.text.trim() != '') {
       _updateLoader(true);
-      final _searchedUser = await AppUserProvider().searchedUser(
-        _nameController,
-        onlyNameSearch: true,
-      );
+      final _searchedUserByName =
+          await AppUserProvider().searchedUser(_nameController);
 
-      if (_searchedUser == null) {
-        final _addressFromPosition = await _getAddressFromLatLng();
-        _updateLoader(false);
-        if (_addressFromPosition != null) {
-          _updateIsNextBtnPressed(true);
-          _updateAddress(_addressFromPosition);
+      if (_searchedUserByName == null) {
+        final _searchedUserByInGameId =
+            await AppUserProvider().searchedUser(_inGameIdController);
+
+        if (_searchedUserByInGameId == null) {
+          final _addressFromPosition = await _getAddressFromLatLng();
+          _updateLoader(false);
+          if (_addressFromPosition != null) { // 697525452
+            _updateIsNextBtnPressed(true);
+            _updateAddress(_addressFromPosition);
+          }
+        } else {
+          _updateLoader(false);
+          await DialogProvider(context).showWarningDialog(
+            'In-Game Id already taken',
+            'The in-game id you have entered is already taken. Please use a different one !',
+            () {},
+          );
         }
       } else {
         _updateLoader(false);
