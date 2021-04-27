@@ -42,7 +42,7 @@ class _ProfileTabState extends State<ProfileTab> {
         onAdFailedToLoad: (ad, error) => print('AD FAILED TO LOAD : $error'),
         onAdLoaded: (ad) => setState(() => _isLoadedAd = true),
       ),
-    )..load();
+    );
   }
 
   @override
