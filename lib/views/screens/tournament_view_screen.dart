@@ -236,6 +236,15 @@ class _TournamentViewScreenState extends State<TournamentViewScreen>
     final TournamentViewVm vm,
     final AppUser appUser,
   ) {
+    final _currentDate =
+        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    final _isAlreadyRegistered = vm.thisTournament.users.contains(appUser.uid);
+    final _isTeamComplete =
+        (vm.team?.userIds?.length ?? 0) >= vm.thisTournament.getPlayersCount();
+    final _isRegistrationExpired =
+        DateTime.fromMillisecondsSinceEpoch(vm.thisTournament.registrationEnd)
+            .isBefore(_currentDate);
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -289,73 +298,57 @@ class _TournamentViewScreenState extends State<TournamentViewScreen>
                 width: 2.0,
                 color: Colors.grey[300],
               ),
-              _btnBuilder(
-                Icons.mediation,
-                'Match-ups',
-                () {
-                  var _warningTitle = '';
-                  var _warningDes = '';
-                  final _tournamentDate = DateTimeHelper().getFormattedDate(
-                      DateTime.fromMillisecondsSinceEpoch(
-                          widget.tournament.date));
+              _btnBuilder(Icons.mediation, 'Match-ups', () {
+                if (appUser.admin || appUser.worker) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => MatchUpScreen(vm.team),
+                    ),
+                  );
+                } else {
+                  if (!_isRegistrationExpired &&
+                      !_isTeamComplete &&
+                      _isAlreadyRegistered) {
+                    DialogProvider(context).showWarningDialog(
+                      'Team not complete',
+                      "Your team does not have ${vm.thisTournament.getPlayersCount()} players to play this tournament.",
+                      () {},
+                    );
+                  }
 
-                  if (appUser.admin ||
-                      appUser.worker ||
-                      (vm.thisTournament.isLive &&
-                          vm.team != null &&
-                          vm.team.users.length ==
-                              vm.thisTournament.getPlayersCount())) {
-                    _slideAnimationController.reverse();
-                    return Navigator.push(
+                  if (_isRegistrationExpired && !_isTeamComplete) {
+                    DialogProvider(context).showWarningDialog(
+                      'Registration period expired',
+                      "The registration period for this tournament has ended. You cannot join this tournament now.",
+                      () {},
+                    );
+                  }
+                  if (!_isRegistrationExpired && _isTeamComplete) {
+                    DialogProvider(context).showWarningDialog(
+                      'Registration period has not ended',
+                      "The registration period for this tournament is not completed yet. You will be able to view the lobbies after the registration period completes.",
+                      () {},
+                    );
+                  }
+
+                  if (_isRegistrationExpired && _isTeamComplete) {
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (_) => MatchUpScreen(vm.team),
                       ),
                     );
                   }
-                  if (!vm.thisTournament.isLive) {
-                    _warningTitle = "Tournament hasn't started yet";
-                    _warningDes =
-                        "The tournament hasn't started. It will start on $_tournamentDate at ${widget.tournament.time}. Please wait for the tournament to start.";
-                  }
-
-                  if (vm.team != null &&
-                      vm.team.users.length !=
-                          vm.thisTournament.getPlayersCount()) {
-                    _warningTitle = "Team not completed";
-                    _warningDes =
-                        "Your team must contain ${widget.tournament.getPlayersCount() - vm.team.users.length} more players. Please share the team code and invite friends to join your team.";
-                  }
-
-                  if (vm.team == null) {
-                    _warningTitle = "Not registered in tournament";
-                    _warningDes =
-                        "You are not registered in this tournament. Please register your team or enter team code to join a team.";
-                  }
-
-                  if ((vm.team == null ||
-                          (vm.team != null &&
-                              vm.team.users.length <
-                                  widget.tournament.getPlayersCount())) &&
-                      vm.thisTournament.isLive) {
-                    _warningTitle = "Registration period has ended";
-                    _warningDes =
-                        "You can no longer take part in this tournament. The registration period has ended for this tournament.";
-                  }
-
-                  DialogProvider(context).showWarningDialog(
-                    _warningTitle,
-                    _warningDes,
-                    () {},
-                  );
-                },
-                isEnabled: appUser.admin ||
-                    appUser.worker ||
-                    (vm.thisTournament.isLive &&
-                        vm.team != null &&
-                        vm.team.users.length ==
-                            vm.thisTournament.getPlayersCount()),
-              ),
+                }
+              },
+                  isEnabled: appUser.admin ||
+                      appUser.worker ||
+                      !((_isRegistrationExpired && !_isTeamComplete) ||
+                          (!_isRegistrationExpired &&
+                              !_isTeamComplete &&
+                              _isAlreadyRegistered) ||
+                          (!_isRegistrationExpired && _isTeamComplete))),
               Container(
                 height: 40.0,
                 width: 2.0,
@@ -465,64 +458,95 @@ class _TournamentViewScreenState extends State<TournamentViewScreen>
 
   Widget _playBtnBuilder(final BuildContext context, final AppUser appUser,
       final TournamentViewVm vm) {
+    final _currentDate =
+        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    final _isAlreadyRegistered = vm.thisTournament.users.contains(appUser.uid);
+    final _isTeamComplete =
+        (vm.team?.userIds?.length ?? 0) >= vm.thisTournament.getPlayersCount();
+    final _isRegistrationExpired =
+        DateTime.fromMillisecondsSinceEpoch(vm.thisTournament.registrationEnd)
+            .isBefore(_currentDate);
+
     return Padding(
       padding: const EdgeInsets.all(20),
       child: GestureDetector(
-        onTap: ((vm.team == null ||
-                    (vm.team != null &&
-                        vm.team.users.length <
-                            widget.tournament.getPlayersCount())) &&
-                vm.thisTournament.isLive)
-            ? () {
-                final _warningTitle = "Registration period has ended";
-                final _warningDes =
-                    "You can no longer take part in this tournament. The registration period has ended for this tournament.";
+        onTap: () {
+          if (_isRegistrationExpired && !_isTeamComplete) {
+            DialogProvider(context).showWarningDialog(
+              'Registration period expired',
+              "The registration period for this tournament has ended. You cannot join this tournament now.",
+              () {},
+            );
+          }
+          if (!_isRegistrationExpired && _isTeamComplete) {
+            DialogProvider(context).showWarningDialog(
+              'Registration period has not ended',
+              "The registration period for this tournament is not completed yet. You will be able to view the lobbies after the registration period completes.",
+              () {},
+            );
+          }
 
-                DialogProvider(context).showWarningDialog(
-                  _warningTitle,
-                  _warningDes,
-                  () {},
-                );
-              }
-            : null,
+          if (!_isRegistrationExpired &&
+              !_isTeamComplete &&
+              _isAlreadyRegistered) {
+            DialogProvider(context).showWarningDialog(
+              'Team not complete',
+              "Your team does not have ${vm.thisTournament.getPlayersCount()} players to play this tournament.",
+              () {},
+            );
+          }
+
+          if (_isRegistrationExpired && _isTeamComplete) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => MatchUpScreen(vm.team),
+              ),
+            );
+          }
+        },
         child: MaterialButton(
-          onPressed: (vm.thisTournament.users.contains(appUser.uid) &&
-                      !vm.thisTournament.isLive) ||
-                  (!vm.thisTournament.users.contains(appUser.uid) &&
-                      vm.thisTournament.isLive) ||
-                  (vm.thisTournament.users.contains(appUser.uid) &&
-                      (vm.team == null ||
-                          (vm.team != null &&
-                              vm.team.users.length <
-                                  vm.thisTournament.getPlayersCount())))
+          onPressed: (_isRegistrationExpired && !_isTeamComplete) ||
+                  (!_isRegistrationExpired &&
+                      !_isTeamComplete &&
+                      _isAlreadyRegistered) ||
+                  (!_isRegistrationExpired && _isTeamComplete)
               ? null
-              : () => vm.onBtnPressed(
-                    appUser,
-                    (a, b) => RegisterScreen(a, b),
-                  ),
+              : () {
+                  if (_isTeamComplete) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => MatchUpScreen(vm.team),
+                      ),
+                    );
+                  } else {
+                    vm.onBtnPressed(
+                      appUser,
+                      (a, b) => RegisterScreen(a, b),
+                    );
+                  }
+                },
           color: Color(0xffdc8843),
           disabledColor: Colors.grey,
           disabledTextColor: Colors.white,
           child: Padding(
-            padding: EdgeInsets.all(
-                vm.thisTournament.users.contains(appUser.uid) ? 23.0 : 20.0),
+            padding: EdgeInsets.all(_isAlreadyRegistered ? 23.0 : 20.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  vm.thisTournament.users.contains(appUser.uid)
-                      ? 'PLAY'
-                      : 'REGISTER',
+                  _isAlreadyRegistered ? 'PLAY' : 'REGISTER',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
-                if (!vm.thisTournament.users.contains(appUser.uid))
+                if (!_isAlreadyRegistered)
                   SizedBox(
                     width: 30.0,
                   ),
-                if (!vm.thisTournament.users.contains(appUser.uid))
+                if (!_isAlreadyRegistered)
                   Row(
                     children: [
                       SvgPicture.asset(

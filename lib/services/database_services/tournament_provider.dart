@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:peaman/enums/match_type.dart';
 import 'package:peaman/helpers/dialog_provider.dart';
 import 'package:peaman/models/app_models/team_model.dart';
 import 'package:peaman/models/app_models/tournament_model.dart';
@@ -140,10 +141,16 @@ class TournamentProvider {
     try {
       final _tournamentRef = _ref.collection('tournaments').doc(tournament.id);
       final _teamsRef = _tournamentRef.collection('teams').doc();
-      final _team = team.copyWith(
+      var _team = team.copyWith(
         id: _teamsRef.id,
       );
-      await _teamsRef.set(_team.toJson());
+      final _teamJson = _team.toJson();
+
+      if (tournament.type == MatchType.solo) {
+        _teamJson['team_completed_at'] = DateTime.now().millisecondsSinceEpoch;
+      }
+
+      await _teamsRef.set(_teamJson);
       await _tournamentRef.update({
         'users': FieldValue.arrayUnion([
           appUser.uid,
