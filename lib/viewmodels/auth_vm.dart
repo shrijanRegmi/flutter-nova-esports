@@ -35,6 +35,7 @@ class AuthVm extends ChangeNotifier {
   String _address;
   InterstitialAd _interstitialAd;
   AdListener _adListener;
+  bool _isTermsAccepted = false;
 
   TextEditingController get nameController => _nameController;
   TextEditingController get inGameNameController => _inGameNameController;
@@ -49,6 +50,7 @@ class AuthVm extends ChangeNotifier {
   Age get age => _age;
   bool get keyboardVisibility => _keyboardVisibility;
   String get address => _address;
+  bool get isTermsAccepted => _isTermsAccepted;
 
   // init function
   onInit(final AppConfig appConfig) {
@@ -171,42 +173,51 @@ class AuthVm extends ChangeNotifier {
         _phoneController.text.trim() != '' &&
         _inGameIdController.text.trim() != '' &&
         _inGameNameController.text.trim() != '') {
-      _updateLoader(true);
-      final _searchedUserByName =
-          await AppUserProvider().searchedUser(_nameController);
+      if (!_isTermsAccepted) {
+        await DialogProvider(context).showWarningDialog(
+          'Terms & Condition and Privacy Policy not accepted',
+          'Please accept our Terms & Condition and Privacy Policy to continue',
+          () {},
+        );
+      } else {
+        _updateLoader(true);
+        final _searchedUserByName =
+            await AppUserProvider().searchedUser(_nameController);
 
-      if (_searchedUserByName == null) {
-        final _searchedUserByInGameId =
-            await AppUserProvider().searchedUser(_inGameIdController);
+        if (_searchedUserByName == null) {
+          final _searchedUserByInGameId =
+              await AppUserProvider().searchedUser(_inGameIdController);
 
-        if (_searchedUserByInGameId == null) {
-          final _addressFromPosition = await _getAddressFromLatLng();
-          _updateLoader(false);
-          if (_addressFromPosition != null) { // 697525452
-            _updateIsNextBtnPressed(true);
-            _updateAddress(_addressFromPosition);
+          if (_searchedUserByInGameId == null) {
+            final _addressFromPosition = await _getAddressFromLatLng();
+            _updateLoader(false);
+            if (_addressFromPosition != null) {
+              // 697525452
+              _updateIsNextBtnPressed(true);
+              _updateAddress(_addressFromPosition);
+            }
+          } else {
+            _updateLoader(false);
+            await DialogProvider(context).showWarningDialog(
+              'In-Game Id already taken',
+              'The in-game id you have entered is already taken. Please use a different one !',
+              () {},
+            );
           }
         } else {
           _updateLoader(false);
           await DialogProvider(context).showWarningDialog(
-            'In-Game Id already taken',
-            'The in-game id you have entered is already taken. Please use a different one !',
+            'Username already taken',
+            'The username you have entered is already taken. Please use a different one !',
             () {},
           );
         }
-      } else {
-        _updateLoader(false);
-        await DialogProvider(context).showWarningDialog(
-          'Username already taken',
-          'The username you have entered is already taken. Please use a different one !',
-          () {},
-        );
       }
     } else {
-      _scaffoldKey.currentState.showSnackBar(
-        SnackBar(
-          content: Text('Please fill up all the fields !'),
-        ),
+      await DialogProvider(context).showWarningDialog(
+        'Empty fields',
+        'Please fill up all the fields to continue.',
+        () {},
       );
     }
   }
@@ -329,6 +340,12 @@ class AuthVm extends ChangeNotifier {
   // update value of address
   _updateAddress(final String newVal) {
     _address = newVal;
+    notifyListeners();
+  }
+
+  // update value of is terms accepted
+  updateIsTermsAccepted(final bool newVal) {
+    _isTermsAccepted = newVal;
     notifyListeners();
   }
 }

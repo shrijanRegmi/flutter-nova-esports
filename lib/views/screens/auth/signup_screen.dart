@@ -10,6 +10,7 @@ import 'package:peaman/views/widgets/common_widgets/appbar.dart';
 import 'package:peaman/views/widgets/common_widgets/border_btn.dart';
 import 'package:peaman/views/widgets/common_widgets/filled_btn.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -235,10 +236,82 @@ class _SignUpScreenState extends State<SignUpScreen> {
         SizedBox(
           height: 50.0,
         ),
+        _termsAndConditionBuilder(vm),
+        SizedBox(
+          height: 30.0,
+        ),
         BorderBtn(
           title: 'Next',
           onPressed: vm.onPressedNextBtn,
           textColor: Color(0xff5C49E0),
+        ),
+        SizedBox(
+          height: 100.0,
+        ),
+      ],
+    );
+  }
+
+  Widget _termsAndConditionBuilder(final AuthVm vm) {
+    return Column(
+      children: [
+        Text(
+          "Please agree to our terms & condition and privacy policy.",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Row(
+          children: [
+            Checkbox(
+              value: vm.isTermsAccepted,
+              onChanged: (val) => vm.updateIsTermsAccepted(val),
+            ),
+            Expanded(
+              child: Row(
+                children: [
+                  Text(
+                    'Accept ',
+                  ),
+                  GestureDetector(
+                    onTap: () async {
+                      try {
+                        await launch("https://nirmalkumarpadhan.blogspot.com/2021/04/terms-and-condition.html");
+                      } catch (e) {
+                        print(e);
+                      }
+                    },
+                    child: Text(
+                      'Terms & Condition ',
+                      style: TextStyle(
+                        color: Colors.green,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    'and ',
+                  ),
+                  GestureDetector(
+                    onTap: () async {
+                      try {
+                        await launch("https://nirmalkumarpadhan.blogspot.com/2021/04/nova-esports-privacy-policy.html");
+                      } catch (e) {
+                        print(e);
+                      }
+                    },
+                    child: Text(
+                      'Privacy policy ',
+                      style: TextStyle(
+                        color: Colors.green,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
         ),
       ],
     );
