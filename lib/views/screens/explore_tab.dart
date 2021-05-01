@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
-import 'package:peaman/enums/tournament_type.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/viewmodels/app_vm.dart';
 import 'package:peaman/viewmodels/explore_vm.dart';
@@ -143,19 +142,7 @@ class _ExploreTabState extends State<ExploreTab> {
                                       ),
                                       if (vm.tournaments != null &&
                                           vm.liveTournaments.isNotEmpty)
-                                        LiveTournamentList(
-                                          vm.liveTournaments
-                                              .where(
-                                                (element) => element
-                                                            .tournamentType ==
-                                                        TournamentType.state
-                                                    ? appUser.address != null &&
-                                                        appUser.address.contains(
-                                                            '${element.state}')
-                                                    : true,
-                                              )
-                                              .toList(),
-                                        ),
+                                        LiveTournamentList(vm.liveTournaments),
                                       if (vm.tournaments != null &&
                                           vm.liveTournaments.isNotEmpty)
                                         SizedBox(
@@ -163,19 +150,7 @@ class _ExploreTabState extends State<ExploreTab> {
                                         ),
                                       if (vm.tournaments != null &&
                                           vm.otherTournaments.isNotEmpty)
-                                        TournamentList(
-                                          vm.otherTournaments
-                                              .where(
-                                                (element) => element
-                                                            .tournamentType ==
-                                                        TournamentType.state
-                                                    ? appUser.address != null &&
-                                                        appUser.address.contains(
-                                                            '${element.state}')
-                                                    : true,
-                                              )
-                                              .toList(),
-                                        ),
+                                        TournamentList(vm.otherTournaments),
                                       SizedBox(
                                         height: 100.0,
                                       ),

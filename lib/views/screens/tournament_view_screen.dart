@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:peaman/enums/match_type.dart';
+import 'package:peaman/enums/tournament_type.dart';
 import 'package:peaman/helpers/date_time_helper.dart';
 import 'package:peaman/helpers/dialog_provider.dart';
 import 'package:peaman/models/app_models/tournament_model.dart';
@@ -466,20 +467,31 @@ class _TournamentViewScreenState extends State<TournamentViewScreen>
     final _isRegistrationExpired =
         DateTime.fromMillisecondsSinceEpoch(vm.thisTournament.registrationEnd)
             .isBefore(_currentDate);
+    final _notInState =
+        vm.thisTournament.tournamentType == TournamentType.state &&
+                appUser.address == null ||
+            !appUser.address.contains('${vm.thisTournament.state}');
 
     return Padding(
       padding: const EdgeInsets.all(20),
       child: GestureDetector(
         onTap: () {
+          if (_notInState) {
+            return DialogProvider(context).showWarningDialog(
+              '${vm.thisTournament.state} Tournament',
+              "This is ${vm.thisTournament.state} tournament. You cannot register in this tournament",
+              () {},
+            );
+          }
           if (_isRegistrationExpired && !_isTeamComplete) {
-            DialogProvider(context).showWarningDialog(
+            return DialogProvider(context).showWarningDialog(
               'Registration period expired',
               "The registration period for this tournament has ended. You cannot join this tournament now.",
               () {},
             );
           }
           if (!_isRegistrationExpired && _isTeamComplete) {
-            DialogProvider(context).showWarningDialog(
+            return DialogProvider(context).showWarningDialog(
               'Registration period has not ended',
               "The registration period for this tournament is not completed yet. You will be able to view the lobbies after the registration period completes.",
               () {},
@@ -489,7 +501,7 @@ class _TournamentViewScreenState extends State<TournamentViewScreen>
           if (!_isRegistrationExpired &&
               !_isTeamComplete &&
               _isAlreadyRegistered) {
-            DialogProvider(context).showWarningDialog(
+            return DialogProvider(context).showWarningDialog(
               'Team not complete',
               "Your team does not have ${vm.thisTournament.getPlayersCount()} players to play this tournament.",
               () {},
@@ -510,7 +522,8 @@ class _TournamentViewScreenState extends State<TournamentViewScreen>
                   (!_isRegistrationExpired &&
                       !_isTeamComplete &&
                       _isAlreadyRegistered) ||
-                  (!_isRegistrationExpired && _isTeamComplete)
+                  (!_isRegistrationExpired && _isTeamComplete) ||
+                  _notInState
               ? null
               : () {
                   if (_isTeamComplete) {
