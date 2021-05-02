@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:peaman/models/app_models/app_config.dart';
 import 'package:peaman/models/app_models/team_model.dart';
 import 'package:peaman/viewmodels/app_vm.dart';
 import 'package:peaman/viewmodels/match_up_vm.dart';
@@ -21,9 +19,6 @@ class MatchUpScreen extends StatefulWidget {
 class _MatchUpScreenState extends State<MatchUpScreen> {
   int _selectedRound = 1;
 
-  BannerAd _bannerAd;
-  bool _isLoadedAd = false;
-
   @override
   void initState() {
     super.initState();
@@ -31,25 +26,6 @@ class _MatchUpScreenState extends State<MatchUpScreen> {
     setState(() {
       _selectedRound = _appVm.selectedTournament.activeRound;
     });
-    _handleBanner();
-  }
-
-  @override
-  void dispose() {
-    _bannerAd?.dispose();
-    super.dispose();
-  }
-
-  _handleBanner() async {
-    final _appConfig = Provider.of<AppConfig>(context, listen: false);
-    _bannerAd = BannerAd(
-      adUnitId: '${_appConfig?.bannerId}',
-      size: AdSize.banner,
-      request: AdRequest(),
-      listener: AdListener(
-        onAdLoaded: (ad) => setState(() => _isLoadedAd = true),
-      ),
-    )..load();
   }
 
   @override
@@ -73,34 +49,16 @@ class _MatchUpScreenState extends State<MatchUpScreen> {
               ),
             ),
           ),
-          body: SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _roundSelectionBuilder(),
-                  LobbiesList(
-                    vm,
-                    vm.thisTournament,
-                    widget.team,
-                    _selectedRound,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          bottomNavigationBar: Padding(
-            padding: MediaQuery.of(context).viewInsets,
+          body: SingleChildScrollView(
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Center(
-                  child: _isLoadedAd
-                      ? Container(
-                          height: 60.0,
-                          child: AdWidget(ad: _bannerAd),
-                        )
-                      : Container(),
+                _roundSelectionBuilder(),
+                LobbiesList(
+                  vm,
+                  vm.thisTournament,
+                  widget.team,
+                  _selectedRound,
                 ),
               ],
             ),

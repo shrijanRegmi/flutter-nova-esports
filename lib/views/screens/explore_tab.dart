@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/viewmodels/app_vm.dart';
@@ -23,32 +22,6 @@ class ExploreTab extends StatefulWidget {
 }
 
 class _ExploreTabState extends State<ExploreTab> {
-  BannerAd _bannerAd;
-  bool _isLoadedAd = false;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _handleBanner();
-  // }
-
-  // _handleBanner() async {
-  //   _bannerAd = BannerAd(
-  //     adUnitId: 'ca-app-pub-3940256099942544/6300978111',
-  //     size: AdSize.banner,
-  //     request: AdRequest(),
-  //     listener: AdListener(
-  //       onAdLoaded: (ad) => setState(() => _isLoadedAd = true),
-  //     ),
-  //   )..load();
-  // }
-
-  // @override
-  // void dispose() {
-  //   _bannerAd?.dispose();
-  //   super.dispose();
-  // }
-
   @override
   Widget build(BuildContext context) {
     final _appVm = Provider.of<AppVm>(context);
@@ -193,19 +166,6 @@ class _ExploreTabState extends State<ExploreTab> {
                 );
               }),
         ),
-        if (_isLoadedAd)
-          Positioned(
-            bottom: 5.0,
-            child: Center(
-              child: Container(
-                height: 50.0,
-                width: MediaQuery.of(context).size.width,
-                child: AdWidget(
-                  ad: _bannerAd,
-                ),
-              ),
-            ),
-          ),
       ],
     );
   }

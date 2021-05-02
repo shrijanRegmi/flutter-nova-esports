@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
 import 'package:peaman/models/app_models/app_config.dart';
 import 'package:peaman/viewmodels/auth_vm.dart';
@@ -16,33 +15,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  BannerAd _bannerAd;
-  bool _isLoadedAd = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _handleBanner();
-  }
-
-  @override
-  void dispose() {
-    _bannerAd?.dispose();
-    super.dispose();
-  }
-
-  _handleBanner() async {
-    final _appConfig = Provider.of<AppConfig>(context, listen: false);
-    _bannerAd = BannerAd(
-      adUnitId: '${_appConfig?.bannerId}',
-      size: AdSize.banner,
-      request: AdRequest(),
-      listener: AdListener(
-        onAdLoaded: (ad) => setState(() => _isLoadedAd = true),
-      ),
-    )..load();
-  }
-
   @override
   Widget build(BuildContext context) {
     final _appConfig = Provider.of<AppConfig>(context);
@@ -142,19 +114,6 @@ class _LoginScreenState extends State<LoginScreen> {
             },
           ),
         ),
-        if (_isLoadedAd)
-          Positioned(
-            bottom: 5.0,
-            child: Center(
-              child: Container(
-                height: 50.0,
-                width: MediaQuery.of(context).size.width,
-                child: AdWidget(
-                  ad: _bannerAd,
-                ),
-              ),
-            ),
-          ),
       ],
     );
   }

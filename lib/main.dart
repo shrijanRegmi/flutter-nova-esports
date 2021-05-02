@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -43,24 +44,88 @@ class PeamanApp extends StatelessWidget {
             ],
             child: WrapperBuilder(
               builder: (BuildContext context, AppUser appUser) {
-                return MaterialApp(
-                  debugShowCheckedModeBanner: false,
-                  title: "NOVA ESPORTS",
-                  theme: ThemeData(
-                    fontFamily: 'Nunito',
-                    canvasColor: Color(0xffF3F5F8),
-                  ),
-                  home: Material(
-                      child: Wrapper(
-                    appUser: appUser,
-                  )),
-                );
+                return MyMaterialApp(appUser);
               },
             ),
           );
         }
         return Container();
       },
+    );
+  }
+}
+
+class MyMaterialApp extends StatefulWidget {
+  final AppUser appUser;
+  MyMaterialApp(this.appUser);
+
+  @override
+  _MyMaterialAppState createState() => _MyMaterialAppState();
+}
+
+class _MyMaterialAppState extends State<MyMaterialApp> {
+  BannerAd _bannerAd;
+  bool _isLoadedAd = false;
+  final _ref = FirebaseFirestore.instance;
+
+  _handleBanner() async {
+    final _snap = await _ref.collection('configs').doc('shrijan_regmi').get();
+    final _appConfig = AppUserProvider().appConfigFromFirebase(_snap);
+
+    _bannerAd = BannerAd(
+      adUnitId: '${_appConfig?.bannerId}',
+      size: AdSize.fullBanner,
+      request: AdRequest(),
+      listener: AdListener(
+        onAdFailedToLoad: (ad, error) => print('AD FAILED TO LOAD : $error'),
+        onAdLoaded: (ad) => setState(() => _isLoadedAd = true),
+      ),
+    )..load();
+  }
+
+  @override
+  void initState() {
+    _handleBanner();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _bannerAd?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: SafeArea(
+        child: Column(
+          children: [
+            _isLoadedAd
+                ? Container(
+                    height: 60.0,
+                    child: AdWidget(ad: _bannerAd),
+                  )
+                : Container(),
+            Expanded(
+              child: MaterialApp(
+                debugShowCheckedModeBanner: false,
+                title: "NOVA ESPORTS",
+                theme: ThemeData(
+                  fontFamily: 'Nunito',
+                  canvasColor: Color(0xffF3F5F8),
+                ),
+                home: Material(
+                  child: Wrapper(
+                    appUser: widget.appUser,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

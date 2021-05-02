@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
 import 'package:peaman/models/app_models/app_config.dart';
 import 'package:peaman/models/app_models/tournament_model.dart';
@@ -21,33 +20,6 @@ class EnterTeamCodeScreen extends StatefulWidget {
 }
 
 class _EnterTeamCodeScreenState extends State<EnterTeamCodeScreen> {
-  BannerAd _bannerAd;
-  bool _isLoadedAd = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _handleBanner();
-  }
-
-  _handleBanner() async {
-    final _appConfig = Provider.of<AppConfig>(context, listen: false);
-    _bannerAd = BannerAd(
-      adUnitId: '${_appConfig?.bannerId}',
-      size: AdSize.banner,
-      request: AdRequest(),
-      listener: AdListener(
-        onAdLoaded: (ad) => setState(() => _isLoadedAd = true),
-      ),
-    )..load();
-  }
-
-  @override
-  void dispose() {
-    _bannerAd?.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     final _appConfig = Provider.of<AppConfig>(context);
@@ -118,22 +90,6 @@ class _EnterTeamCodeScreenState extends State<EnterTeamCodeScreen> {
                     ),
                   ),
                 ),
-          bottomNavigationBar: Padding(
-            padding: MediaQuery.of(context).viewInsets,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Center(
-                  child: _isLoadedAd
-                      ? Container(
-                          height: 60.0,
-                          child: AdWidget(ad: _bannerAd),
-                        )
-                      : Container(),
-                ),
-              ],
-            ),
-          ),
         );
       },
     );

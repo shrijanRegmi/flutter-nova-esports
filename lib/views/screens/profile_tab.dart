@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:peaman/enums/online_status.dart';
 import 'package:peaman/models/app_models/app_config.dart';
 import 'package:peaman/models/app_models/user_model.dart';
@@ -17,34 +16,6 @@ class ProfileTab extends StatefulWidget {
 }
 
 class _ProfileTabState extends State<ProfileTab> {
-  BannerAd _bannerAd;
-  bool _isLoadedAd = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _handleBanner();
-  }
-
-  @override
-  void dispose() {
-    _bannerAd?.dispose();
-    super.dispose();
-  }
-
-  _handleBanner() async {
-    final _appConfig = Provider.of<AppConfig>(context, listen: false);
-    _bannerAd = BannerAd(
-      adUnitId: '${_appConfig?.bannerId}',
-      size: AdSize.banner,
-      request: AdRequest(),
-      listener: AdListener(
-        onAdFailedToLoad: (ad, error) => print('AD FAILED TO LOAD : $error'),
-        onAdLoaded: (ad) => setState(() => _isLoadedAd = true),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final _appConfig = Provider.of<AppConfig>(context);
@@ -75,22 +46,6 @@ class _ProfileTabState extends State<ProfileTab> {
             ),
           );
         },
-      ),
-      bottomNavigationBar: Padding(
-        padding: MediaQuery.of(context).viewInsets,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Center(
-              child: _isLoadedAd
-                  ? Container(
-                      height: 60.0,
-                      child: AdWidget(ad: _bannerAd),
-                    )
-                  : Container(),
-            ),
-          ],
-        ),
       ),
     );
   }

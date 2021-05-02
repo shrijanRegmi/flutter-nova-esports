@@ -204,7 +204,7 @@ class AppUserProvider {
   }
 
   // app config from firebase
-  AppConfig _appConfigFromFirebase(final DocumentSnapshot snap) {
+  AppConfig appConfigFromFirebase(final DocumentSnapshot snap) {
     return AppConfig.fromJson(snap.data());
   }
 
@@ -247,7 +247,7 @@ class AppUserProvider {
         .collection('configs')
         .doc('shrijan_regmi')
         .snapshots()
-        .map(_appConfigFromFirebase);
+        .map(appConfigFromFirebase);
   }
 
   // stream of active users

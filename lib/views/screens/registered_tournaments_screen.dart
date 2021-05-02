@@ -13,7 +13,7 @@ class RegisteredTournamentsViewScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60.0),
+        preferredSize: Size.fromHeight(30.0),
         child: CommonAppbar(
           title: Text(
             'Registered Tournaments',

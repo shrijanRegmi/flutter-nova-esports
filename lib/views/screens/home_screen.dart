@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
 import 'package:peaman/enums/online_status.dart';
-import 'package:peaman/models/app_models/app_config.dart';
 import 'package:peaman/models/app_models/chat_model.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/services/database_services/user_provider.dart';
@@ -26,26 +24,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   TabController _tabController;
-  BannerAd _bannerAd;
-  bool _isLoadedAd = false;
-
-  _handleBanner() async {
-    final _appConfig = Provider.of<AppConfig>(context, listen: false);
-    _bannerAd = BannerAd(
-      adUnitId: '${_appConfig?.bannerId}',
-      size: AdSize.fullBanner,
-      request: AdRequest(),
-      listener: AdListener(
-        onAdFailedToLoad: (ad, error) => print('AD FAILED TO LOAD : $error'),
-        onAdLoaded: (ad) => setState(() => _isLoadedAd = true),
-      ),
-    )..load();
-  }
 
   @override
   void initState() {
     super.initState();
-    _handleBanner();
     WidgetsBinding.instance.addObserver(this);
     _tabController = TabController(
       length: 4,
@@ -56,7 +38,6 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   void dispose() {
-    _bannerAd?.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -147,20 +128,12 @@ class _HomeScreenState extends State<HomeScreen>
             builder: (context, vm, appVm, appUser) {
               return Scaffold(
                 backgroundColor: Color(0xffF3F5F8),
-                body: SafeArea(
-                  child: Container(
-                    child: Column(
-                      children: <Widget>[
-                        _isLoadedAd
-                            ? Container(
-                                height: 60.0,
-                                child: AdWidget(ad: _bannerAd),
-                              )
-                            : Container(),
-                        _tabViewBuilder(appUser),
-                        _tabsBuilder(appUser),
-                      ],
-                    ),
+                body: Container(
+                  child: Column(
+                    children: <Widget>[
+                      _tabViewBuilder(appUser),
+                      _tabsBuilder(appUser),
+                    ],
                   ),
                 ),
               );
