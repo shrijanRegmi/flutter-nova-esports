@@ -459,23 +459,35 @@ class _TournamentViewScreenState extends State<TournamentViewScreen>
 
   Widget _playBtnBuilder(final BuildContext context, final AppUser appUser,
       final TournamentViewVm vm) {
-    final _currentDate =
-        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    final _currentDate = DateTime.now();
+    final _registrationEndTime = TimeOfDay(
+      hour: int.parse(vm.thisTournament.registrationEndTime.substring(0, 2)),
+      minute: int.parse(vm.thisTournament.registrationEndTime.substring(5, 7)),
+    );
+    final _registrationEndDate =
+        DateTime.fromMillisecondsSinceEpoch(vm.thisTournament.registrationEnd)
+            .add(Duration(
+      hours: vm.thisTournament.registrationEndTime.contains('PM')
+          ? _registrationEndTime.hour + 12
+          : _registrationEndTime.hour,
+      minutes: _registrationEndTime.minute,
+    ));
+
     final _isAlreadyRegistered = vm.thisTournament.users.contains(appUser.uid);
     final _isTeamComplete =
         (vm.team?.userIds?.length ?? 0) >= vm.thisTournament.getPlayersCount();
     final _isRegistrationExpired =
-        DateTime.fromMillisecondsSinceEpoch(vm.thisTournament.registrationEnd)
-            .isBefore(_currentDate);
+        _registrationEndDate.isBefore(_currentDate) ||
+            _registrationEndDate.isAtSameMomentAs(_currentDate);
     final _notInState =
         vm.thisTournament.tournamentType == TournamentType.state &&
-                appUser.address == null ||
-            !appUser.address.contains('${vm.thisTournament.state}');
+            (appUser.address == null ||
+                !appUser.address.contains('${vm.thisTournament.state}'));
 
     return Padding(
       padding: const EdgeInsets.all(20),
       child: GestureDetector(
-        onTap: () {
+        onTap: () async {
           if (_notInState) {
             return DialogProvider(context).showWarningDialog(
               '${vm.thisTournament.state} Tournament',

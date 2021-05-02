@@ -99,6 +99,10 @@ class _MyMaterialAppState extends State<MyMaterialApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        fontFamily: 'Nunito',
+        canvasColor: Color(0xffF3F5F8),
+      ),
       home: SafeArea(
         child: Column(
           children: [

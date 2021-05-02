@@ -14,6 +14,7 @@ class DialogProvider {
   showLimitedMomentDialog() async {
     await showDialog(
       context: context,
+      useRootNavigator: false,
       builder: (context) => AlertDialog(
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -53,6 +54,7 @@ class DialogProvider {
   showAlreadyInCallDialog(final AppUser friend) async {
     await showDialog(
       context: context,
+      useRootNavigator: false,
       builder: (context) => AlertDialog(
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -92,6 +94,7 @@ class DialogProvider {
   showFriendNotOnlineDialog(final AppUser friend) async {
     await showDialog(
       context: context,
+      useRootNavigator: false,
       builder: (context) => AlertDialog(
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -135,6 +138,7 @@ class DialogProvider {
   }) async {
     return await showDialog(
       context: context,
+      useRootNavigator: false,
       builder: (_) => AlertDialog(
         title: Text('$title'),
         content: description != null ? Text('$description') : null,
@@ -178,6 +182,7 @@ class DialogProvider {
   }) async {
     return await showDialog(
       context: context,
+      useRootNavigator: false,
       builder: (_) => AlertDialog(
         title: Text('$title'),
         content: Text('$description'),
@@ -218,6 +223,7 @@ class DialogProvider {
       final Function onPressed) async {
     return await showDialog(
       context: context,
+      useRootNavigator: false,
       builder: (_) => AlertDialog(
         title: Text('Enter password'),
         content: Column(
@@ -281,6 +287,7 @@ class DialogProvider {
       final TextEditingController controller, final Function onPressed) async {
     return await showDialog(
       context: context,
+      useRootNavigator: false,
       builder: (_) => AlertDialog(
         title: Text('Search User'),
         content: Column(
@@ -343,6 +350,7 @@ class DialogProvider {
   showCoinsEarnDialog(final int coins, final Function onPressed) async {
     return await showDialog(
       context: context,
+      useRootNavigator: false,
       builder: (_) => AlertDialog(
         title: Text('Good Job !'),
         content: Column(
@@ -403,6 +411,7 @@ class DialogProvider {
   ) async {
     return await showDialog(
       context: context,
+      useRootNavigator: false,
       builder: (_) => AlertDialog(
         title: Text('About the app'),
         content: Column(
@@ -487,6 +496,7 @@ class DialogProvider {
   ) async {
     return await showDialog(
       context: context,
+      useRootNavigator: false,
       builder: (_) => AlertDialog(
         title: Text('Enter Support Email'),
         content: Column(
@@ -544,6 +554,7 @@ class DialogProvider {
     File _socialImg;
     return await showDialog(
       context: context,
+      useRootNavigator: false,
       builder: (_) => StatefulBuilder(
         builder: (context, setState) {
           return AlertDialog(
@@ -557,15 +568,15 @@ class DialogProvider {
                   children: [
                     _socialImg != null
                         ? Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.file(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.file(
                                 _socialImg,
                                 width: 100.0,
                                 height: 100.0,
                               ),
-                          ],
-                        )
+                            ],
+                          )
                         : MaterialButton(
                             onPressed: () async {
                               final _pickedImg = await ImagePicker().getImage(
