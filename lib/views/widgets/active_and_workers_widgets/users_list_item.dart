@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/views/screens/user_view_screen.dart';
+import 'package:provider/provider.dart';
 
 class UsersListItem extends StatelessWidget {
   final AppUser user;
@@ -11,6 +12,8 @@ class UsersListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _appUser = Provider.of<AppUser>(context);
+
     return axis == Axis.horizontal
         ? _horizontalBuilder(context)
         : ListTile(
@@ -18,12 +21,14 @@ class UsersListItem extends StatelessWidget {
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => UserViewScreen(user),
-                ),
-              );
+              if (_appUser.admin) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => UserViewScreen(user),
+                  ),
+                );
+              }
             },
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

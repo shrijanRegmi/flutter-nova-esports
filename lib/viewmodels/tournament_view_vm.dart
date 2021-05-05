@@ -92,9 +92,9 @@ class TournamentViewVm extends ChangeNotifier {
   }
 
   // share link
-  shareTeamCode() async {
+  shareTeamCode(final Tournament tournament) async {
     await Share.share(
-      '${_team.id}',
+      '${tournament.title}: ${_team.id}',
       subject: 'Here is our team code. Join my team in NOVA ESPORTS.',
     );
   }

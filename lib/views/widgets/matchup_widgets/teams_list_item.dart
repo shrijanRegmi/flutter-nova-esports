@@ -122,7 +122,7 @@ class _TeamsListItemState extends State<TeamsListItem> {
       _list.add(
         GestureDetector(
           onTap: () async {
-            if (appUser.admin) {
+            if (appUser.admin || appUser.worker) {
               //   setState(() {
               //     _isLoadingProfile = true;
               //   });

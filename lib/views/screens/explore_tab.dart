@@ -178,7 +178,7 @@ class _ExploreTabState extends State<ExploreTab> {
         children: <Widget>[
           GestureDetector(
             onTap: () {
-              if (appUser.admin) {
+              if (appUser.admin || appUser.worker) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(

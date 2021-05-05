@@ -58,7 +58,7 @@ class JoinTeam extends StatelessWidget {
                     ],
                   ),
                   MaterialButton(
-                    onPressed: vm.shareTeamCode,
+                    onPressed: () => vm.shareTeamCode(tournament),
                     color: Colors.blue,
                     child: Text(
                       'Share Code',
