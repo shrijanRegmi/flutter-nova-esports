@@ -11,6 +11,7 @@ import 'package:peaman/enums/age.dart';
 import 'package:peaman/helpers/dialog_provider.dart';
 import 'package:peaman/models/app_models/app_config.dart';
 import 'package:peaman/models/app_models/user_model.dart';
+import 'package:peaman/services/ad_services/ad_provider.dart';
 import 'package:peaman/services/auth_services/auth_provider.dart';
 import 'package:peaman/services/database_services/user_provider.dart';
 import 'package:peaman/services/storage_services/user_storage_service.dart';
@@ -98,9 +99,7 @@ class AuthVm extends ChangeNotifier {
     _updateLoader(true);
     if (_emailController.text.trim() != '' &&
         _passController.text.trim() != '') {
-      if (await _interstitialAd.isLoaded()) {
-        _interstitialAd.show();
-      }
+      AdProvider.loadInterstitial(context);
       _result = await AuthProvider(context: context).loginWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passController.text.trim(),
@@ -123,9 +122,7 @@ class AuthVm extends ChangeNotifier {
     if (_nameController.text.trim() != '' &&
         _emailController.text.trim() != '' &&
         _passController.text.trim() != '') {
-      if (await _interstitialAd.isLoaded()) {
-        _interstitialAd.show();
-      }
+      AdProvider.loadInterstitial(context);
       if (imgFile != null) {
         _result = await UserStorage().uploadUserImage(imgFile: imgFile);
       }

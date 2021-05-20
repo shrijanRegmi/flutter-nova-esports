@@ -5,6 +5,7 @@ import 'package:peaman/models/app_models/app_config.dart';
 import 'package:peaman/models/app_models/team_model.dart';
 import 'package:peaman/models/app_models/tournament_model.dart';
 import 'package:peaman/models/app_models/user_model.dart';
+import 'package:peaman/services/ad_services/ad_provider.dart';
 import 'package:peaman/services/database_services/tournament_provider.dart';
 import 'package:peaman/viewmodels/tournament_view_vm.dart';
 
@@ -58,7 +59,7 @@ class RegisterVm extends ChangeNotifier {
       final TournamentViewVm vm) async {
     if (_teamNameController.text.trim() != '') {
       if (appUser.coins >= tournament.entryCost) {
-        _interstitialAd.show();
+        AdProvider.loadInterstitial(context);
         _updateIsLoading(true);
         final _team = Team(
           users: [appUser],

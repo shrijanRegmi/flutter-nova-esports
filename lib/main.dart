@@ -1,9 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:peaman/models/app_models/user_model.dart';
+import 'package:peaman/services/ad_services/ad_provider.dart';
 import 'package:peaman/services/auth_services/auth_provider.dart';
 import 'package:peaman/services/database_services/user_provider.dart';
 import 'package:peaman/viewmodels/app_vm.dart';
@@ -15,6 +15,7 @@ import 'models/app_models/app_config.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  AdProvider.init();
   MobileAds.instance.initialize();
 
   runApp(PeamanApp());
@@ -64,39 +65,10 @@ class MyMaterialApp extends StatefulWidget {
 }
 
 class _MyMaterialAppState extends State<MyMaterialApp> {
-  BannerAd _bannerAd;
-  bool _isLoadedAd = false;
-  final _ref = FirebaseFirestore.instance;
-
-  _handleBanner() async {
-    final _snap = await _ref.collection('configs').doc('shrijan_regmi').get();
-    final _appConfig = AppUserProvider().appConfigFromFirebase(_snap);
-
-    _bannerAd = BannerAd(
-      adUnitId: '${_appConfig?.bannerId}',
-      size: AdSize.fullBanner,
-      request: AdRequest(),
-      listener: AdListener(
-        onAdFailedToLoad: (ad, error) => print('AD FAILED TO LOAD : $error'),
-        onAdLoaded: (ad) => setState(() => _isLoadedAd = true),
-      ),
-    )..load();
-  }
-
-  @override
-  void initState() {
-    _handleBanner();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _bannerAd?.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
+    final _appConfig = Provider.of<AppConfig>(context);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -106,10 +78,10 @@ class _MyMaterialAppState extends State<MyMaterialApp> {
       home: SafeArea(
         child: Column(
           children: [
-            _isLoadedAd
+            _appConfig != null
                 ? Container(
-                    height: 60.0,
-                    child: AdWidget(ad: _bannerAd),
+                    height: 50.0,
+                    child: AdProvider.banner(context),
                   )
                 : Container(),
             Expanded(

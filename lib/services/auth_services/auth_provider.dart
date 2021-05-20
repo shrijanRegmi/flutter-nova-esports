@@ -160,6 +160,13 @@ class AuthProvider {
           () {},
         );
         break;
+      case "There is no user record corresponding to this identifier. The user may have been deleted.":
+        DialogProvider(context).showWarningDialog(
+          'Oops !',
+          'The user with this email does not exist. Please create an account first with that email.',
+          () {},
+        );
+        break;
       case "Password should be at least 6 characters":
         DialogProvider(context).showWarningDialog(
           'Oops !',

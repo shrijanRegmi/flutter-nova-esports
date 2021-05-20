@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:peaman/helpers/dialog_provider.dart';
 import 'package:peaman/models/app_models/app_config.dart';
 import 'package:peaman/models/app_models/user_model.dart';
+import 'package:peaman/services/ad_services/ad_provider.dart';
 import 'package:peaman/services/database_services/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -37,24 +37,17 @@ class WatchAndEarnVm extends ChangeNotifier {
   TextEditingController get rewardedController => _rewardedController;
   GlobalKey<ScaffoldState> get scaffoldKey => _scaffoldKey;
 
-  RewardedAd _rewardedAd;
-  AdListener _listener;
-
-  RewardedAd get rewardedAd => _rewardedAd;
-
   // init function
   onInit(final AppConfig config, final AppUser appUser) async {
     if (config != null && appUser != null) {
       _updateCounter(config.adShowTimer ?? 5);
       _initializeValues(config, appUser);
-      _handleRewarded(config);
     }
   }
 
   // dispose function
   onDis() {
     _timer?.cancel();
-    _rewardedAd?.dispose();
   }
 
   // initialize values
@@ -71,44 +64,43 @@ class WatchAndEarnVm extends ChangeNotifier {
   }
 
   // initialize rewarded
-  _handleRewarded(final AppConfig appConfig) async {
-    _listener = AdListener(
-      onAdLoaded: (Ad ad) async {
-        print('Ad loaded.');
-        notifyListeners();
-      },
-      onAdFailedToLoad: (Ad ad, LoadAdError error) async {
-        ad.dispose();
-        print('Ad failed to load: $error');
-        _updateAdFailed(true);
-      },
-      onAdOpened: (Ad ad) => print('Ad opened.'),
-      onAdClosed: (Ad ad) async {
-        ad.dispose();
-        print('Ad closed.');
-        await _rewardedAd.load();
-        notifyListeners();
-      },
-      onApplicationExit: (Ad ad) => print('Left application.'),
-      onRewardedAdUserEarnedReward: (RewardedAd ad, RewardItem reward) async {
-        print('Reward earned: $reward');
-        _onRewarded();
-      },
-    );
-    _rewardedAd = RewardedAd(
-      adUnitId: '${appConfig.rewardId}',
-      request: AdRequest(),
-      listener: _listener,
-    );
-    await _rewardedAd.load();
-    notifyListeners();
-  }
+  // _handleRewarded(final AppConfig appConfig) async {
+  //   _listener = AdListener(
+  //     onAdLoaded: (Ad ad) async {
+  //       print('Ad loaded.');
+  //       notifyListeners();
+  //     },
+  //     onAdFailedToLoad: (Ad ad, LoadAdError error) async {
+  //       ad.dispose();
+  //       print('Ad failed to load: $error');
+  //       _updateAdFailed(true);
+  //     },
+  //     onAdOpened: (Ad ad) => print('Ad opened.'),
+  //     onAdClosed: (Ad ad) async {
+  //       ad.dispose();
+  //       print('Ad closed.');
+  //       await _rewardedAd.load();
+  //       notifyListeners();
+  //     },
+  //     onApplicationExit: (Ad ad) => print('Left application.'),
+  //     onRewardedAdUserEarnedReward: (RewardedAd ad, RewardItem reward) async {
+  //       print('Reward earned: $reward');
+  //       _onRewarded();
+  //     },
+  //   );
+  //   _rewardedAd = RewardedAd(
+  //     adUnitId: '${appConfig.rewardId}',
+  //     request: AdRequest(),
+  //     listener: _listener,
+  //   );
+  //   await _rewardedAd.load();
+  //   notifyListeners();
+  // }
 
   // when user receives reward
   _onRewarded() async {
     final _appUser = Provider.of<AppUser>(context, listen: false);
     _updateRewardedCount(_rewardedCount + 1);
-    await _rewardedAd.load();
     notifyListeners();
     await AppUserProvider(uid: _appUser.uid).updateUserDetail(
       data: {
@@ -132,12 +124,7 @@ class WatchAndEarnVm extends ChangeNotifier {
 
   // show rewarded ad
   showAd() async {
-    if (await _rewardedAd.isLoaded()) {
-      _rewardedAd.show();
-    } else {
-      _rewardedAd.load();
-      _rewardedAd.show();
-    }
+    AdProvider.loadRewarded(context, () => _updateAdFailed(true), _onRewarded);
   }
 
   // on pressed watch

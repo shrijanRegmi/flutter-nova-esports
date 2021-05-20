@@ -8,6 +8,7 @@ import 'package:peaman/models/app_models/chat_model.dart';
 import 'package:peaman/models/app_models/team_model.dart';
 import 'package:peaman/models/app_models/tournament_model.dart';
 import 'package:peaman/models/app_models/user_model.dart';
+import 'package:peaman/services/ad_services/ad_provider.dart';
 import 'package:peaman/services/database_services/tournament_provider.dart';
 import 'package:peaman/views/screens/chat_convo_screen.dart';
 import 'package:peaman/views/screens/match_up_screen.dart';
@@ -111,7 +112,7 @@ class TournamentViewVm extends ChangeNotifier {
       final TournamentViewVm vm) async {
     if (_teamCodeController.text.trim() != '') {
       if (appUser.coins >= tournament.entryCost) {
-        if (await _interstitialAd.isLoaded()) _interstitialAd.show();
+        AdProvider.loadInterstitial(context);
         _updateIsLoading(true);
         await Future.delayed(Duration(milliseconds: 1300));
         final _result = await TournamentProvider(
