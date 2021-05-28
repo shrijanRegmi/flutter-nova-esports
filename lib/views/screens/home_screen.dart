@@ -145,7 +145,6 @@ class _HomeScreenState extends State<HomeScreen>
     return Expanded(
       child: TabBarView(
         controller: _tabController,
-        physics: NeverScrollableScrollPhysics(),
         children: <Widget>[
           WatchAndEarn(),
           ExploreTab(_tabController),

@@ -80,7 +80,6 @@ class _MyMaterialAppState extends State<MyMaterialApp> {
           children: [
             _appConfig != null
                 ? Container(
-                    height: 50.0,
                     child: AdProvider.banner(context),
                   )
                 : Container(),

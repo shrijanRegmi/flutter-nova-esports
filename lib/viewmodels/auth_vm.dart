@@ -192,6 +192,8 @@ class AuthVm extends ChangeNotifier {
               // 697525452
               _updateIsNextBtnPressed(true);
               _updateAddress(_addressFromPosition);
+            } else {
+              _updateLoader(false);
             }
           } else {
             _updateLoader(false);
@@ -319,16 +321,24 @@ class AuthVm extends ChangeNotifier {
         return _address.first.addressLine;
       }
     } catch (e) {
-      print(e);
-      if (e?.message ==
-          "User denied permissions to access the device's location.") {
-        _scaffoldKey.currentState.showSnackBar(
-          SnackBar(
-            content:
-                Text('Please go to settings and turn on location permission !'),
-          ),
+      if (e is String &&
+          (e.contains('Location permissions are denied') ||
+              e.contains(
+                  'Location permissions are permanently denied, we cannot request permissions.'))) {
+        await DialogProvider(context).showWarningDialog(
+          'Location permission denied',
+          'You need to accept location permission to continue.',
+          () {},
+        );
+      } else {
+        await DialogProvider(context).showWarningDialog(
+          'Location permission denied multiple times',
+          'You need to accept location permission to continue. It looks like you have denied location permission multiple times. Please goto you app settings and turn on location permission manually and try signing up in the app.',
+          () {},
         );
       }
+
+      print(e);
       print('Error!!!: Getting user address');
     }
     return null;
