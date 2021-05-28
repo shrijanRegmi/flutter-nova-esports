@@ -137,9 +137,11 @@ class WatchAndEarnVm extends ChangeNotifier {
       (timer) {
         if (_counter <= 0) {
           timer.cancel();
-          showAd();
           _updateCounter(appConfig?.adShowTimer ?? 5);
           _updateOnPressedWatch(false);
+        } else if (_counter <= 2) {
+          _updateCounter(_counter - 1);
+          showAd();
         } else {
           _updateCounter(_counter - 1);
         }
