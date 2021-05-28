@@ -110,7 +110,10 @@ class _TeamViewScreenState extends State<TeamViewScreen> {
             if (!vm.isCheckBox)
               vm.updateIsCheckBox(true);
             else
-              vm.selectLobbyWinners(widget.tournament);
+              vm.selectLobbyWinners(
+                widget.tournament,
+                widget.teams,
+              );
           },
           borderRadius: BorderRadius.circular(100.0),
           child: Container(

@@ -374,19 +374,58 @@ class TournamentProvider {
   }
 
   // select winners
-  Future selectLobbyWinners(final List<Team> selectedWinners) async {
+  Future selectLobbyWinners(
+      final List<Team> winners, final List<Team> losers) async {
     try {
       final _tournamentRef = _ref.collection('tournaments').doc(tournament.id);
-      for (int i = 0; i < selectedWinners.length; i++) {
-        final _team = selectedWinners[i];
+      var _winnerIds = <String>[];
+      var _loserIds = <String>[];
+
+      for (int i = 0; i < winners.length; i++) {
+        final _team = winners[i];
+        _winnerIds += _team.userIds;
+
         final _teamRef = _tournamentRef.collection('teams').doc(_team.id);
         await _teamRef.update({
           'rounds': FieldValue.arrayUnion([tournament.activeRound + 1]),
         });
+
+        await sendUpdate(
+          _team.id,
+          'Congrats! Your team has won round ${tournament.activeRound} and have qualified for round ${tournament.activeRound + 1}',
+        );
+
         print(
           'Success: Sending team ${_team.teamName} to round ${tournament.activeRound + 1}',
         );
       }
+
+      for (int i = 0; i < losers.length; i++) {
+        final _team = losers[i];
+        _loserIds += _team.userIds;
+
+        await sendUpdate(
+          _team.id,
+          'Sorry! Your team has lost round ${tournament.activeRound}. Please try next time',
+        );
+      }
+
+      final _roundWinLoseTriggersRef =
+          _ref.collection('round_win_lose_triggers').doc();
+
+      final roundWinLoseData = {
+        'id': _roundWinLoseTriggersRef.id,
+        'tournament_id': tournament.id,
+        'updated_at': DateTime.now().millisecondsSinceEpoch,
+        'winners': _winnerIds,
+        'losers': _loserIds,
+      };
+
+      await trigger(
+        _roundWinLoseTriggersRef,
+        roundWinLoseData,
+      );
+
       return 'Success';
     } catch (e) {
       print(e);

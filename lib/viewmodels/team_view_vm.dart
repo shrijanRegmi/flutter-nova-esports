@@ -108,15 +108,27 @@ class TeamViewVm extends ChangeNotifier {
   }
 
   // select winners for next round
-  selectLobbyWinners(final Tournament tournament) async {
+  selectLobbyWinners(
+    final Tournament tournament,
+    final List<Team> teams,
+  ) async {
     if (_checkedWinners.isNotEmpty) {
       final _newWinners = _selectedWinners;
       _checkedWinners.forEach((element) {
         _newWinners.add(element);
       });
       updateSelectedWinner(_newWinners);
-      final _result = await TournamentProvider(tournament: tournament)
-          .selectLobbyWinners(_checkedWinners);
+
+      final _unselectedTeams = teams
+          .where((element) =>
+              !_checkedWinners.map((e) => e.id).toList().contains(element.id))
+          .toList();
+      final _result =
+          await TournamentProvider(tournament: tournament).selectLobbyWinners(
+        _checkedWinners,
+        _unselectedTeams,
+      );
+
       if (_result != null) {
         updateIsCheckBox(false);
         updateCheckedWinner([]);
