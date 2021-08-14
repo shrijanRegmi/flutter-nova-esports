@@ -38,7 +38,6 @@ dependencies:
   flutter_hooks: ^0.13.2
   flutter_keyboard_visibility: null
   flutter_svg: ^0.18.0
-  fluttertoast: ^7.0.2
   geocoder: ^0.2.1
   geolocator: ^6.2.1
   google_mobile_ads: ^0.11.0+4
