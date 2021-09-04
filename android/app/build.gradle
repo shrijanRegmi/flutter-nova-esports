@@ -46,7 +46,7 @@ android {
         applicationId "com.novaesports.app"
         minSdkVersion 19
         multiDexEnabled true
-        targetSdkVersion 28
+        targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }

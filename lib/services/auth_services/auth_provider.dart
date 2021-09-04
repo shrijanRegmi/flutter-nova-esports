@@ -177,7 +177,7 @@ class AuthProvider {
       default:
         DialogProvider(context).showWarningDialog(
           'Oops !',
-          'Unexpected error occurred! Please try again later.',
+          'Unexpected error occurred! Please try again later. ($e)',
           () {},
         );
     }
