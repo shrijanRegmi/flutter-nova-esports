@@ -1,7 +1,7 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/views/widgets/common_widgets/avatar_builder.dart';
@@ -166,6 +166,47 @@ class DialogProvider {
             onPressed: () {
               Navigator.pop(context);
               onPressed();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  // show this when location permission is denied multiple times
+  showLocationPermissionDeniedDialog() async {
+    return await showDialog(
+      context: context,
+      useRootNavigator: false,
+      builder: (_) => AlertDialog(
+        title: Text('Location permission denied multiple times'),
+        content: Text(
+          'You need to accept location permission to continue. It looks like you have denied location permission multiple times. Please goto you app settings and turn on location permission for this app manually and try signing up in the app.',
+        ),
+        actions: [
+          TextButton(
+            child: Text(
+              'Cancel',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          TextButton(
+            child: Text(
+              'GOTO SETTINGS',
+              style: TextStyle(
+                color: Colors.blue,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onPressed: () {
+              Geolocator.openLocationSettings();
+              Navigator.pop(context);
             },
           ),
         ],

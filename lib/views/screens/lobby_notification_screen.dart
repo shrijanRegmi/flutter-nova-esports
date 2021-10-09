@@ -126,7 +126,7 @@ class _LobbyNotificationScreenState extends State<LobbyNotificationScreen> {
                   vertical: 10.0,
                 ),
                 child: Text(
-                  'Tap on the notification to see sender details',
+                  'Tap on the notification to see sender details.',
                   style: TextStyle(
                     fontSize: 12.0,
                     color: Colors.black38,
@@ -140,7 +140,7 @@ class _LobbyNotificationScreenState extends State<LobbyNotificationScreen> {
                     return ListTile(
                       onTap: () {
                         DialogProvider(context).showWarningDialog(
-                          'User Details',
+                          'Sender Details',
                           'Username: ${_lobbyNotif.sender.name}\nIn-game name: ${_lobbyNotif.sender.inGameName}\nIn-game id: ${_lobbyNotif.sender.inGameId}',
                           () {},
                         );

@@ -54,6 +54,7 @@ dependencies:
   uuid: ^2.2.0
   video_player: ^0.10.8+1
   youtube_player_flutter: ^7.0.0+7
+  app_settings: ^2.0.2
 
 dev_dependencies:
   flutter_test:

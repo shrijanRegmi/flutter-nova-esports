@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import 'package:peaman/views/screens/game_mode_screen.dart';
+import 'package:peaman/helpers/dialog_provider.dart';
 import 'package:peaman/views/screens/tournament_mode_screen.dart';
 import 'package:peaman/views/widgets/common_widgets/filled_btn.dart';
 
@@ -35,11 +35,16 @@ class _SelectModeScreenState extends State<SelectModeScreen> {
                       ? null
                       : () {
                           if (selectedMode == 0)
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => GameModeScreen(),
-                              ),
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (_) => GameModeScreen(),
+                            //   ),
+                            // );
+                            DialogProvider(context).showWarningDialog(
+                              'Underdevelopment',
+                              "FF Puzzles is underdevelopment and will be live soon.",
+                              () {},
                             );
                           else
                             Navigator.push(

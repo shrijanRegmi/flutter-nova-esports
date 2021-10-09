@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:geocoder/geocoder.dart';
@@ -331,11 +330,7 @@ class AuthVm extends ChangeNotifier {
           () {},
         );
       } else {
-        await DialogProvider(context).showWarningDialog(
-          'Location permission denied multiple times',
-          'You need to accept location permission to continue. It looks like you have denied location permission multiple times. Please goto you app settings and turn on location permission manually and try signing up in the app.',
-          () {},
-        );
+        await DialogProvider(context).showLocationPermissionDeniedDialog();
       }
 
       print(e);
