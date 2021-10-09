@@ -9,7 +9,7 @@ class FilledBtn extends StatelessWidget {
   FilledBtn({
     this.title,
     this.onPressed,
-    this.color,
+    this.color = Colors.orange,
     this.textColor = Colors.white,
     this.minWidth,
   });
@@ -20,7 +20,7 @@ class FilledBtn extends StatelessWidget {
       color: color,
       textColor: textColor,
       onPressed: onPressed,
-      disabledColor: Colors.grey.withOpacity(0.2),
+      disabledColor: Colors.grey.withOpacity(0.5),
       minWidth: minWidth ?? MediaQuery.of(context).size.width - 100.0,
       height: 50.0,
       shape: RoundedRectangleBorder(

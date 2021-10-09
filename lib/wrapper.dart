@@ -1,9 +1,8 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/material.dart';
-import 'package:peaman/models/app_models/app_config.dart';
-import 'package:peaman/no_internet_screen.dart';
+import 'package:peaman/views/screens/no_internet_screen.dart';
 import 'package:peaman/views/screens/auth/login_screen.dart';
-import 'package:peaman/views/screens/home_screen.dart';
+import 'package:peaman/views/screens/select_mode_screen.dart';
 import 'package:peaman/views/screens/splash_screen.dart';
 import 'package:provider/provider.dart';
 import 'models/app_models/user_model.dart';
@@ -31,10 +30,8 @@ class _WrapperState extends State<Wrapper> {
 
   @override
   Widget build(BuildContext context) {
-    final _appConfig = Provider.of<AppConfig>(context);
     final _internetStatus = Provider.of<DataConnectionStatus>(context) ??
         DataConnectionStatus.connected;
-    print('App Config Loaded : ${_appConfig?.toJson()}');
     if (_isLoading) return SplashScreen();
 
     if (_internetStatus == DataConnectionStatus.disconnected)
@@ -43,6 +40,6 @@ class _WrapperState extends State<Wrapper> {
     if (widget.appUser == null)
       return LoginScreen();
     else
-      return HomeScreen(widget.appUser.uid);
+      return SelectModeScreen();
   }
 }
