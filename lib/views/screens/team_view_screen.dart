@@ -4,6 +4,7 @@ import 'package:peaman/models/app_models/tournament_model.dart';
 import 'package:peaman/models/app_models/user_model.dart';
 import 'package:peaman/viewmodels/team_view_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
+import 'package:peaman/views/screens/lobby_notification_screen.dart';
 import 'package:peaman/views/widgets/common_widgets/appbar.dart';
 import 'package:peaman/views/widgets/matchup_widgets/teams_list.dart';
 
@@ -84,6 +85,29 @@ class _TeamViewScreenState extends State<TeamViewScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
+                      if (appUser.admin || appUser.worker)
+                        IconButton(
+                          icon: Icon(
+                            Icons.notifications,
+                          ),
+                          splashRadius: 30.0,
+                          color: Colors.blue,
+                          iconSize: 30.0,
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => LobbyNotificationScreen(
+                                  widget.index,
+                                  widget.teams,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      SizedBox(
+                        width: 10.0,
+                      ),
                       if (vm.isCheckBox)
                         _cancelBtnBuilder(context, appUser, vm),
                       if (vm.isCheckBox)
@@ -106,28 +130,28 @@ class _TeamViewScreenState extends State<TeamViewScreen> {
       elevation: 2.0,
       color: Colors.blue,
       child: InkWell(
-          onTap: () {
-            if (!vm.isCheckBox)
-              vm.updateIsCheckBox(true);
-            else
-              vm.selectLobbyWinners(
-                widget.tournament,
-                widget.teams,
-              );
-          },
-          borderRadius: BorderRadius.circular(100.0),
-          child: Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-            color: Colors.transparent,
-            child: Text(
-              vm.isCheckBox ? 'Done' : 'Select Winners',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+        onTap: () {
+          if (!vm.isCheckBox)
+            vm.updateIsCheckBox(true);
+          else
+            vm.selectLobbyWinners(
+              widget.tournament,
+              widget.teams,
+            );
+        },
+        borderRadius: BorderRadius.circular(100.0),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+          color: Colors.transparent,
+          child: Text(
+            vm.isCheckBox ? 'Done' : 'Select Winners',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
-          )),
+          ),
+        ),
+      ),
     );
   }
 

@@ -300,6 +300,7 @@ class _TournamentViewScreenState extends State<TournamentViewScreen>
                 color: Colors.grey[300],
               ),
               _btnBuilder(Icons.mediation, 'Match-ups', () {
+                _slideAnimationController.reverse();
                 if (appUser.admin || appUser.worker) {
                   Navigator.push(
                     context,

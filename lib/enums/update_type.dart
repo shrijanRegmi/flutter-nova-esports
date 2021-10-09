@@ -1,0 +1,4 @@
+enum UpdateType {
+  entire,
+  lobby,
+}

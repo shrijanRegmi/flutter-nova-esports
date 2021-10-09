@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:peaman/enums/match_type.dart';
+import 'package:peaman/enums/update_type.dart';
 import 'package:peaman/helpers/dialog_provider.dart';
+import 'package:peaman/models/app_models/lobby_notification_model.dart';
 import 'package:peaman/models/app_models/team_model.dart';
 import 'package:peaman/models/app_models/tournament_model.dart';
 import 'package:peaman/models/app_models/tournament_update_model.dart';
@@ -17,6 +19,7 @@ class TournamentProvider {
   final AppUser appUser;
   final Team team;
   final int round;
+  final int lobby;
 
   TournamentProvider({
     this.context,
@@ -25,6 +28,7 @@ class TournamentProvider {
     this.appUser,
     this.team,
     this.round = 1,
+    this.lobby,
   });
 
   final _ref = FirebaseFirestore.instance;
@@ -316,7 +320,12 @@ class TournamentProvider {
   }
 
   // send an update to team
-  Future sendUpdate(final String teamId, final String message) async {
+  Future sendUpdate(
+    final String teamId,
+    final String message, {
+    final AppUser sender,
+    final int lobby,
+  }) async {
     try {
       final _updatesRef = _ref
           .collection('tournament_updates')
@@ -326,6 +335,9 @@ class TournamentProvider {
       final _update = TournamentUpdate(
         id: _updatesRef.id,
         message: message,
+        sender: sender,
+        lobby: lobby,
+        type: UpdateType.lobby,
         updatedAt: DateTime.now().millisecondsSinceEpoch,
       );
       await _updatesRef.set(_update.toJson());
@@ -334,6 +346,33 @@ class TournamentProvider {
     } catch (e) {
       print(e);
       print('Error!!!: Sending an update to team $teamId');
+      return null;
+    }
+  }
+
+  // send a lobby notification
+  Future sendLobbyNotification(
+    final LobbyNotification lobbyNotification,
+  ) async {
+    try {
+      final _updatesRef = _ref
+          .collection('lobby_notifications')
+          .doc(lobbyNotification.tournamentId)
+          .collection(
+            '${lobbyNotification.tournamentId}_${lobbyNotification.lobby}',
+          )
+          .doc();
+      final _lobbyNotif = lobbyNotification.copyWith(id: _updatesRef.id);
+      await _updatesRef.set(_lobbyNotif.toJson());
+      print(
+        'Success: Sending lobby notification to lobby ${_lobbyNotif.lobby}',
+      );
+      return _lobbyNotif;
+    } catch (e) {
+      print(e);
+      print(
+        'Error!!!: Sending lobby notification to lobby ${lobbyNotification.lobby}',
+      );
       return null;
     }
   }
@@ -452,6 +491,15 @@ class TournamentProvider {
         .toList();
   }
 
+  // get list of lobby notifications from firebase
+  List<LobbyNotification> _lobbyNotificationFromFirebase(
+    final QuerySnapshot colSnap,
+  ) {
+    return colSnap.docs
+        .map((e) => LobbyNotification.fromJson(e.data()))
+        .toList();
+  }
+
   // get list of tournament teams
   List<Team> _tournamentTeamsFromFirebase(final QuerySnapshot colSnap) {
     return colSnap.docs.map((e) => Team.fromJson(e.data())).toList();
@@ -483,6 +531,17 @@ class TournamentProvider {
         .orderBy('updated_at', descending: true)
         .snapshots()
         .map(_updatesFromFirebase);
+  }
+
+  // stream of list of lobby notifications
+  Stream<List<LobbyNotification>> get lobbyNotificationsList {
+    return _ref
+        .collection('lobby_notifications')
+        .doc(tournament.id)
+        .collection('${tournament.id}_$lobby')
+        .orderBy('updated_at', descending: true)
+        .snapshots()
+        .map(_lobbyNotificationFromFirebase);
   }
 
   // stream of list of tournament teams

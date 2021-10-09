@@ -30,13 +30,20 @@ class AboutAppScreen extends StatelessWidget {
               ),
             ),
           ),
-          body: Container(
-            padding: const EdgeInsets.all(20.0),
-            child: Text(
-              '${_appConfig.aboutApp}',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Color(0xff3D4A5A),
+          body: SingleChildScrollView(
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(
+                20.0,
+                20.0,
+                20.0,
+                150.0,
+              ),
+              child: Text(
+                '${_appConfig.aboutApp}',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xff3D4A5A),
+                ),
               ),
             ),
           ),
