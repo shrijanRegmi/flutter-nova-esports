@@ -18,6 +18,7 @@ class AppUser {
   final int completedTasks;
   final int lastTaskDoneAt;
   final bool newNotif;
+  final int currentLevel;
 
   AppUser({
     this.uid,
@@ -36,6 +37,7 @@ class AppUser {
     this.completedTasks,
     this.lastTaskDoneAt,
     this.newNotif,
+    this.currentLevel,
   });
 
   AppUser copyWith({
@@ -55,6 +57,7 @@ class AppUser {
     final int completedTasks,
     final int lastTaskDoneAt,
     final bool newNotif,
+    final int currentLevel,
   }) {
     return AppUser(
       photoUrl: photoUrl ?? this.photoUrl,
@@ -73,6 +76,7 @@ class AppUser {
       completedTasks: completedTasks ?? this.completedTasks,
       lastTaskDoneAt: lastTaskDoneAt ?? this.lastTaskDoneAt,
       newNotif: newNotif ?? this.newNotif,
+      currentLevel: currentLevel ?? this.currentLevel,
     );
   }
 
@@ -123,6 +127,7 @@ class AppUser {
       lastTaskDoneAt: data['last_task_done_at'],
       newNotif: data['new_notif'] ?? false,
       phone: data['phone'] ?? 'N/A',
+      currentLevel: data['current_level'] ?? 1,
     );
   }
 

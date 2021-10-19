@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
 class FilledBtn extends StatelessWidget {
+  final Icon icon;
   final String title;
   final Function onPressed;
   final Color color;
   final Color textColor;
   final double minWidth;
   FilledBtn({
+    this.icon,
     this.title,
     this.onPressed,
     this.color = Colors.orange,
@@ -28,11 +30,23 @@ class FilledBtn extends StatelessWidget {
           Radius.circular(4.0),
         ),
       ),
-      child: Text(
-        '$title',
-        style: TextStyle(
-          fontSize: 16.0,
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (icon != null) icon,
+          if (icon != null)
+            SizedBox(
+              width: 10.0,
+            ),
+          if (title != null)
+            Text(
+              '$title',
+              style: TextStyle(
+                fontSize: 16.0,
+              ),
+            ),
+        ],
       ),
     );
   }
