@@ -95,8 +95,7 @@ class TournamentViewVm extends ChangeNotifier {
   // share link
   shareTeamCode(final Tournament tournament) async {
     await Share.share(
-      '${tournament.title}: ${_team.id}',
-      subject: 'Here is our team code. Join my team in NOVA ESPORTS.',
+      'Here is our team code. Join our team in NOVA ESPORTS.\n\nTournament Name:\n${tournament.title}\n\nTeam Code:\n${_team.id}',
     );
   }
 
