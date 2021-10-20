@@ -46,6 +46,7 @@ class Level {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'level': level,
       'difficulty': difficulty,
       'img_url': imgUrl,

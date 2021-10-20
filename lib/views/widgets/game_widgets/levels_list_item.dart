@@ -7,7 +7,14 @@ import 'package:provider/provider.dart';
 
 class LevelItem extends StatelessWidget {
   final Level level;
-  const LevelItem(this.level, {Key key}) : super(key: key);
+  final Function(Level) editLevel;
+  final Function(Level) deleteLevel;
+  const LevelItem(
+    this.level,
+    this.editLevel,
+    this.deleteLevel, {
+    Key key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -66,14 +73,14 @@ class LevelItem extends StatelessWidget {
                     color: Color(0xff3D4A5A),
                     splashRadius: 1.0,
                     iconSize: 22.0,
-                    onPressed: () {},
+                    onPressed: () => editLevel(level),
                   ),
                   IconButton(
                     icon: Icon(Icons.delete),
                     color: Colors.red,
                     splashRadius: 1.0,
                     iconSize: 22.0,
-                    onPressed: () {},
+                    onPressed: () => deleteLevel(level),
                   ),
                 ],
               ),

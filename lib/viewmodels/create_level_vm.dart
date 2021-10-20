@@ -15,11 +15,28 @@ class CreateLevelVm extends ChangeNotifier {
   final TextEditingController _difficultyController = TextEditingController();
   File _img;
   bool _isLoading = false;
+  Level _existingLevel;
 
   TextEditingController get levelController => _levelController;
   TextEditingController get difficultyController => _difficultyController;
   File get img => _img;
   bool get isLoading => _isLoading;
+
+  // init function
+  onInit(final Level level) {
+    if (level != null) {
+      _initializeValues(level);
+    }
+  }
+
+  // initialize values
+  _initializeValues(final Level level) {
+    _levelController.text = '${level.level}';
+    _difficultyController.text = '${level.difficulty}';
+    _img = File(level.imgUrl);
+    _existingLevel = level;
+    notifyListeners();
+  }
 
   // update value of _isLoading
   updateIsLoading(final bool newVal) {
@@ -44,14 +61,23 @@ class CreateLevelVm extends ChangeNotifier {
         _img != null) {
       updateIsLoading(true);
 
-      final _imgUrl = await GameStorage().uploadLevelImg(imgFile: _img);
+      final _imgUrl = _img.path.contains('.com')
+          ? _img.path
+          : await GameStorage().uploadLevelImg(imgFile: _img);
       final _level = Level(
+        id: _existingLevel?.id,
         level: int.parse(_levelController.text.trim()),
         difficulty: int.parse(_difficultyController.text.trim()),
         imgUrl: _imgUrl,
         updatedAt: DateTime.now().millisecondsSinceEpoch,
       );
-      final _result = await GameProvider(level: _level).createLevel();
+
+      var _result;
+      if (_existingLevel == null) {
+        _result = await GameProvider(level: _level).createLevel();
+      } else {
+        _result = await GameProvider(level: _level).updateLevel();
+      }
 
       if (_result == null) {
         updateIsLoading(false);

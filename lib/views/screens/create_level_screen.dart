@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:peaman/models/app_models/level_model.dart';
 import 'package:peaman/viewmodels/create_level_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
 import 'package:peaman/views/widgets/common_widgets/appbar.dart';
@@ -8,12 +9,17 @@ import 'package:peaman/views/widgets/common_widgets/filled_btn.dart';
 import 'package:peaman/views/widgets/create_tournament_widgets/new_tournament_field.dart';
 
 class CreateLevelScreen extends StatelessWidget {
-  const CreateLevelScreen({Key key}) : super(key: key);
+  final Level level;
+  const CreateLevelScreen({
+    Key key,
+    this.level,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewmodelProvider<CreateLevelVm>(
       vm: CreateLevelVm(context),
+      onInit: (vm) => vm.onInit(level),
       builder: (context, vm, appUser, appVm) {
         return Scaffold(
           appBar: PreferredSize(

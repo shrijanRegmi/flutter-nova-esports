@@ -76,7 +76,11 @@ class LevelScreen extends StatelessWidget {
                       if (!appUser.admin &&
                           vm.levels.length < appUser.currentLevel)
                         _completedLevelBuilder(),
-                      LevelsList(vm.levels),
+                      LevelsList(
+                        vm.levels,
+                        vm.editLevel,
+                        vm.deleteLevel,
+                      ),
                     ],
                   ),
                 ),
