@@ -67,7 +67,10 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
                 margin: EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: Color(0xff3D4A5A),
-                  border: Border.all(width: border, color: Colors.green[600]),
+                  border: Border.all(
+                    width: border,
+                    color: Colors.green[600],
+                  ),
                 ),
                 child: LayoutBuilder(
                   builder: (context, constraints) {
@@ -82,27 +85,10 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
                     );
                   },
                 ),
-                // child: ,
               ),
               SizedBox(
                 height: 50.0,
               ),
-              // Container(
-              //   child: Slider(
-              //     min: 2,
-              //     max: 15,
-              //     divisions: 13,
-              //     label: "${_difficultyValue.toString()}",
-              //     value: _difficultyValue.toDouble(),
-              //     onChanged: (value) {
-              //       setState(
-              //         () {
-              //           _difficultyValue = value.toInt();
-              //         },
-              //       );
-              //     },
-              //   ),
-              // ),
             ],
           ),
         ),
@@ -333,6 +319,13 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
       padding: const EdgeInsets.all(50.0),
       child: Column(
         children: [
+          CachedNetworkImage(
+            imageUrl: widget.level.imgUrl,
+            height: 200.0,
+          ),
+          SizedBox(
+            height: 10.0,
+          ),
           Text(
             'Congrats!',
             style: TextStyle(
