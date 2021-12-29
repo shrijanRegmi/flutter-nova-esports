@@ -260,6 +260,15 @@ class AppUserProvider {
         .map(_usersFromFirebase);
   }
 
+  // stream of admins
+  Stream<List<AppUser>> get adminUsers {
+    return _ref
+        .collection('users')
+        .where('admin', isEqualTo: true)
+        .snapshots()
+        .map(_usersFromFirebase);
+  }
+
   // stream of workers
   Stream<List<AppUser>> get workerUsers {
     return _ref

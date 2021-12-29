@@ -33,9 +33,10 @@ class ActiveAndWorkerViewScreen extends StatelessWidget {
               height: 40.0,
             ),
             _streamBuilder(
-              'Workers',
+              'Admins and Workers',
               AppUserProvider().workerUsers,
               Axis.vertical,
+              extraStream: AppUserProvider().adminUsers,
             ),
           ],
         ),
@@ -44,22 +45,55 @@ class ActiveAndWorkerViewScreen extends StatelessWidget {
   }
 
   Widget _streamBuilder(
-      final String title, final Stream stream, final Axis axis) {
-    return StreamBuilder<List<AppUser>>(
-      stream: stream,
-      builder: (BuildContext context, AsyncSnapshot<List<AppUser>> snapshot) {
-        if (snapshot.hasData) {
-          final _users = snapshot.data ?? [];
-          return UsersList(
-            _users,
-            axis: axis,
-            title: title,
-          );
-        } else if (snapshot.hasError) {
-          return Text(snapshot.error.toString());
-        }
-        return Center(child: CircularProgressIndicator());
-      },
-    );
+    final String title,
+    final Stream stream,
+    final Axis axis, {
+    final Stream extraStream,
+  }) {
+    _streamBuilder(final List<AppUser> moreUsers) =>
+        StreamBuilder<List<AppUser>>(
+          stream: stream,
+          builder:
+              (BuildContext context, AsyncSnapshot<List<AppUser>> snapshot) {
+            if (snapshot.hasData) {
+              final _users = snapshot.data ?? [];
+
+              moreUsers.forEach((element) {
+                final _existingUserIds = _users.map((e) => e.uid).toList();
+                final _alreadyContains = _existingUserIds.contains(element.uid);
+
+                if (!_alreadyContains) {
+                  _users.insert(0, element);
+                }
+              });
+
+              return UsersList(
+                _users,
+                axis: axis,
+                title: title,
+              );
+            } else if (snapshot.hasError) {
+              return Text(snapshot.error.toString());
+            }
+            return Center(child: CircularProgressIndicator());
+          },
+        );
+
+    if (extraStream != null) {
+      return StreamBuilder<List<AppUser>>(
+        stream: extraStream,
+        builder: (BuildContext context, AsyncSnapshot<List<AppUser>> snapshot) {
+          if (snapshot.hasData) {
+            final _users = snapshot.data ?? [];
+            return _streamBuilder(_users);
+          } else if (snapshot.hasError) {
+            return Text(snapshot.error.toString());
+          }
+          return Container();
+        },
+      );
+    }
+
+    return _streamBuilder(<AppUser>[]);
   }
 }

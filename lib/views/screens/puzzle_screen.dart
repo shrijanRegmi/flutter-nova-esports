@@ -7,8 +7,10 @@ import 'package:flutter/rendering.dart';
 import 'package:image/image.dart' as image;
 import 'package:peaman/models/app_models/level_model.dart';
 import 'package:peaman/models/app_models/user_model.dart';
+import 'package:peaman/services/database_services/game_provider.dart';
 import 'package:peaman/services/database_services/user_provider.dart';
 import 'package:peaman/views/widgets/common_widgets/appbar.dart';
+import 'package:peaman/views/widgets/common_widgets/color_toggler.dart';
 import 'package:peaman/views/widgets/common_widgets/filled_btn.dart';
 import 'package:provider/provider.dart';
 
@@ -28,18 +30,21 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
   // default put 2
   int _difficultyValue = 2;
   GlobalKey<_SlidePuzzleWidgetState> globalKey = GlobalKey();
+  Color _numColor = Colors.black;
 
   @override
   void initState() {
     super.initState();
     setState(() {
       _difficultyValue = widget.level.difficulty;
+      _numColor = widget.level.numColorWhite ? Colors.white : Colors.black;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     double border = 5;
+    final _appUser = Provider.of<AppUser>(context);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -63,6 +68,26 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              if (_appUser.admin)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ColorToggler(
+                      value: widget.level.numColorWhite,
+                      onChange: (val) {
+                        final _level =
+                            widget.level.copyWith(numColorWhite: val);
+                        GameProvider(level: _level).updateLevel();
+                        setState(() {
+                          _numColor = val ? Colors.white : Colors.black;
+                        });
+                      },
+                    ),
+                    SizedBox(
+                      width: 10.0,
+                    ),
+                  ],
+                ),
               Container(
                 margin: EdgeInsets.all(10),
                 decoration: BoxDecoration(
@@ -81,6 +106,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
                         size: constraints.biggest,
                         sizePuzzle: _difficultyValue,
                         level: widget.level,
+                        numColor: _numColor,
                       ),
                     );
                   },
@@ -103,12 +129,14 @@ class SlidePuzzleWidget extends StatefulWidget {
   final double innerPadding;
   final int sizePuzzle;
   final Level level;
+  final Color numColor;
   SlidePuzzleWidget({
     Key key,
     this.size,
     this.innerPadding = 5,
     this.sizePuzzle,
     this.level,
+    this.numColor = Colors.black,
   }) : super(key: key);
 
   @override
@@ -249,7 +277,7 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
                                         child: Text(
                                           "${slideObject.indexDefault}",
                                           style: TextStyle(
-                                            color: Colors.black,
+                                            color: widget.numColor,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
@@ -280,36 +308,6 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
                     ),
                   ],
                 ),
-              // Container(
-              //   child: Row(
-              //     mainAxisAlignment: MainAxisAlignment.center,
-              //     children: [
-              //       // u can use any button
-              //       Padding(
-              //         padding: const EdgeInsets.all(8.0),
-              //         child: ElevatedButton(
-              //           onPressed: () => generatePuzzle(),
-              //           child: Text("Generate"),
-              //         ),
-              //       ),
-              //       Padding(
-              //         padding: const EdgeInsets.all(8.0),
-              //         child: ElevatedButton(
-              //           // for checking purpose
-              //           onPressed: startSlide ? null : () => reversePuzzle(),
-              //           child: Text("Reverse"),
-              //         ),
-              //       ),
-              //       Padding(
-              //         padding: const EdgeInsets.all(8.0),
-              //         child: ElevatedButton(
-              //           onPressed: () => clearPuzzle(),
-              //           child: Text("Clear"),
-              //         ),
-              //       )
-              //     ],
-              //   ),
-              // ),
             ],
           );
   }

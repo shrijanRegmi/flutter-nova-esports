@@ -13,12 +13,14 @@ class CreateLevelVm extends ChangeNotifier {
 
   final TextEditingController _levelController = TextEditingController();
   final TextEditingController _difficultyController = TextEditingController();
+  bool _numColorWhite = false;
   File _img;
   bool _isLoading = false;
   Level _existingLevel;
 
   TextEditingController get levelController => _levelController;
   TextEditingController get difficultyController => _difficultyController;
+  bool get numColorWhite => _numColorWhite;
   File get img => _img;
   bool get isLoading => _isLoading;
 
@@ -41,6 +43,13 @@ class CreateLevelVm extends ChangeNotifier {
   // update value of _isLoading
   updateIsLoading(final bool newVal) {
     _isLoading = newVal;
+    notifyListeners();
+  }
+
+  // update value of numColorWhite
+  updateNumColorWhite(final bool newVal) {
+    _numColorWhite = newVal;
+
     notifyListeners();
   }
 
@@ -70,6 +79,7 @@ class CreateLevelVm extends ChangeNotifier {
         difficulty: int.parse(_difficultyController.text.trim()),
         imgUrl: _imgUrl,
         updatedAt: DateTime.now().millisecondsSinceEpoch,
+        numColorWhite: _numColorWhite,
       );
 
       var _result;

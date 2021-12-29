@@ -4,12 +4,14 @@ class Level {
   final int difficulty;
   final String imgUrl;
   final int updatedAt;
+  final bool numColorWhite;
   Level({
     this.id,
     this.difficulty,
     this.level,
     this.imgUrl,
     this.updatedAt,
+    this.numColorWhite,
   });
 
   Level copyWith({
@@ -18,6 +20,7 @@ class Level {
     final int difficulty,
     final String imgUrl,
     final int updatedAt,
+    final bool numColorWhite,
   }) {
     return Level(
       id: id ?? this.id,
@@ -25,6 +28,7 @@ class Level {
       difficulty: difficulty ?? this.difficulty,
       imgUrl: imgUrl ?? this.imgUrl,
       updatedAt: updatedAt ?? this.updatedAt,
+      numColorWhite: numColorWhite ?? this.numColorWhite,
     );
   }
 
@@ -41,6 +45,7 @@ class Level {
                   : data['difficulty'],
       imgUrl: data['img_url'],
       updatedAt: data['updated_at'],
+      numColorWhite: data['num_color_white'] ?? false,
     );
   }
 
@@ -51,6 +56,7 @@ class Level {
       'difficulty': difficulty,
       'img_url': imgUrl,
       'updated_at': updatedAt,
+      'num_color_white': numColorWhite,
     };
   }
 }

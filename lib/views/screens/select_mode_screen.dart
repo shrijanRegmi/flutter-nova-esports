@@ -42,11 +42,6 @@ class _SelectModeScreenState extends State<SelectModeScreen> {
                                 builder: (_) => GameModeScreen(),
                               ),
                             );
-                          // DialogProvider(context).showWarningDialog(
-                          //   'Underdevelopment',
-                          //   "FF Puzzles is underdevelopment and will be live soon.",
-                          //   () {},
-                          // );
                           else
                             Navigator.push(
                               context,

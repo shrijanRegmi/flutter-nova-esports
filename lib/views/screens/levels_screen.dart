@@ -28,7 +28,7 @@ class LevelScreen extends StatelessWidget {
               ),
             ),
           ),
-          floatingActionButton: appUser.admin
+          floatingActionButton: appUser?.admin ?? false
               ? FloatingActionButton(
                   child: Icon(Icons.add),
                   onPressed: () {

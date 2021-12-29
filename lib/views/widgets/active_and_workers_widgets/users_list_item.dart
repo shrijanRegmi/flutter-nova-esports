@@ -15,7 +15,7 @@ class UsersListItem extends StatelessWidget {
     final _appUser = Provider.of<AppUser>(context);
 
     return axis == Axis.horizontal
-        ? _horizontalBuilder(context)
+        ? _horizontalBuilder(context, _appUser)
         : ListTile(
             leading: _imgBuilder(),
             contentPadding:
@@ -33,13 +33,21 @@ class UsersListItem extends StatelessWidget {
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  '${user.name}',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xff3D4A5A),
-                    fontSize: 14.0,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      '${user.name}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xff3D4A5A),
+                        fontSize: 14.0,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10.0,
+                    ),
+                    _userStatusBuilder(),
+                  ],
                 ),
                 Text(
                   '${user.inGameName}',
@@ -75,15 +83,16 @@ class UsersListItem extends StatelessWidget {
     );
   }
 
-  Widget _horizontalBuilder(final BuildContext context) {
+  Widget _horizontalBuilder(final BuildContext context, final AppUser appUser) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => UserViewScreen(user),
-          ),
-        );
+        if (appUser.admin)
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => UserViewScreen(user),
+            ),
+          );
       },
       child: Container(
         color: Colors.transparent,
@@ -121,6 +130,40 @@ class UsersListItem extends StatelessWidget {
               width: 20.0,
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _userStatusBuilder() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (user.worker) _userStatusItem(title: 'Worker', color: Colors.green),
+        if (user.admin)
+          SizedBox(
+            width: 5.0,
+          ),
+        if (user.admin) _userStatusItem(title: 'Admin', color: Colors.red),
+      ],
+    );
+  }
+
+  Widget _userStatusItem({
+    final String title,
+    final Color color,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5.0),
+        color: color,
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 10.0),
+      child: Text(
+        '$title',
+        style: TextStyle(
+          fontSize: 10.0,
+          color: Colors.white,
         ),
       ),
     );

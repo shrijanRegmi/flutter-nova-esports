@@ -5,6 +5,7 @@ import 'package:peaman/models/app_models/level_model.dart';
 import 'package:peaman/viewmodels/create_level_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
 import 'package:peaman/views/widgets/common_widgets/appbar.dart';
+import 'package:peaman/views/widgets/common_widgets/color_toggler.dart';
 import 'package:peaman/views/widgets/common_widgets/filled_btn.dart';
 import 'package:peaman/views/widgets/create_tournament_widgets/new_tournament_field.dart';
 
@@ -65,6 +66,7 @@ class CreateLevelScreen extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _textFieldsContainer(context, vm),
                         SizedBox(
@@ -122,6 +124,11 @@ class CreateLevelScreen extends StatelessWidget {
           controller: vm.difficultyController,
           textInputType: TextInputType.number,
         ),
+        SizedBox(
+          height: 20.0,
+        ),
+        ///////////// NEXT
+        _colorTogglerBuilder(vm),
         SizedBox(
           height: 20.0,
         ),
@@ -192,6 +199,24 @@ class CreateLevelScreen extends StatelessWidget {
         color: Colors.green,
         onPressed: vm.createLevel,
       ),
+    );
+  }
+
+  Widget _colorTogglerBuilder(final CreateLevelVm vm) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Select color of numbers',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Color(0xff3D4A5A),
+          ),
+        ),
+        ColorToggler(
+          onChange: vm.updateNumColorWhite,
+        ),
+      ],
     );
   }
 }

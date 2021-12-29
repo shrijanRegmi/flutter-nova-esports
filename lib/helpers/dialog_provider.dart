@@ -223,7 +223,7 @@ class DialogProvider {
   }) async {
     return await showDialog(
       context: context,
-      useRootNavigator: false,
+      // useRootNavigator: false,
       builder: (_) => AlertDialog(
         title: Text('$title'),
         content: Text('$description'),
