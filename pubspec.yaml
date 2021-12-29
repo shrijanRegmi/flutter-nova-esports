@@ -21,8 +21,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  flutter:
-    sdk: flutter
+  app_settings: ^2.0.2
   auto_size_text: ^2.1.0
   cached_network_image: ^2.2.0+1
   cloud_firestore: ^0.14.4
@@ -35,6 +34,8 @@ dependencies:
   firebase_core: ^0.5.3
   firebase_messaging: ^7.0.3
   firebase_storage: ^5.2.0
+  flutter:
+    sdk: flutter
   flutter_hooks: ^0.13.2
   flutter_keyboard_visibility: null
   flutter_svg: ^0.18.0
@@ -54,7 +55,6 @@ dependencies:
   uuid: ^2.2.0
   video_player: ^0.10.8+1
   youtube_player_flutter: ^7.0.0+7
-  app_settings: ^2.0.2
 
 dev_dependencies:
   flutter_test:
