@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -25,17 +25,19 @@ class AuthVm extends ChangeNotifier {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
+  TextEditingController _otpController = TextEditingController();
+  PageController _pageController = PageController();
   bool _isLoading = false;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   File _imgFile;
   bool _isNextPressed = false;
   Age _age;
-  bool _keyboardVisibility = false;
   StreamSubscription _subscription;
   String _address;
   InterstitialAd _interstitialAd;
   AdListener _adListener;
   bool _isTermsAccepted = false;
+  String _verificationId;
 
   TextEditingController get nameController => _nameController;
   TextEditingController get inGameNameController => _inGameNameController;
@@ -43,22 +45,18 @@ class AuthVm extends ChangeNotifier {
   TextEditingController get emailController => _emailController;
   TextEditingController get passController => _passController;
   TextEditingController get phoneController => _phoneController;
+  TextEditingController get otpController => _otpController;
   bool get isLoading => _isLoading;
   GlobalKey<ScaffoldState> get scaffoldKey => _scaffoldKey;
   File get imgFile => _imgFile;
   bool get isNextPressed => _isNextPressed;
   Age get age => _age;
-  bool get keyboardVisibility => _keyboardVisibility;
   String get address => _address;
   bool get isTermsAccepted => _isTermsAccepted;
+  PageController get pageController => _pageController;
 
   // init function
   onInit(final AppConfig appConfig) {
-    _subscription = KeyboardVisibility.onChange.listen((event) {
-      _keyboardVisibility = event;
-      print(event);
-      notifyListeners();
-    });
     if (appConfig != null) {
       _handleInterstitialAd(appConfig);
     }
@@ -90,6 +88,73 @@ class AuthVm extends ChangeNotifier {
       listener: _adListener,
       request: AdRequest(),
     )..load();
+  }
+
+  // sign in with phone
+  void signInWithPhone() {
+    if (_phoneController.text.trim() != '') {
+      FocusScope.of(context).unfocus();
+      _updateLoader(true);
+      AuthProvider().signInWithPhone(
+        _phoneController.text.trim(),
+        onSuccess: (id, token) {
+          _updateLoader(false);
+          _scrollPageView();
+          _verificationId = id;
+        },
+        onError: (e) {
+          _updateLoader(false);
+          DialogProvider(context).showWarningDialog(
+            'Error logging in with phone number',
+            '${e.message}',
+            () {},
+          );
+        },
+      );
+    }
+  }
+
+  // submit otp code
+  void submitOtpCode() {
+    if (_verificationId != null && _otpController.text.trim() != '') {
+      FocusScope.of(context).unfocus();
+      _updateLoader(true);
+      AuthProvider().submitVerificationCode(
+        _verificationId,
+        _otpController.text.trim(),
+        onError: (e) {
+          _updateLoader(false);
+          DialogProvider(context).showWarningDialog(
+            'Error submitting OTP code',
+            '${e.message}',
+            () {},
+          );
+        },
+      );
+    }
+  }
+
+  // send user data to firestore
+  void _sendUserToFirestore() async {
+    var _result;
+    final _auth = FirebaseAuth.instance;
+    final _uid = _auth.currentUser?.uid;
+    final _phone = _auth.currentUser?.phoneNumber;
+
+    if (imgFile != null) {
+      _result = await UserStorage().uploadUserImage(imgFile: imgFile);
+    }
+    final _appUser = AppUser(
+      uid: _uid,
+      phone: _phone,
+      photoUrl: _result,
+      address: _address,
+      name: _nameController.text.trim(),
+      inGameName: _inGameNameController.text.trim(),
+      inGameId: _inGameIdController.text.trim(),
+    );
+
+    _result = await AppUserProvider(user: _appUser).sendUserToFirestore();
   }
 
   // login user with email and password;
@@ -166,7 +231,6 @@ class AuthVm extends ChangeNotifier {
   // on next btn pressed
   onPressedNextBtn() async {
     if (_nameController.text.trim() != '' &&
-        _phoneController.text.trim() != '' &&
         _inGameIdController.text.trim() != '' &&
         _inGameNameController.text.trim() != '') {
       if (!_isTermsAccepted) {
@@ -177,36 +241,25 @@ class AuthVm extends ChangeNotifier {
         );
       } else {
         _updateLoader(true);
-        final _searchedUserByName =
-            await AppUserProvider().searchedUser(_nameController);
+        final _searchedUserByInGameId =
+            await AppUserProvider().searchedUser(_inGameIdController);
 
-        if (_searchedUserByName == null) {
-          final _searchedUserByInGameId =
-              await AppUserProvider().searchedUser(_inGameIdController);
+        if (_searchedUserByInGameId == null) {
+          final _addressFromPosition = await _getAddressFromLatLng();
+          _updateLoader(false);
+          if (_addressFromPosition != null) {
+            _updateAddress(_addressFromPosition);
 
-          if (_searchedUserByInGameId == null) {
-            final _addressFromPosition = await _getAddressFromLatLng();
-            _updateLoader(false);
-            if (_addressFromPosition != null) {
-              // 697525452
-              _updateIsNextBtnPressed(true);
-              _updateAddress(_addressFromPosition);
-            } else {
-              _updateLoader(false);
-            }
+            // Send the user to firebase
+            _sendUserToFirestore();
           } else {
             _updateLoader(false);
-            await DialogProvider(context).showWarningDialog(
-              'In-Game Id already taken',
-              'The in-game id you have entered is already taken. Please use a different one !',
-              () {},
-            );
           }
         } else {
           _updateLoader(false);
           await DialogProvider(context).showWarningDialog(
-            'Username already taken',
-            'The username you have entered is already taken. Please use a different one !',
+            'In-Game Id already taken',
+            'The in-game id you have entered is already taken. Please use a different one !',
             () {},
           );
         }
@@ -349,5 +402,15 @@ class AuthVm extends ChangeNotifier {
   updateIsTermsAccepted(final bool newVal) {
     _isTermsAccepted = newVal;
     notifyListeners();
+  }
+
+  // scroll page view
+  void _scrollPageView() {
+    FocusScope.of(context).unfocus();
+    _pageController.animateTo(
+      MediaQuery.of(context).size.width,
+      duration: Duration(milliseconds: 1000),
+      curve: Curves.ease,
+    );
   }
 }

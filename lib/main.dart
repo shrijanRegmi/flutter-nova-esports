@@ -44,8 +44,8 @@ class PeamanApp extends StatelessWidget {
               ),
             ],
             child: WrapperBuilder(
-              builder: (BuildContext context, AppUser appUser) {
-                return MyMaterialApp(appUser);
+              builder: (BuildContext context) {
+                return MyMaterialApp();
               },
             ),
           );
@@ -57,9 +57,6 @@ class PeamanApp extends StatelessWidget {
 }
 
 class MyMaterialApp extends StatefulWidget {
-  final AppUser appUser;
-  MyMaterialApp(this.appUser);
-
   @override
   _MyMaterialAppState createState() => _MyMaterialAppState();
 }
@@ -92,9 +89,7 @@ class _MyMaterialAppState extends State<MyMaterialApp> {
                   canvasColor: Color(0xffF3F5F8),
                 ),
                 home: Material(
-                  child: Wrapper(
-                    appUser: widget.appUser,
-                  ),
+                  child: Wrapper(),
                 ),
               ),
             ),

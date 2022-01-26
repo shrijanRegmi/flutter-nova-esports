@@ -7,6 +7,8 @@ class FilledBtn extends StatelessWidget {
   final Color color;
   final Color textColor;
   final double minWidth;
+  final double borderRadius;
+  final bool loading;
   FilledBtn({
     this.icon,
     this.title,
@@ -14,6 +16,8 @@ class FilledBtn extends StatelessWidget {
     this.color = Colors.orange,
     this.textColor = Colors.white,
     this.minWidth,
+    this.borderRadius = 4.0,
+    this.loading = false,
   });
 
   @override
@@ -27,7 +31,7 @@ class FilledBtn extends StatelessWidget {
       height: 50.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
-          Radius.circular(4.0),
+          Radius.circular(borderRadius),
         ),
       ),
       child: Row(
@@ -44,6 +48,18 @@ class FilledBtn extends StatelessWidget {
               '$title',
               style: TextStyle(
                 fontSize: 16.0,
+              ),
+            ),
+          if (loading)
+            SizedBox(
+              width: 20.0,
+            ),
+          if (loading)
+            Container(
+              width: 30.0,
+              height: 30.0,
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation(Colors.white),
               ),
             ),
         ],

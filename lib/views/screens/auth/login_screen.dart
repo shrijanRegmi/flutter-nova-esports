@@ -98,15 +98,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                             ),
-                            if (!vm.keyboardVisibility)
-                              Positioned(
-                                bottom: -10.0,
-                                left: 0.0,
-                                right: 0.0,
-                                child: SvgPicture.asset(
-                                  'assets/images/svgs/auth_bottom.svg',
-                                ),
+                            Positioned(
+                              bottom: -10.0,
+                              left: 0.0,
+                              right: 0.0,
+                              child: SvgPicture.asset(
+                                'assets/images/svgs/auth_bottom.svg',
                               ),
+                            ),
                           ],
                         ),
                 ),

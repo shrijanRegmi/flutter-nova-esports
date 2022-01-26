@@ -15,44 +15,46 @@ class _SelectModeScreenState extends State<SelectModeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _headerBuilder(),
-              SizedBox(
-                height: 50.0,
-              ),
-              _buttonsRowBuilder(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: FilledBtn(
-                  title: 'Continue',
-                  color: Color(0xff3D4A5A),
-                  minWidth: MediaQuery.of(context).size.width,
-                  onPressed: selectedMode == null
-                      ? null
-                      : () {
-                          if (selectedMode == 0)
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => GameModeScreen(),
-                              ),
-                            );
-                          else
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => TournamentModeScreen(),
-                              ),
-                            );
-                        },
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _headerBuilder(),
+                SizedBox(
+                  height: 50.0,
                 ),
-              ),
-            ],
+                _buttonsRowBuilder(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: FilledBtn(
+                    title: 'Continue',
+                    color: Color(0xff3D4A5A),
+                    minWidth: MediaQuery.of(context).size.width,
+                    onPressed: selectedMode == null
+                        ? null
+                        : () {
+                            if (selectedMode == 0)
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => GameModeScreen(),
+                                ),
+                              );
+                            else
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => TournamentModeScreen(),
+                                ),
+                              );
+                          },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

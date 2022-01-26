@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:peaman/models/app_models/app_config.dart';
+import 'package:peaman/services/auth_services/auth_provider.dart';
 import 'package:peaman/viewmodels/auth_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
 import 'package:peaman/views/widgets/auth_widgets/auth_field.dart';
-import 'package:peaman/views/widgets/common_widgets/appbar.dart';
 import 'package:peaman/views/widgets/common_widgets/border_btn.dart';
 import 'package:peaman/views/widgets/common_widgets/filled_btn.dart';
 import 'package:provider/provider.dart';
@@ -18,119 +18,107 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final Color _textColor = Color(0xff3D4A5A);
+
   @override
   Widget build(BuildContext context) {
     final _appConfig = Provider.of<AppConfig>(context);
-    return Stack(
-      children: [
-        Container(
-          height: MediaQuery.of(context).size.height,
-          child: ViewmodelProvider<AuthVm>(
-            vm: AuthVm(context),
-            onInit: (vm) => vm.onInit(_appConfig),
-            onDispose: (vm) => vm.onDispose(),
-            builder: (context, vm, appVm, appUser) {
-              return Scaffold(
-                key: vm.scaffoldKey,
-                appBar: vm.isLoading
-                    ? null
-                    : PreferredSize(
-                        preferredSize: Size.fromHeight(60.0),
-                        child: CommonAppbar(
-                          color: Colors.transparent,
-                          leading: IconButton(
-                            icon: Icon(Icons.arrow_back_ios),
-                            color: Color(0xff3D4A5A),
-                            onPressed: vm.onPressedBackBtn,
-                          ),
+
+    return ViewmodelProvider<AuthVm>(
+      vm: AuthVm(context),
+      onInit: (vm) => vm.onInit(_appConfig),
+      onDispose: (vm) => vm.onDispose(),
+      builder: (context, vm, appVm, appUser) {
+        return Scaffold(
+          key: vm.scaffoldKey,
+          body: vm.isLoading
+              ? Center(
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        bottom: 100.0,
+                        child: Lottie.asset(
+                          'assets/lottie/game_loader.json',
+                          width: MediaQuery.of(context).size.width - 100.0,
+                          height: MediaQuery.of(context).size.width - 100.0,
                         ),
                       ),
-                body: vm.isLoading
-                    ? Center(
-                        child: Stack(
-                          children: [
-                            Positioned.fill(
-                              bottom: 100.0,
-                              child: Lottie.asset(
-                                'assets/lottie/game_loader.json',
-                                width:
-                                    MediaQuery.of(context).size.width - 100.0,
-                                height:
-                                    MediaQuery.of(context).size.width - 100.0,
-                              ),
+                      Positioned.fill(
+                        top: 100.0,
+                        child: Center(
+                          child: Text(
+                            'Loading...',
+                            style: TextStyle(
+                              color: Color(0xff3D4A5A),
                             ),
-                            Positioned.fill(
-                              top: 100.0,
-                              child: Center(
-                                child: Text(
-                                  'Loading...',
-                                  style: TextStyle(
-                                    color: Color(0xff3D4A5A),
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
+                          ),
                         ),
                       )
-                    : Stack(
-                        children: <Widget>[
-                          Container(
-                            height: MediaQuery.of(context).size.height,
-                            child: SingleChildScrollView(
-                              child: GestureDetector(
-                                onTap: () {
-                                  FocusScope.of(context).unfocus();
-                                },
-                                child: Container(
-                                  color: Colors.transparent,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                      left: 20.0,
-                                      right: 20.0,
-                                      bottom: 20.0,
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        _signUpTextBuilder(),
-                                        SizedBox(
-                                          height: 10.0,
-                                        ),
-                                        _signUpDescBuilder(),
-                                        SizedBox(
-                                          height: 40.0,
-                                        ),
-                                        vm.isNextPressed
-                                            ? _userCredBuilder(vm, context)
-                                            : _userInfoBuilder(context, vm),
-                                        SizedBox(
-                                          height: 50.0,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
+                    ],
+                  ),
+                )
+              : Container(
+                  height: MediaQuery.of(context).size.height,
+                  child: SingleChildScrollView(
+                    child: GestureDetector(
+                      onTap: () {
+                        FocusScope.of(context).unfocus();
+                      },
+                      child: Container(
+                        color: Colors.transparent,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 20.0,
+                            right: 20.0,
+                            bottom: 20.0,
                           ),
-                          if (!vm.keyboardVisibility)
-                            Positioned(
-                              bottom: -10.0,
-                              left: 0.0,
-                              right: 0.0,
-                              child: SvgPicture.asset(
-                                'assets/images/svgs/auth_bottom.svg',
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              SizedBox(
+                                height: 20.0,
                               ),
-                            ),
-                        ],
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  GestureDetector(
+                                    child: Icon(
+                                      Icons.logout,
+                                      color: _textColor,
+                                    ),
+                                    behavior: HitTestBehavior.opaque,
+                                    onTap: () =>
+                                        AuthProvider(appUser: appUser).logOut(),
+                                  ),
+                                ],
+                              ),
+                              _signUpTextBuilder(),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                              _signUpDescBuilder(),
+                              SizedBox(
+                                height: 20.0,
+                              ),
+                              vm.isNextPressed
+                                  ? _userCredBuilder(vm, context)
+                                  : _userInfoBuilder(context, vm),
+                              SizedBox(
+                                height: 50.0,
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-              );
-            },
-          ),
-        ),
-      ],
+                    ),
+                  ),
+                ),
+          bottomNavigationBar: vm.isLoading
+              ? null
+              : SvgPicture.asset(
+                  'assets/images/svgs/auth_bottom.svg',
+                ),
+        );
+      },
     );
   }
 
@@ -160,20 +148,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
       children: <Widget>[
         _uploadImageBuilder(context, vm),
         SizedBox(
-          height: 40.0,
+          height: 20.0,
         ),
         AuthField(
           label: 'Username',
           type: TextInputType.text,
           controller: vm.nameController,
-        ),
-        SizedBox(
-          height: 20.0,
-        ),
-        AuthField(
-          label: 'Phone',
-          type: TextInputType.phone,
-          controller: vm.phoneController,
         ),
         SizedBox(
           height: 20.0,
@@ -199,7 +179,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           height: 30.0,
         ),
         BorderBtn(
-          title: 'Next',
+          title: 'Continue',
           onPressed: vm.onPressedNextBtn,
           textColor: Color(0xff5C49E0),
         ),

@@ -14,7 +14,7 @@ import 'models/app_models/tournament_model.dart';
 import 'models/app_models/user_model.dart';
 
 class WrapperBuilder extends StatelessWidget {
-  final Function(BuildContext context, AppUser appUser) builder;
+  final Function(BuildContext context) builder;
   WrapperBuilder({@required this.builder});
 
   @override
@@ -25,6 +25,7 @@ class WrapperBuilder extends StatelessWidget {
         providers: [
           StreamProvider<AppUser>.value(
             value: AppUserProvider(uid: _user?.uid).appUser,
+            initialData: _user,
           ),
           StreamProvider<List<AppUser>>.value(
             value: AppUserProvider(uid: _user.uid).allUsers,
@@ -48,10 +49,10 @@ class WrapperBuilder extends StatelessWidget {
             value: GameProvider().levelsList,
           ),
         ],
-        child: builder(context, _user),
+        child: builder(context),
       );
     } else {
-      return builder(context, _user);
+      return builder(context);
     }
   }
 }

@@ -96,7 +96,7 @@ class _ProfileTabState extends State<ProfileTab> {
           ),
         ),
         Text(
-          '${appUser.email}',
+          '${appUser.phone}',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 14.0,

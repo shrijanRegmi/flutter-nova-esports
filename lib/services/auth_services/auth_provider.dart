@@ -22,6 +22,60 @@ class AuthProvider {
   final _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
+  // sign in with phone
+  Future<void> signInWithPhone(
+    final String phoneNum, {
+    final Function(String, int) onSuccess,
+    final Function(dynamic) onError,
+  }) async {
+    try {
+      await _auth.verifyPhoneNumber(
+        phoneNumber: phoneNum,
+        verificationCompleted: (cred) async {
+          final _result = await _auth.signInWithCredential(cred);
+          final _user = _result.user;
+          _userFromFirebase(_user);
+          print('Success: Signing in user with phone $phoneNum');
+        },
+        verificationFailed: (e) {
+          print(e);
+          print('Error!!!: Signing in user with phone $phoneNum');
+          onError?.call(e);
+        },
+        codeSent: onSuccess,
+        codeAutoRetrievalTimeout: (id) {},
+      );
+    } catch (e) {
+      print(e);
+      print('Error!!!: Signing in user with phone $phoneNum');
+      onError?.call(e);
+    }
+  }
+
+  Future<void> submitVerificationCode(
+    final String verificationId,
+    final String otpCode, {
+    final Function(dynamic) onSuccess,
+    final Function(dynamic) onError,
+  }) async {
+    try {
+      final _cred = PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: otpCode,
+      );
+
+      final _result = await _auth.signInWithCredential(_cred);
+      final _user = _result.user;
+      _userFromFirebase(_user);
+      print('Success: Submitting OTP code');
+      onSuccess?.call(_user);
+    } catch (e) {
+      print(e);
+      print('Error!!!: Submitting OTP code');
+      onError?.call(e);
+    }
+  }
+
   // create account with email and password
   Future signUpWithEmailAndPassword({
     final String password,
