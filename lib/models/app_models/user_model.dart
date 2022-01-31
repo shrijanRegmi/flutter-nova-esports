@@ -90,7 +90,6 @@ class AppUser {
       'address': appUser.address,
       'in_game_name': appUser.inGameName,
       'in_game_id': appUser.inGameId,
-      'worker': appUser.worker,
     };
   }
 

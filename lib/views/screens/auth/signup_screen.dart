@@ -159,6 +159,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
           height: 20.0,
         ),
         AuthField(
+          label: 'Phone Number',
+          type: TextInputType.phone,
+          controller: vm.phoneController,
+        ),
+        SizedBox(
+          height: 20.0,
+        ),
+        AuthField(
           label: 'In-Game Name',
           type: TextInputType.text,
           controller: vm.inGameNameController,

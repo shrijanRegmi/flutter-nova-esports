@@ -20,7 +20,43 @@ class AuthProvider {
   });
 
   final _auth = FirebaseAuth.instance;
+  final _ref = FirebaseFirestore.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+  // sign in with email and password
+  Future<void> signInWithEmailAndPassword({
+    @required final String email,
+    @required final String password,
+    final Function(String) onSuccess,
+    final Function(dynamic) onError,
+  }) async {
+    try {
+      final _usersRef =
+          _ref.collection('users').where('email', isEqualTo: email).limit(1);
+      final _usersSnap = await _usersRef.get();
+      final _registered = _usersSnap.docs.isNotEmpty;
+
+      UserCredential _result;
+      if (_registered) {
+        _result = await _auth.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+      } else {
+        _result = await _auth.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+      }
+      _userFromFirebase(_result.user);
+      onSuccess?.call(_result.user.uid);
+      print('Success: Signing user with email and password');
+    } catch (e) {
+      print(e);
+      print('Error!!!: Signing user with email and password');
+      onError?.call(e);
+    }
+  }
 
   // sign in with phone
   Future<void> signInWithPhone(
@@ -155,33 +191,17 @@ class AuthProvider {
   }
 
   // sign up with google
-  Future signUpWithGoogle(
-      final AppUser appUser, final GlobalKey<ScaffoldState> scaffoldKey) async {
+  Future signUpWithGoogle() async {
     try {
       final _account = await _googleSignIn.signIn();
       final _tokens = await _account.authentication;
       final _cred = GoogleAuthProvider.credential(
-          idToken: _tokens.idToken, accessToken: _tokens.accessToken);
+        idToken: _tokens.idToken,
+        accessToken: _tokens.accessToken,
+      );
       final _result = await _auth.signInWithCredential(_cred);
       final _user = _result.user;
-      final _ref = FirebaseFirestore.instance;
-      final _userRef = _ref.collection('users').doc(_user.uid);
-      final _userSnap = await _userRef.get();
-
-      if (!_userSnap.exists) {
-        final _appUser = appUser.copyWith(uid: _user.uid, email: _user.email);
-        await AppUserProvider(user: _appUser).sendUserToFirestore();
-        _userFromFirebase(_user);
-        print('Success: Signing up user with name ${_user.displayName}');
-      } else {
-        DialogProvider(context).showWarningDialog(
-          'Oops !',
-          'User with that email already exist! Please login.',
-          () {},
-        );
-        logOut();
-        return null;
-      }
+      print('Success: Signing up with google');
       return _user;
     } catch (e) {
       print(e);

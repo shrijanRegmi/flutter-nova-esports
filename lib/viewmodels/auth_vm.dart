@@ -28,6 +28,7 @@ class AuthVm extends ChangeNotifier {
   TextEditingController _otpController = TextEditingController();
   PageController _pageController = PageController();
   bool _isLoading = false;
+  bool _isLoadingGoogleSignUp = false;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   File _imgFile;
   bool _isNextPressed = false;
@@ -47,6 +48,7 @@ class AuthVm extends ChangeNotifier {
   TextEditingController get phoneController => _phoneController;
   TextEditingController get otpController => _otpController;
   bool get isLoading => _isLoading;
+  bool get isLoadingGoogleSignUp => _isLoadingGoogleSignUp;
   GlobalKey<ScaffoldState> get scaffoldKey => _scaffoldKey;
   File get imgFile => _imgFile;
   bool get isNextPressed => _isNextPressed;
@@ -88,6 +90,71 @@ class AuthVm extends ChangeNotifier {
       listener: _adListener,
       request: AdRequest(),
     )..load();
+  }
+
+  // sign in with email and password
+  void signInWithEmailAndPassword() {
+    if (_passController.text.trim() != '') {
+      _updateLoader(true);
+      AuthProvider().signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _emailController.text.trim(),
+        onError: (e) {
+          _updateLoader(false);
+        },
+      );
+    }
+  }
+
+  // on continue btn pressed
+  void onPressedContinueBtn() {
+    if (_emailController.text.trim() != '') {
+      FocusScope.of(context).unfocus();
+      _updateLoader(true);
+      Future.delayed(Duration(milliseconds: 2000), () {
+        _updateLoader(false);
+        _scrollPageView();
+      });
+    } else {
+      DialogProvider(context).showWarningDialog(
+        'Email is required',
+        'Please enter your email to continue',
+        () {},
+      );
+    }
+  }
+
+  // sign up using google
+  void signUpWithGoogle() async {
+    _updateGoogleSignUpLoader(true);
+    final _result = await AuthProvider().signUpWithGoogle();
+    if (_result == null) {
+      _updateGoogleSignUpLoader(false);
+    }
+  }
+
+  // send user data to firestore
+  void _sendUserToFirestore() async {
+    var _result;
+    final _auth = FirebaseAuth.instance;
+    final _uid = _auth.currentUser?.uid;
+    final _email = _auth.currentUser?.email;
+
+    if (imgFile != null) {
+      _result = await UserStorage().uploadUserImage(imgFile: imgFile);
+    }
+    final _appUser = AppUser(
+      uid: _uid,
+      phone: _phoneController.text.trim(),
+      photoUrl: _result,
+      address: _address,
+      email: _email,
+      name: _nameController.text.trim(),
+      inGameName: _inGameNameController.text.trim(),
+      inGameId: _inGameIdController.text.trim(),
+    );
+
+    _result = await AppUserProvider(user: _appUser).sendUserToFirestore();
   }
 
   // sign in with phone
@@ -132,29 +199,6 @@ class AuthVm extends ChangeNotifier {
         },
       );
     }
-  }
-
-  // send user data to firestore
-  void _sendUserToFirestore() async {
-    var _result;
-    final _auth = FirebaseAuth.instance;
-    final _uid = _auth.currentUser?.uid;
-    final _phone = _auth.currentUser?.phoneNumber;
-
-    if (imgFile != null) {
-      _result = await UserStorage().uploadUserImage(imgFile: imgFile);
-    }
-    final _appUser = AppUser(
-      uid: _uid,
-      phone: _phone,
-      photoUrl: _result,
-      address: _address,
-      name: _nameController.text.trim(),
-      inGameName: _inGameNameController.text.trim(),
-      inGameId: _inGameIdController.text.trim(),
-    );
-
-    _result = await AppUserProvider(user: _appUser).sendUserToFirestore();
   }
 
   // login user with email and password;
@@ -231,6 +275,7 @@ class AuthVm extends ChangeNotifier {
   // on next btn pressed
   onPressedNextBtn() async {
     if (_nameController.text.trim() != '' &&
+        _phoneController.text.trim() != '' &&
         _inGameIdController.text.trim() != '' &&
         _inGameNameController.text.trim() != '') {
       if (!_isTermsAccepted) {
@@ -303,28 +348,6 @@ class AuthVm extends ChangeNotifier {
     _updateLoader(true);
     final _result =
         await AuthProvider(context: context).loginWithGoogle(_scaffoldKey);
-    if (_result == null) {
-      _updateLoader(false);
-    }
-  }
-
-  // sign up using google
-  signUpWithGoogle() async {
-    _updateLoader(true);
-    String _imgUrl;
-    if (_imgFile != null) {
-      _imgUrl = await UserStorage().uploadUserImage(imgFile: imgFile);
-    }
-    final _appUser = AppUser(
-      name: _nameController.text.trim(),
-      phone: _phoneController.text.trim(),
-      inGameName: _inGameNameController.text.trim(),
-      inGameId: _inGameIdController.text.trim(),
-      photoUrl: _imgUrl,
-      address: _address,
-    );
-    final _result = await AuthProvider(context: context)
-        .signUpWithGoogle(_appUser, _scaffoldKey);
     if (_result == null) {
       _updateLoader(false);
     }
@@ -412,5 +435,11 @@ class AuthVm extends ChangeNotifier {
       duration: Duration(milliseconds: 1000),
       curve: Curves.ease,
     );
+  }
+
+  // update value of isLoadingGoogleSignUp
+  void _updateGoogleSignUpLoader(final bool newVal) {
+    _isLoadingGoogleSignUp = newVal;
+    notifyListeners();
   }
 }
