@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:peaman/viewmodels/auth_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
+import 'package:peaman/views/screens/auth/forget_password_screen.dart';
 import 'package:peaman/views/widgets/common_widgets/filled_btn.dart';
 
 class AuthScreen extends StatelessWidget {
@@ -127,10 +128,22 @@ class AuthScreen extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
+              Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_back_ios_rounded),
+                    onPressed: () => vm.scrollPageView(reverse: true),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
               _headerBuilder(
                 imgUrl: 'assets/images/logo.png',
-                title: 'Enter Password',
-                subtitle: 'Please enter your password below\nto sign up.',
+                title: vm.newUser ? 'Create Password' : 'Enter Password',
+                subtitle:
+                    'Please enter your password below\nto sign ${vm.newUser ? 'up' : 'in'}.',
               ),
               SizedBox(
                 height: 30.0,
@@ -164,7 +177,11 @@ class AuthScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                height: 27.0,
+                height: 5.0,
+              ),
+              _forgetPasswordBuilder(context),
+              SizedBox(
+                height: 15.0,
               ),
               _buttonBuilder(
                 context,
@@ -176,6 +193,31 @@ class AuthScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _forgetPasswordBuilder(final BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => ForgetPasswordScreen(),
+              ),
+            );
+          },
+          child: Text(
+            'Forget Password ?',
+            style: TextStyle(
+              color: Colors.grey,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ],
     );
   }
 

@@ -71,6 +71,27 @@ class AppUserProvider {
     return AppUser.fromJson(snap.data());
   }
 
+  // get appuser by email
+  Future<AppUser> getUserByEmail(final String email) async {
+    AppUser _appUser;
+
+    try {
+      final _usersRef =
+          _ref.collection('users').where('email', isEqualTo: email).limit(1);
+      final _usersSnap = await _usersRef.get();
+      if (_usersSnap.docs.isNotEmpty) {
+        final _appUserSnap = _usersSnap.docs.first;
+        final _appUserData = _appUserSnap.data();
+        _appUser = AppUser.fromJson(_appUserData);
+      }
+    } catch (e) {
+      print(e);
+      print('Error!!!: Getting user from id $uid');
+    }
+
+    return _appUser;
+  }
+
   // get appuser by id
   Future<AppUser> getUserById() async {
     AppUser _appUser;

@@ -39,6 +39,7 @@ class AuthVm extends ChangeNotifier {
   AdListener _adListener;
   bool _isTermsAccepted = false;
   String _verificationId;
+  bool _newUser = false;
 
   TextEditingController get nameController => _nameController;
   TextEditingController get inGameNameController => _inGameNameController;
@@ -56,6 +57,7 @@ class AuthVm extends ChangeNotifier {
   String get address => _address;
   bool get isTermsAccepted => _isTermsAccepted;
   PageController get pageController => _pageController;
+  bool get newUser => _newUser;
 
   // init function
   onInit(final AppConfig appConfig) {
@@ -98,27 +100,41 @@ class AuthVm extends ChangeNotifier {
       _updateLoader(true);
       AuthProvider().signInWithEmailAndPassword(
         email: _emailController.text.trim(),
-        password: _emailController.text.trim(),
+        password: _passController.text.trim(),
         onError: (e) {
           _updateLoader(false);
+          _errorHandler('${e?.code}');
         },
       );
     }
   }
 
   // on continue btn pressed
-  void onPressedContinueBtn() {
+  void onPressedContinueBtn() async {
     if (_emailController.text.trim() != '') {
-      FocusScope.of(context).unfocus();
-      _updateLoader(true);
-      Future.delayed(Duration(milliseconds: 2000), () {
-        _updateLoader(false);
-        _scrollPageView();
-      });
+      if (_emailController.text.trim().contains('@') &&
+          _emailController.text.trim().contains('.com')) {
+        FocusScope.of(context).unfocus();
+        _updateLoader(true);
+        final _appUser = await AppUserProvider().getUserByEmail(
+          _emailController.text.trim(),
+        );
+        _updateNewUser(_appUser == null);
+        Future.delayed(Duration(milliseconds: 1000), () {
+          _updateLoader(false);
+          scrollPageView();
+        });
+      } else {
+        DialogProvider(context).showWarningDialog(
+          'Invalid email',
+          'Please enter a valid email to continue.',
+          () {},
+        );
+      }
     } else {
       DialogProvider(context).showWarningDialog(
         'Email is required',
-        'Please enter your email to continue',
+        'Please enter your email to continue.',
         () {},
       );
     }
@@ -154,7 +170,9 @@ class AuthVm extends ChangeNotifier {
       inGameId: _inGameIdController.text.trim(),
     );
 
-    _result = await AppUserProvider(user: _appUser).sendUserToFirestore();
+    _result = await AppUserProvider().updateUserDetail(
+      data: AppUser.toJson(_appUser),
+    );
   }
 
   // sign in with phone
@@ -166,7 +184,7 @@ class AuthVm extends ChangeNotifier {
         _phoneController.text.trim(),
         onSuccess: (id, token) {
           _updateLoader(false);
-          _scrollPageView();
+          scrollPageView();
           _verificationId = id;
         },
         onError: (e) {
@@ -199,6 +217,34 @@ class AuthVm extends ChangeNotifier {
         },
       );
     }
+  }
+
+  // reset password
+  void resetPassword() {
+    if (_emailController.text.trim() != '') {
+      _updateLoader(true);
+      AuthProvider().resetPassword(
+        _emailController.text.trim(),
+        onSuccess: () async {
+          _updateLoader(false);
+          await DialogProvider(context).showWarningDialog(
+            'Forget Reset Link Sent',
+            'Please check your email for the password reset link and login to the app after resetting the password.',
+            () {},
+          );
+          Navigator.pop(context);
+        },
+        onError: (e) {
+          _updateLoader(false);
+        },
+      );
+    }
+  }
+
+  // update value of newUser
+  void _updateNewUser(final bool newVal) {
+    _newUser = newVal;
+    notifyListeners();
   }
 
   // login user with email and password;
@@ -428,10 +474,10 @@ class AuthVm extends ChangeNotifier {
   }
 
   // scroll page view
-  void _scrollPageView() {
+  void scrollPageView({final bool reverse = false}) {
     FocusScope.of(context).unfocus();
     _pageController.animateTo(
-      MediaQuery.of(context).size.width,
+      reverse ? 0 : MediaQuery.of(context).size.width,
       duration: Duration(milliseconds: 1000),
       curve: Curves.ease,
     );
@@ -441,5 +487,32 @@ class AuthVm extends ChangeNotifier {
   void _updateGoogleSignUpLoader(final bool newVal) {
     _isLoadingGoogleSignUp = newVal;
     notifyListeners();
+  }
+
+  void _errorHandler(final String code) {
+    String _description = '';
+    print(code);
+    switch (code) {
+      case 'wrong-password':
+        _description =
+            'The password you have entered is not correct. Please try again.';
+        break;
+      case 'weak-password':
+        _description =
+            'Your password is too short. Please enter a password with atleast 6 characters.';
+        break;
+      case 'email-already-in-use':
+        _description =
+            'This email has already been used. Please try again with a different one.';
+        break;
+      default:
+        _description = 'An unexpected error occured! \n[code: $code]';
+    }
+
+    DialogProvider(context).showWarningDialog(
+      'Oops! error occured while signing in',
+      '$_description',
+      () {},
+    );
   }
 }
