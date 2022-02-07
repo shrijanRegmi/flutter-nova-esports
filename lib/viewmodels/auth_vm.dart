@@ -170,7 +170,7 @@ class AuthVm extends ChangeNotifier {
       inGameId: _inGameIdController.text.trim(),
     );
 
-    _result = await AppUserProvider().updateUserDetail(
+    _result = await AppUserProvider(uid: _uid).updateUserDetail(
       data: AppUser.toJson(_appUser),
     );
   }

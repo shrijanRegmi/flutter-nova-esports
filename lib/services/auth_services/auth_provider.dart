@@ -47,13 +47,14 @@ class AuthProvider {
           email: email,
           password: password,
         );
+        final _appUser = AppUser(
+          uid: _result.user.uid,
+          email: email,
+        );
+        AppUserProvider(user: _appUser).sendUserToFirestore();
       }
       _userFromFirebase(_result.user);
-      final _appUser = AppUser(
-        uid: _result.user.uid,
-        email: email,
-      );
-      AppUserProvider(user: _appUser).sendUserToFirestore();
+
       onSuccess?.call(_result.user.uid);
       print('Success: Signing user with email and password');
     } catch (e) {
