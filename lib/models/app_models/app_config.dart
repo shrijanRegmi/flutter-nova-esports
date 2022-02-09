@@ -11,6 +11,7 @@ class AppConfig {
   final String aboutApp;
   final String supportEmail;
   final List<SocialLink> socialLinks;
+  final bool maintenanceBreak;
 
   AppConfig({
     this.maxAdViews,
@@ -23,6 +24,7 @@ class AppConfig {
     this.aboutApp,
     this.supportEmail,
     this.socialLinks,
+    this.maintenanceBreak,
   });
 
   AppConfig copyWith({
@@ -36,6 +38,7 @@ class AppConfig {
     final String aboutApp,
     final String supportEmail,
     final List<SocialLink> socialLinks,
+    final bool maintenanceBreak,
   }) {
     return AppConfig(
       maxAdViews: maxAdViews ?? this.maxAdViews,
@@ -48,6 +51,7 @@ class AppConfig {
       aboutApp: aboutApp ?? this.aboutApp,
       supportEmail: supportEmail ?? this.supportEmail,
       socialLinks: socialLinks ?? this.socialLinks,
+      maintenanceBreak: maintenanceBreak ?? this.maintenanceBreak,
     );
   }
 
@@ -63,6 +67,7 @@ class AppConfig {
       'about_app': aboutApp,
       'support_email': supportEmail,
       'social_links': socialLinks.map((e) => e.toJson()).toList(),
+      'maintenance_break': maintenanceBreak ?? false,
     };
   }
 
@@ -84,6 +89,7 @@ class AppConfig {
               )) ??
               []
           : [],
+      maintenanceBreak: data['maintenance_break'] ?? false,
     );
   }
 }

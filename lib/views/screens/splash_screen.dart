@@ -29,36 +29,39 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-          child: Column(
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height - 300.0,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(
-                  'assets/images/banner.jpg',
+        child: Stack(
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(
+                    'assets/images/banner.jpg',
+                  ),
+                  fit: BoxFit.cover,
                 ),
-                fit: BoxFit.cover,
               ),
             ),
-          ),
-          Expanded(
-            child: Stack(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        // crossAxisAlignment: CrossAxisAlignment.start,
+            Center(
+              child: Container(
+                height: 180.0,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20.0),
+                  color: Colors.black.withOpacity(0.5),
+                ),
+                child: Container(
+                  padding: const EdgeInsets.all(30.0),
+                  child: Stack(
+                    overflow: Overflow.visible,
+                    children: [
+                      Column(
                         children: [
                           Text(
                             'NOVA ESPORTS',
                             style: TextStyle(
                               fontSize: 34.0,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xff3D4A5A),
+                              color: Colors.white,
                             ),
                           ),
                           Text(
@@ -66,34 +69,49 @@ class _SplashScreenState extends State<SplashScreen>
                             style: TextStyle(
                               fontSize: 14.0,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xff3D4A5A),
+                              color: Colors.white,
                             ),
                           ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
-                Positioned.fill(
-                  top: 100.0,
-                  bottom: 20.0,
-                  child: Center(
-                    child: Lottie.asset(
-                      'assets/lottie/circle_loader.json',
-                      controller: _lottieController,
-                      onLoaded: (compo) {
-                        _lottieController.repeat();
-                      },
-                      width: 100.0,
-                      height: 100.0,
-                    ),
+                    ],
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-        ],
-      )),
+            Positioned.fill(
+              top: 110.0,
+              bottom: 20.0,
+              child: Center(
+                child: Lottie.asset(
+                  'assets/lottie/circle_loader.json',
+                  controller: _lottieController,
+                  onLoaded: (compo) {
+                    _lottieController.repeat();
+                  },
+                  width: 60.0,
+                  height: 60.0,
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 10.0,
+              left: 0.0,
+              right: 0.0,
+              child: Center(
+                child: Text(
+                  'Made in India'.toUpperCase(),
+                  style: TextStyle(
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

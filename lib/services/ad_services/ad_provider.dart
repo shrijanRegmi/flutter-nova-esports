@@ -47,19 +47,29 @@ class AdProvider {
     );
   }
 
-  static void loadRewarded(final BuildContext context,
-      final Function onVideoFailed, final Function onVideoComplete) {
+  static void loadRewarded(
+    final BuildContext context, {
+    final Function onVideoFailed,
+    final Function onVideoComplete,
+    final Function onVideoClosed,
+  }) {
     final _appConfig = Provider.of<AppConfig>(context, listen: false);
 
     FacebookRewardedVideoAd.loadRewardedVideoAd(
       placementId: "${_appConfig.rewardId}",
       listener: (result, value) {
-        if (result == RewardedVideoAdResult.LOADED)
+        if (result == RewardedVideoAdResult.LOADED) {
           FacebookRewardedVideoAd.showRewardedVideoAd();
-        if (result == RewardedVideoAdResult.VIDEO_COMPLETE) onVideoComplete();
+        }
+        if (result == RewardedVideoAdResult.VIDEO_COMPLETE) {
+          onVideoComplete();
+        }
         if (result == RewardedVideoAdResult.ERROR) {
           print(value);
           onVideoFailed();
+        }
+        if (result == RewardedVideoAdResult.VIDEO_CLOSED) {
+          onVideoClosed();
         }
       },
     );

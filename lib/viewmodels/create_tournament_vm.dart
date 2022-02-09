@@ -15,6 +15,7 @@ class CreateTournamentVm extends ChangeNotifier {
   CreateTournamentVm(this.context);
 
   TextEditingController _titleController = TextEditingController();
+  TextEditingController _descriptionController = TextEditingController();
   File _dp;
   MatchType _selectedMatchType = MatchType.solo;
   TournamentType _selectedTournament = TournamentType.normal;
@@ -37,6 +38,7 @@ class CreateTournamentVm extends ChangeNotifier {
   String _selectedState = 'Choose State';
 
   TextEditingController get titleController => _titleController;
+  TextEditingController get descriptionController => _descriptionController;
   TextEditingController get entryController => _entryCostController;
   TextEditingController get maxPlayersController => _maxPlayersController;
   File get dp => _dp;
@@ -195,7 +197,6 @@ class CreateTournamentVm extends ChangeNotifier {
   createTournament() async {
     final _isFormComplete = _titleController.text.trim() != '' &&
         _entryCostController.text.trim() != '' &&
-        _maxPlayersController.text.trim() != '' &&
         _matchDate != null &&
         _matchTime != null &&
         _registrationStartDate != null &&
@@ -218,6 +219,7 @@ class CreateTournamentVm extends ChangeNotifier {
         imgUrl: _imgUrl ??
             'https://play-lh.googleusercontent.com/KxIKOXKi9bJukZCQyzilpDqHL6f7WTcXgMQFo1IaJOhd6rrTdYONMvdewqnvivauTSGL',
         title: _titleController.text.trim(),
+        description: _descriptionController.text.trim(),
         type: _selectedTournament == TournamentType.clashSquad
             ? MatchType.squad
             : _selectedMatchType,
@@ -225,7 +227,9 @@ class CreateTournamentVm extends ChangeNotifier {
         date: _matchDate.millisecondsSinceEpoch,
         time: DateTimeHelper().getFormattedTime(_matchTime),
         entryCost: int.parse(_entryCostController.text.trim()),
-        maxPlayers: int.parse(_maxPlayersController.text.trim()),
+        maxPlayers: _maxPlayersController.text.trim() == ''
+            ? 99999 // if max players is empty then assign unlimited players count
+            : int.parse(_maxPlayersController.text.trim()),
         updatedAt: DateTime.now().millisecondsSinceEpoch,
         state: _selectedState == 'Choose State' ? null : _selectedState,
         registrationStart: _registrationStartDate.millisecondsSinceEpoch,

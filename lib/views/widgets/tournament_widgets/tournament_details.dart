@@ -168,6 +168,15 @@ class TournamentDetails extends StatelessWidget {
                       fontSize: 12.0,
                     ),
                   ),
+                  if (vm.thisTournament.description != '') Divider(),
+                  if (vm.thisTournament.description != '')
+                    Text(
+                      '${vm.thisTournament.description}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12.0,
+                      ),
+                    ),
                 ],
               ),
             ),

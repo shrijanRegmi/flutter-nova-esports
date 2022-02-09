@@ -41,11 +41,13 @@ class WatchAndEarn extends StatelessWidget {
                             height: 50.0,
                           ),
                           FilledBtn(
-                            title: vm.onPressedWatch
-                                ? 'Video in ${vm.counter}'
-                                : vm.adFailed
-                                    ? 'Failed to Load! Try Again'
-                                    : 'Watch Now',
+                            title: vm.adFailed
+                                ? 'Failed to Load! Try Again'
+                                : vm.onPressedWatch
+                                    ? 'Please Wait...'
+                                    : vm.onTimerStart
+                                        ? 'New video in ${vm.counter}'
+                                        : 'Watch Now',
                             color: Color(0xff3D4A5A),
                             onPressed: vm.rewardedCount >=
                                     (_appConfig?.maxAdViews ?? 5)

@@ -295,7 +295,9 @@ class TournamentListItem extends StatelessWidget {
               width: 5.0,
             ),
             Text(
-              '${tournament.teamsCount} / ${tournament.maxPlayers}',
+              tournament.maxPlayers == 99999
+                  ? '${tournament.teamsCount}'
+                  : '${tournament.teamsCount} / ${tournament.maxPlayers}',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 10.0,

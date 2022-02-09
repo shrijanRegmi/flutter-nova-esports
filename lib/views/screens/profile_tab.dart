@@ -4,8 +4,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:peaman/enums/online_status.dart';
 import 'package:peaman/models/app_models/app_config.dart';
 import 'package:peaman/models/app_models/user_model.dart';
+import 'package:peaman/services/database_services/user_provider.dart';
 import 'package:peaman/viewmodels/profile_vm.dart';
 import 'package:peaman/viewmodels/viewmodel_builder.dart';
+import 'package:peaman/views/widgets/profile_widgets/maintenance_break_toggler.dart';
 import 'package:peaman/views/widgets/profile_widgets/options_list.dart';
 import 'package:peaman/views/widgets/profile_widgets/social_links_list.dart';
 import 'package:provider/provider.dart';
@@ -42,6 +44,19 @@ class _ProfileTabState extends State<ProfileTab> {
                 OptionsList(vm),
                 if (_appConfig != null && _appConfig.socialLinks.isNotEmpty)
                   SocialLinkList(_appConfig.socialLinks),
+                if (appUser.admin)
+                  MaintenanceBreakToggler(
+                    initialVal: _appConfig.maintenanceBreak,
+                    onChanged: (val) {
+                      final _newConfig = _appConfig.copyWith(
+                        maintenanceBreak: val,
+                      );
+                      AppUserProvider().updateAppConfig(_newConfig);
+                    },
+                  ),
+                SizedBox(
+                  height: 10.0,
+                ),
               ],
             ),
           );

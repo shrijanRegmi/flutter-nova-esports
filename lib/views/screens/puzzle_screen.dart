@@ -3,18 +3,15 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-
 import 'package:image/image.dart' as image;
 import 'package:peaman/models/app_models/level_model.dart';
 import 'package:peaman/models/app_models/user_model.dart';
-import 'package:peaman/services/database_services/game_provider.dart';
 import 'package:peaman/services/database_services/user_provider.dart';
 import 'package:peaman/views/widgets/common_widgets/appbar.dart';
 import 'package:peaman/views/widgets/common_widgets/color_toggler.dart';
 import 'package:peaman/views/widgets/common_widgets/filled_btn.dart';
 import 'package:provider/provider.dart';
 
-// make statefull widget for testing
 class PuzzleScreen extends StatefulWidget {
   final Level level;
   PuzzleScreen(
@@ -37,7 +34,6 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
     super.initState();
     setState(() {
       _difficultyValue = widget.level.difficulty;
-      _numColor = widget.level.numColorWhite ? Colors.white : Colors.black;
     });
   }
 
@@ -45,6 +41,9 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
   Widget build(BuildContext context) {
     double border = 5;
     final _appUser = Provider.of<AppUser>(context);
+    final _levelColors = _appUser.levelColors ?? {};
+    final bool _colorWhite = _levelColors['${widget.level.level}'] ?? false;
+    _numColor = _colorWhite ? Colors.white : Colors.black;
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -68,26 +67,39 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (_appUser.admin)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    ColorToggler(
-                      value: widget.level.numColorWhite,
-                      onChange: (val) {
-                        final _level =
-                            widget.level.copyWith(numColorWhite: val);
-                        GameProvider(level: _level).updateLevel();
-                        setState(() {
-                          _numColor = val ? Colors.white : Colors.black;
-                        });
-                      },
-                    ),
-                    SizedBox(
-                      width: 10.0,
-                    ),
-                  ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ColorToggler(
+                    value: _colorWhite,
+                    onChange: (val) {
+                      _levelColors['${widget.level.level}'] = val;
+                      AppUserProvider(uid: _appUser.uid).updateUserDetail(
+                        data: {'level_colors': _levelColors},
+                      );
+                      setState(() {
+                        _numColor = val ? Colors.white : Colors.black;
+                      });
+                    },
+                  ),
+                  SizedBox(
+                    width: 10.0,
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 5.0,
+              ),
+              if (_appUser.currentLevel <= 3)
+                Text(
+                  'Hint: Tap on the boxes to slide',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                  ),
                 ),
+              SizedBox(
+                height: 5.0,
+              ),
               Container(
                 margin: EdgeInsets.all(10),
                 decoration: BoxDecoration(

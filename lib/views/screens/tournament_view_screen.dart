@@ -160,23 +160,15 @@ class _TournamentViewScreenState extends State<TournamentViewScreen>
       clipBehavior: Clip.none,
       children: [
         _imgBuilder(vm, context, appUser),
-        // Positioned(
-        //   bottom: -33.0,
-        //   left: 0.0,
-        //   right: 0.0,
-        //   child: Row(
-        //     mainAxisAlignment: MainAxisAlignment.center,
-        //     children: [
-        //       _actionBtnBuilder(context, vm, appUser),
-        //     ],
-        //   ),
-        // ),
       ],
     );
   }
 
-  Widget _imgBuilder(final TournamentViewVm vm, final BuildContext context,
-      final AppUser appUser) {
+  Widget _imgBuilder(
+    final TournamentViewVm vm,
+    final BuildContext context,
+    final AppUser appUser,
+  ) {
     return Stack(
       children: [
         Container(
@@ -375,8 +367,11 @@ class _TournamentViewScreenState extends State<TournamentViewScreen>
   }
 
   Widget _btnBuilder(
-      final IconData icon, final String title, final Function onPressed,
-      {final bool isEnabled = true}) {
+    final IconData icon,
+    final String title,
+    final Function onPressed, {
+    final bool isEnabled = true,
+  }) {
     return GestureDetector(
       onTap: () {
         onPressed();
@@ -458,8 +453,11 @@ class _TournamentViewScreenState extends State<TournamentViewScreen>
     );
   }
 
-  Widget _playBtnBuilder(final BuildContext context, final AppUser appUser,
-      final TournamentViewVm vm) {
+  Widget _playBtnBuilder(
+    final BuildContext context,
+    final AppUser appUser,
+    final TournamentViewVm vm,
+  ) {
     final _currentDate = DateTime.now();
     final _registrationEndTime = TimeOfDay(
       hour: int.parse(vm.thisTournament.registrationEndTime.substring(0, 2)),
@@ -602,8 +600,11 @@ class _TournamentViewScreenState extends State<TournamentViewScreen>
     );
   }
 
-  Widget _enterTeamCodeBtnBuilder(final BuildContext context,
-      final AppUser appUser, final TournamentViewVm vm) {
+  Widget _enterTeamCodeBtnBuilder(
+    final BuildContext context,
+    final AppUser appUser,
+    final TournamentViewVm vm,
+  ) {
     return Material(
       borderRadius: BorderRadius.circular(100.0),
       elevation: 2.0,
@@ -629,8 +630,11 @@ class _TournamentViewScreenState extends State<TournamentViewScreen>
     );
   }
 
-  Widget _startTournamentBtnBuilder(final BuildContext context,
-      final AppUser appUser, final TournamentViewVm vm) {
+  Widget _startTournamentBtnBuilder(
+    final BuildContext context,
+    final AppUser appUser,
+    final TournamentViewVm vm,
+  ) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

@@ -16,6 +16,7 @@ class WatchAndEarnVm extends ChangeNotifier {
   int _counter = 5;
   int _rewardedCount = 0;
   bool _onPressedWatch = false;
+  bool _onTimerStart = false;
   bool _adFailed = false;
   TextEditingController _maxViewsController = TextEditingController();
   TextEditingController _rewardCoinsController = TextEditingController();
@@ -27,6 +28,7 @@ class WatchAndEarnVm extends ChangeNotifier {
 
   int get counter => _counter;
   bool get onPressedWatch => _onPressedWatch;
+  bool get onTimerStart => _onTimerStart;
   bool get adFailed => _adFailed;
   int get rewardedCount => _rewardedCount;
   TextEditingController get maxViewsController => _maxViewsController;
@@ -63,40 +65,6 @@ class WatchAndEarnVm extends ChangeNotifier {
     notifyListeners();
   }
 
-  // initialize rewarded
-  // _handleRewarded(final AppConfig appConfig) async {
-  //   _listener = AdListener(
-  //     onAdLoaded: (Ad ad) async {
-  //       print('Ad loaded.');
-  //       notifyListeners();
-  //     },
-  //     onAdFailedToLoad: (Ad ad, LoadAdError error) async {
-  //       ad.dispose();
-  //       print('Ad failed to load: $error');
-  //       _updateAdFailed(true);
-  //     },
-  //     onAdOpened: (Ad ad) => print('Ad opened.'),
-  //     onAdClosed: (Ad ad) async {
-  //       ad.dispose();
-  //       print('Ad closed.');
-  //       await _rewardedAd.load();
-  //       notifyListeners();
-  //     },
-  //     onApplicationExit: (Ad ad) => print('Left application.'),
-  //     onRewardedAdUserEarnedReward: (RewardedAd ad, RewardItem reward) async {
-  //       print('Reward earned: $reward');
-  //       _onRewarded();
-  //     },
-  //   );
-  //   _rewardedAd = RewardedAd(
-  //     adUnitId: '${appConfig.rewardId}',
-  //     request: AdRequest(),
-  //     listener: _listener,
-  //   );
-  //   await _rewardedAd.load();
-  //   notifyListeners();
-  // }
-
   // when user receives reward
   _onRewarded() async {
     final _appUser = Provider.of<AppUser>(context, listen: false);
@@ -122,15 +90,28 @@ class WatchAndEarnVm extends ChangeNotifier {
     }
   }
 
-  // show rewarded ad
-  showAd() async {
-    AdProvider.loadRewarded(context, () => _updateAdFailed(true), _onRewarded);
-  }
-
   // on pressed watch
   watchAd(final AppConfig appConfig) {
-    _updateCounter(appConfig?.adShowTimer ?? 5);
     _updateOnPressedWatch(true);
+    AdProvider.loadRewarded(
+      context,
+      onVideoFailed: () {
+        _updateAdFailed(true);
+      },
+      onVideoComplete: () {
+        _onRewarded();
+      },
+      onVideoClosed: () {
+        _startTimer(appConfig);
+      },
+    );
+  }
+
+  // start timer
+  _startTimer(final AppConfig appConfig) {
+    _updateCounter(appConfig?.adShowTimer ?? 5);
+    _updateOnTimerStart(true);
+    _updateOnPressedWatch(false);
     _updateAdFailed(false);
     _timer = Timer.periodic(
       Duration(milliseconds: 1000),
@@ -138,10 +119,9 @@ class WatchAndEarnVm extends ChangeNotifier {
         if (_counter <= 0) {
           timer.cancel();
           _updateCounter(appConfig?.adShowTimer ?? 5);
-          _updateOnPressedWatch(false);
+          _updateOnTimerStart(false);
         } else if (_counter <= 2) {
           _updateCounter(_counter - 1);
-          showAd();
         } else {
           _updateCounter(_counter - 1);
         }
@@ -206,6 +186,12 @@ class WatchAndEarnVm extends ChangeNotifier {
   // update value of on pressed watch
   _updateOnPressedWatch(final bool newVal) {
     _onPressedWatch = newVal;
+    notifyListeners();
+  }
+
+  // update value of on timer start
+  _updateOnTimerStart(final bool newVal) {
+    _onTimerStart = newVal;
     notifyListeners();
   }
 

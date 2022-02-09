@@ -19,6 +19,7 @@ class AppUser {
   final int lastTaskDoneAt;
   final bool newNotif;
   final int currentLevel;
+  final Map<String, dynamic> levelColors;
 
   AppUser({
     this.uid,
@@ -38,6 +39,7 @@ class AppUser {
     this.lastTaskDoneAt,
     this.newNotif,
     this.currentLevel,
+    this.levelColors,
   });
 
   AppUser copyWith({
@@ -58,6 +60,7 @@ class AppUser {
     final int lastTaskDoneAt,
     final bool newNotif,
     final int currentLevel,
+    final Map<String, dynamic> levelColors,
   }) {
     return AppUser(
       photoUrl: photoUrl ?? this.photoUrl,
@@ -77,6 +80,7 @@ class AppUser {
       lastTaskDoneAt: lastTaskDoneAt ?? this.lastTaskDoneAt,
       newNotif: newNotif ?? this.newNotif,
       currentLevel: currentLevel ?? this.currentLevel,
+      levelColors: levelColors ?? this.levelColors,
     );
   }
 
@@ -127,6 +131,7 @@ class AppUser {
       newNotif: data['new_notif'] ?? false,
       phone: data['phone'] ?? 'N/A',
       currentLevel: data['current_level'] ?? 1,
+      levelColors: data['level_colors'] ?? {},
     );
   }
 

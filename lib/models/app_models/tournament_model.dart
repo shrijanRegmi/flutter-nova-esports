@@ -5,6 +5,7 @@ class Tournament {
   final String id;
   final String imgUrl;
   final String title;
+  final String description;
   final MatchType type;
   final TournamentType tournamentType;
   final int date;
@@ -28,6 +29,7 @@ class Tournament {
     this.id,
     this.imgUrl,
     this.title,
+    this.description,
     this.type,
     this.tournamentType,
     this.date,
@@ -52,6 +54,7 @@ class Tournament {
     final String id,
     final String imgUrl,
     final String title,
+    final String description,
     final MatchType type,
     final TournamentType tournamentType,
     final int date,
@@ -75,6 +78,7 @@ class Tournament {
       id: id ?? this.id,
       imgUrl: imgUrl ?? this.imgUrl,
       title: title ?? this.title,
+      description: description ?? this.description,
       type: type ?? this.type,
       tournamentType: tournamentType ?? this.tournamentType,
       date: date ?? this.date,
@@ -101,6 +105,7 @@ class Tournament {
       id: data['id'],
       imgUrl: data['img_url'],
       title: data['title'] ?? 'N/A',
+      description: data['description'] ?? '',
       type: MatchType.values[data['type'] ?? 0],
       tournamentType: TournamentType.values[data['tournament_type'] ?? 0],
       date: data['date'],
@@ -127,6 +132,7 @@ class Tournament {
       'id': id,
       'img_url': imgUrl,
       'title': title,
+      'description': description,
       'type': type.index,
       'tournament_type': tournamentType.index,
       'date': date,

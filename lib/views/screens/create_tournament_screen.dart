@@ -122,6 +122,26 @@ class CreateTournamentScreen extends StatelessWidget {
                 height: 20.0,
               ),
               Text(
+                'Description of the tournament (Optional)',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xff3D4A5A),
+                ),
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              NewTournamentField(
+                hintText: 'Enter Description',
+                controller: vm.descriptionController,
+                requiredCapitalization: false,
+                isExpanded: true,
+              ),
+              //////////////////////////////////// next
+              SizedBox(
+                height: 20.0,
+              ),
+              Text(
                 'Add a display picture (Optional)',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
@@ -230,7 +250,7 @@ class CreateTournamentScreen extends StatelessWidget {
                 height: 20.0,
               ),
               Text(
-                'Maximum number of players to join tournament',
+                'Maximum number of players to join tournament (Optional)',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Color(0xff3D4A5A),
