@@ -206,7 +206,7 @@ class TournamentProvider {
     return _team;
   }
 
-  // get team
+  // get team by id
   Future<Team> getTeamById(final String id) async {
     Team _team;
     try {
@@ -241,7 +241,9 @@ class TournamentProvider {
 
   // join tournament
   Future joinTournament(
-      final String teamCode, final TournamentViewVm vm) async {
+    final String teamCode,
+    final TournamentViewVm vm,
+  ) async {
     try {
       final _team = await getTeamById(teamCode);
 
@@ -412,7 +414,7 @@ class TournamentProvider {
     }
   }
 
-  // select winners
+  // select winners when the tournament ends
   Future selectLobbyWinners(
       final List<Team> winners, final List<Team> losers) async {
     try {
