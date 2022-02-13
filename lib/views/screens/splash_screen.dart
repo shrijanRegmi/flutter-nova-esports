@@ -43,44 +43,47 @@ class _SplashScreenState extends State<SplashScreen>
               ),
             ),
             Center(
-              child: Container(
-                height: 180.0,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20.0),
-                  color: Colors.black.withOpacity(0.5),
-                ),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 180.0),
                 child: Container(
-                  padding: const EdgeInsets.all(30.0),
-                  child: Stack(
-                    overflow: Overflow.visible,
-                    children: [
-                      Column(
-                        children: [
-                          Text(
-                            'NOVA ESPORTS',
-                            style: TextStyle(
-                              fontSize: 34.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                  height: 180.0,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20.0),
+                    color: Colors.black.withOpacity(0.5),
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.all(30.0),
+                    child: Stack(
+                      overflow: Overflow.visible,
+                      children: [
+                        Column(
+                          children: [
+                            Text(
+                              'NOVA ESPORTS',
+                              style: TextStyle(
+                                fontSize: 34.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
-                          Text(
-                            'Tounaments to the limit',
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                            Text(
+                              'Tounaments to the limit',
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
             Positioned.fill(
-              top: 110.0,
+              top: 290.0,
               bottom: 20.0,
               child: Center(
                 child: Lottie.asset(
