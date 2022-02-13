@@ -91,7 +91,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
               SizedBox(
                 height: 5.0,
               ),
-              if (_appUser.currentLevel <= 3)
+              if (_appUser.currentLevel <= 10)
                 Text(
                   'Hint: Tap on the boxes to slide',
                   style: TextStyle(
