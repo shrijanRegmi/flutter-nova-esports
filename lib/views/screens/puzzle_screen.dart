@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:image/image.dart' as image;
 import 'package:peaman/models/app_models/level_model.dart';
 import 'package:peaman/models/app_models/user_model.dart';
+import 'package:peaman/services/ad_services/ad_provider.dart';
 import 'package:peaman/services/database_services/user_provider.dart';
 import 'package:peaman/views/widgets/common_widgets/appbar.dart';
 import 'package:peaman/views/widgets/common_widgets/color_toggler.dart';
@@ -361,6 +362,7 @@ class _SlidePuzzleWidgetState extends State<SlidePuzzleWidget> {
               color: Colors.white,
             ),
             onPressed: () {
+              AdProvider.loadInterstitial(context);
               Navigator.pop(context);
             },
           )
