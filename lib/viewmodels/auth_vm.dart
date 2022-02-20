@@ -94,6 +94,15 @@ class AuthVm extends ChangeNotifier {
     )..load();
   }
 
+  // sign up using google
+  void signUpWithGoogle() async {
+    _updateGoogleSignUpLoader(true);
+    final _result = await AuthProvider().signUpWithGoogle();
+    if (_result == null) {
+      _updateGoogleSignUpLoader(false);
+    }
+  }
+
   // sign in with email and password
   void signInWithEmailAndPassword() {
     if (_passController.text.trim() != '') {
@@ -137,15 +146,6 @@ class AuthVm extends ChangeNotifier {
         'Please enter your email to continue.',
         () {},
       );
-    }
-  }
-
-  // sign up using google
-  void signUpWithGoogle() async {
-    _updateGoogleSignUpLoader(true);
-    final _result = await AuthProvider().signUpWithGoogle();
-    if (_result == null) {
-      _updateGoogleSignUpLoader(false);
     }
   }
 

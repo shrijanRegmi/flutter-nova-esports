@@ -23,6 +23,41 @@ class AuthProvider {
   final _ref = FirebaseFirestore.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
+  // sign up with google
+  Future signUpWithGoogle() async {
+    try {
+      final _account = await _googleSignIn.signIn();
+      final _tokens = await _account.authentication;
+      final _cred = GoogleAuthProvider.credential(
+        idToken: _tokens.idToken,
+        accessToken: _tokens.accessToken,
+      );
+      final _result = await _auth.signInWithCredential(_cred);
+      final _user = _result.user;
+
+      final _usersRef = _ref
+          .collection('users')
+          .where('email', isEqualTo: _user.email)
+          .limit(1);
+      final _usersSnap = await _usersRef.get();
+      final _registered = _usersSnap.docs.isNotEmpty;
+
+      if (!_registered) {
+        final _appUser = AppUser(
+          uid: _user.uid,
+          email: _user.email,
+        );
+        await AppUserProvider(user: _appUser).sendUserToFirestore();
+      }
+      print('Success: Signing up with google');
+      return _user;
+    } catch (e) {
+      print(e);
+      print('Error!!!: Signing up with google');
+      return null;
+    }
+  }
+
   // sign in with email and password
   Future<void> signInWithEmailAndPassword({
     @required final String email,
@@ -208,26 +243,6 @@ class AuthProvider {
     } catch (e) {
       print(e);
       _handleErrors(e);
-      print('Error!!!: Signing up with google');
-      return null;
-    }
-  }
-
-  // sign up with google
-  Future signUpWithGoogle() async {
-    try {
-      final _account = await _googleSignIn.signIn();
-      final _tokens = await _account.authentication;
-      final _cred = GoogleAuthProvider.credential(
-        idToken: _tokens.idToken,
-        accessToken: _tokens.accessToken,
-      );
-      final _result = await _auth.signInWithCredential(_cred);
-      final _user = _result.user;
-      print('Success: Signing up with google');
-      return _user;
-    } catch (e) {
-      print(e);
       print('Error!!!: Signing up with google');
       return null;
     }
